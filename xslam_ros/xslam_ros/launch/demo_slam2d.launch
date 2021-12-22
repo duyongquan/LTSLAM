@@ -1,0 +1,13 @@
+<launch>
+    <param name="/use_sim_time" value="true" />
+
+    <node name="slam2d_node" pkg="xslam_ros" type="slam2d_node" output="screen">
+        <remap from="/multiecho_scan" to="/horizontal_laser_2d"/>
+    </node>
+
+
+    <node pkg="rosbag" type="play" name="rosbag"
+            args="-d 5 /home/quan/workspace/slam/tutorial/LTSLAM/dataset/b2-2015-05-26-13-15-25.bag" />
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find xslam_ros)/rviz/slam2d.rviz"/>
+</launch>

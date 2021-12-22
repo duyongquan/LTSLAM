@@ -19,7 +19,7 @@ set(PACKAGE_DEPENDENCIES
 )
 
 find_package(Boost REQUIRED COMPONENTS system iostreams)
-find_package(PCL REQUIRED COMPONENTS common)
+find_package(PCL REQUIRED)
 
 find_package(xslam REQUIRED)
 include("${XSLAM_CMAKE_DIR}/functions.cmake")
