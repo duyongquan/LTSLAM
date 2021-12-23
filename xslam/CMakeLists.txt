@@ -41,12 +41,7 @@ list(REMOVE_ITEM ALL_LIBRARY_SRCS ${ALL_EXAMPLES})
 list(REMOVE_ITEM ALL_LIBRARY_SRCS ${ALL_EXECUTABLES})
 list(REMOVE_ITEM ALL_LIBRARY_SRCS ${ALL_TESTS})
 
-if (WIN32)
-  find_package(glog REQUIRED)
-  set(GLOG_LIBRARY glog::glog)
-else()
-  set(GLOG_LIBRARY glog)
-endif()
+set(GLOG_LIBRARY glog)
 
 set(G2OLIBS
         g2o_core
@@ -58,6 +53,12 @@ set(G2OLIBS
         cholmod
         g2o_solver_cholmod
 )
+
+# Only build the documentation if we can find Sphinx.
+find_package(Sphinx)
+if(SPHINX_FOUND)
+    add_subdirectory("docs")
+endif()
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/xslam/common/config.h.cmake
