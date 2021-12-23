@@ -8,7 +8,7 @@
 #include "opencv2/opencv.hpp"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 class ReadImage
@@ -18,7 +18,7 @@ public:
 };
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam
 
 // 002_chessboard.jpeg
 

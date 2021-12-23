@@ -5,7 +5,7 @@
 #include "xslam/ceres/pose_graph_3d.h"
 #include "xslam/ceres/utils.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 namespace example {
 
@@ -135,4 +135,4 @@ bool PoseGraph3D::OutputPoses(const std::string& filename, const MapOfPoses& pos
 
 } // namespace example
 } // namespace ceres
-} // namespace slam
+} // namespace xslam

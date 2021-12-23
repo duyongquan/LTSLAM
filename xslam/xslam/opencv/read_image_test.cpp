@@ -7,7 +7,7 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 TEST(ReadImage, read_image_test)
@@ -18,4 +18,4 @@ TEST(ReadImage, read_image_test)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

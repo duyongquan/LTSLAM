@@ -5,7 +5,7 @@
 #include "xslam/ceres/utils.h"
 #include "xslam/common/config.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 std::string GetCeresDatasetDirectory()
@@ -14,4 +14,4 @@ std::string GetCeresDatasetDirectory()
 }
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam

@@ -8,7 +8,7 @@
 #include "ceres/local_parameterization.h"
 #include "xslam/ceres/normalize_angle.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 namespace example {
 
@@ -33,6 +33,6 @@ public:
 
 } // namespace example
 } // namespace ceres
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_ANGLE_LOCAL_PARAMETERIZATION_H

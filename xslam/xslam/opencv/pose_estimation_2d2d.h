@@ -10,7 +10,7 @@
 
 #include <string>
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 /**
@@ -39,6 +39,6 @@ private:
 };
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_POSE_ESTIMATION_2D2D_H

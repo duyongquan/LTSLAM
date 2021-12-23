@@ -16,7 +16,7 @@
 #include "g2o/core/base_unary_edge.h"
 #include "g2o/solvers/csparse/linear_solver_csparse.h"
 
-namespace slam {
+namespace xslam {
 namespace g2o {
 
 /**
@@ -69,6 +69,6 @@ private:
 };
 
 } // namespace g2o
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_CIRCLE_FIT_H

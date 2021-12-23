@@ -6,7 +6,7 @@
 #include "glog/logging.h"
 #include "gtest/gtest.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 TEST(SimpleBundleAdjuster, RejectionError)
@@ -17,4 +17,4 @@ TEST(SimpleBundleAdjuster, RejectionError)
 }
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam

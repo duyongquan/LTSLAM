@@ -7,7 +7,7 @@
 
 #include "ceres/ceres.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 class QuaternionParameterization : public ::ceres::LocalParameterization
@@ -39,6 +39,6 @@ public:
 };
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_QUATERNION_PARAMETERIZATION_H

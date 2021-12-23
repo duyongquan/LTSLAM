@@ -4,7 +4,7 @@
 
 #include "xslam/ceres/robust_curve_fitting.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 // Octave & Matlab
@@ -115,4 +115,4 @@ void RobustCurveFitting::RunDemo()
 }
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam

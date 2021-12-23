@@ -7,7 +7,7 @@
 #include "glog/logging.h"
 #include "gtest/gtest.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 BALProblem::~BALProblem()
@@ -99,4 +99,4 @@ void SimpleBundleAdjuster::RunDemo()
 }
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam

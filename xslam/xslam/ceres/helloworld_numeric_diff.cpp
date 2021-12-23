@@ -4,7 +4,7 @@
 
 #include "xslam/ceres/helloworld_numeric_diff.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 void NumericDiff::RunDemo()

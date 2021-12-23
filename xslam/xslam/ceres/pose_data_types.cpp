@@ -5,7 +5,7 @@
 
 #include "xslam/ceres/pose_data_types.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 namespace example {
 
@@ -65,4 +65,4 @@ std::istream& operator>>(std::istream& input, Constraint3d& constraint)
 
 } // namespace example
 } // namespace ceres
-} // namespace slam
+} // namespace xslam

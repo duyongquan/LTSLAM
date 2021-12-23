@@ -4,7 +4,7 @@
 
 #include "xslam/ceres/powell.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 void Powell::RunDemo()

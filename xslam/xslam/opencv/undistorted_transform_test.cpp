@@ -8,7 +8,7 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 TEST(UndistortedTransform, UndistortMethod)
@@ -19,4 +19,4 @@ TEST(UndistortedTransform, UndistortMethod)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

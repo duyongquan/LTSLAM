@@ -8,7 +8,7 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 // 6DOF t1 t2 ...
 TEST(RGBDMap, BuildMap)
@@ -20,4 +20,4 @@ TEST(RGBDMap, BuildMap)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

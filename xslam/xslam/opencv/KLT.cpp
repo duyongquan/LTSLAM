@@ -4,7 +4,7 @@
 
 #include "xslam/opencv/KLT.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 void OpticalFlowPyrLK::Run(const std::string& filename)
@@ -86,4 +86,4 @@ bool OpticalFlowPyrLK::OpticalFlowPyrLK::AcceptTrackedPoint(int i)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

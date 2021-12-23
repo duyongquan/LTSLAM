@@ -4,7 +4,7 @@
 
 #include "xslam/ceres/size_cost_function.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 
@@ -19,4 +19,4 @@ void SizeCostFunction::RunOptimizedDemo()
 }
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam

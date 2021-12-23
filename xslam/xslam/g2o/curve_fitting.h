@@ -16,7 +16,7 @@
 
 #include <Eigen/Core>
 
-namespace slam {
+namespace xslam {
 namespace g2o {
 
 // 曲线模型的顶点，模板参数：优化变量维度和数据类型
@@ -82,6 +82,6 @@ public:
 };
 
 } // namespace g2o
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_CURVE_FITTING_H

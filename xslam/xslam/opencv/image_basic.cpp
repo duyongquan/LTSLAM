@@ -6,7 +6,7 @@
 
 #include <chrono>
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 void ImageBasic::RunDemo(const std::string& filename)
@@ -75,4 +75,4 @@ void ImageBasic::RunDemo(const std::string& filename)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

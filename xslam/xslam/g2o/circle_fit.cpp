@@ -4,7 +4,7 @@
 
 #include "xslam/g2o/circle_fit.h"
 
-namespace slam {
+namespace xslam {
 namespace g2o {
 
 bool VertexCircle::read(std::istream& /*is*/)
@@ -156,4 +156,4 @@ double CircleFit::ErrorOfSolution(int numPoints, Eigen::Vector2d* points, const 
 }
 
 } // namespace g2o
-} // namespace slam
+} // namespace xslam

@@ -7,13 +7,13 @@
 
 #include <string>
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 std::string GetOpenCVDatasetDirectory();
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam
 
 
 

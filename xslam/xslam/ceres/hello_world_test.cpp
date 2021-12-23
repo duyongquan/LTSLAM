@@ -7,7 +7,7 @@
 #include "gtest/gtest.h"
 
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 TEST(HelloWorld, LinearTest)

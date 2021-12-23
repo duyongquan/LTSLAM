@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 class StereoVision

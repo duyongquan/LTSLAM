@@ -10,7 +10,7 @@
 
 #include <vector>
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 class ORBFeatureDetector
@@ -52,7 +52,7 @@ private:
 };
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam
 
 
 #endif //SLAM_ORB_FEATURE_DETECTOR_H

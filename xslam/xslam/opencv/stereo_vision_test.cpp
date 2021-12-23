@@ -9,7 +9,7 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 TEST(StereoVision, UndistortMethod)
@@ -22,4 +22,4 @@ TEST(StereoVision, UndistortMethod)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

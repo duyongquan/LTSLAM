@@ -4,7 +4,7 @@
 
 #include "xslam/opencv/corner_harris.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 void CornerHarris::CornerDetect(const std::string& filename)
@@ -56,5 +56,5 @@ void CornerHarris::CornerDetect(const std::string& filename)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam
 

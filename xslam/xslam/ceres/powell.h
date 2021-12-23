@@ -8,7 +8,7 @@
 #include "ceres/ceres.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 struct F1

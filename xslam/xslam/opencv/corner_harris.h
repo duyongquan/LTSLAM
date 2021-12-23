@@ -8,7 +8,7 @@
 #include "opencv2/opencv.hpp"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 class CornerHarris
@@ -18,6 +18,6 @@ public:
 };
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_CORNER_HARRIS_H

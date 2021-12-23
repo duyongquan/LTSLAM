@@ -9,7 +9,7 @@
 #include "glog/logging.h"
 
 // min f(x) = 10 - x
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 /*

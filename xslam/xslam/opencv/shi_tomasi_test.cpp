@@ -8,7 +8,7 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 TEST(ShiTomasi, GoodFeaturesToTrack)
@@ -20,4 +20,4 @@ TEST(ShiTomasi, GoodFeaturesToTrack)
 
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

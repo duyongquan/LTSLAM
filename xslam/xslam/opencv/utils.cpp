@@ -2,10 +2,10 @@
 // Created by quan on 2021/12/14.
 //
 
-#include "xslam/opencv/utils.h"
 #include "xslam/common/config.h"
+#include "xslam/opencv/utils.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 std::string GetOpenCVDatasetDirectory()
@@ -14,4 +14,4 @@ std::string GetOpenCVDatasetDirectory()
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

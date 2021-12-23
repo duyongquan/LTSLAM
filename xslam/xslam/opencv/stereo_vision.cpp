@@ -6,7 +6,7 @@
 
 #include <pangolin/pangolin.h>
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 void StereoVision::RunDemo(const std::string& image_left, const std::string& image_right)
@@ -103,4 +103,4 @@ void StereoVision::ShowPointCloud(
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

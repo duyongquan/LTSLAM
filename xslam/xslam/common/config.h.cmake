@@ -3,11 +3,12 @@
 
 #include <string>
 
-namespace slam {
+namespace xslam {
 namespace common {
 
 std::string kSourceDirectory = "@PROJECT_SOURCE_DIR@";
 
 }  // namespace common
-}  // namespace slam
+}  // namespace xslam
+
 #endif // URANUS_COMMON_CONFIG_H

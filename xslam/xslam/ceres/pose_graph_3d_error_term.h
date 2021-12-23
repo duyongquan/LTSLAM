@@ -10,7 +10,7 @@
 #include "Eigen/Core"
 #include "ceres/autodiff_cost_function.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 namespace example {
 
@@ -105,6 +105,6 @@ private:
 
 } // namespace example
 } // namespace ceres
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_POSE_GRAPH_3D_ERROR_TERM_H

@@ -10,7 +10,7 @@
 
 #include <string>
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 class UndistortedTransform
@@ -20,6 +20,6 @@ public:
 };
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_UNDISTORTED_TRANSFORM_H

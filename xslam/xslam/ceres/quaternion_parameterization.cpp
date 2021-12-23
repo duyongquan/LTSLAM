@@ -5,7 +5,7 @@
 #include "xslam/ceres/quaternion_parameterization.h"
 #include "Eigen/Geometry"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 // https://blog.csdn.net/hzwwpgmwy/article/details/86490556
@@ -50,4 +50,4 @@ void QuaternionParameter::RunDemo()
 }
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam

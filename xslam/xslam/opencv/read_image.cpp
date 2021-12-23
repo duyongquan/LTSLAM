@@ -4,7 +4,7 @@
 
 #include "xslam/opencv/read_image.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 void ReadImage::Read(const std::string& filename)
@@ -22,4 +22,4 @@ void ReadImage::Read(const std::string& filename)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

@@ -6,7 +6,7 @@
 #include "glog/logging.h"
 #include "gtest/gtest.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 namespace example {
 
@@ -21,4 +21,4 @@ TEST(PoseGraph3D, slam)
 
 } // namespace example
 } // namespace ceres
-} // namespace slam
+} // namespace xslam

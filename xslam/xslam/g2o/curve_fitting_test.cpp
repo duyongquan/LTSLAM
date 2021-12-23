@@ -7,7 +7,7 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace g2o {
 
 TEST(CurveFitting, demo)
@@ -17,4 +17,4 @@ TEST(CurveFitting, demo)
 }
 
 } // namespace g2o
-} // namespace slam
+} // namespace xslam

@@ -12,7 +12,7 @@
 #include <iostream>
 #include <nmmintrin.h>
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 void ORBFeatureDetector::CornerDetect(const std::string& image1, const std::string& image2)
@@ -474,4 +474,4 @@ void ORBFeatureDetector::BfMatch(const std::vector<DescType> &desc1,
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

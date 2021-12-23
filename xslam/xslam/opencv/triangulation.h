@@ -8,7 +8,7 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 class Triangulation
@@ -43,6 +43,6 @@ private:
 };
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_TRIANGULATION_H

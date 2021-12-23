@@ -9,7 +9,7 @@
 
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 namespace example {
 
@@ -108,6 +108,6 @@ bool ReadG2oFile(const std::string &filename,
 
 }  // namespace example
 }  // namespace ceres
-}  // namespace slam
+}  // namespace xslam
 
 #endif  // EXAMPLES_CERES_READ_G2O_H_

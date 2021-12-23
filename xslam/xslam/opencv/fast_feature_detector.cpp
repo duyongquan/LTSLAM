@@ -6,7 +6,7 @@
 
 #include "opencv2/xfeatures2d.hpp"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 void FastFeature::CornerDetect(const std::string& filename)
@@ -34,4 +34,4 @@ void FastFeature::CornerDetect(const std::string& filename)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

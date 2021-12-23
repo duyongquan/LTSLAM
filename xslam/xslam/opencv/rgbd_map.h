@@ -1,3 +1,4 @@
+
 //
 // Created by quan on 2021/12/20.
 //
@@ -13,7 +14,7 @@
 #include <vector>
 #include <string>
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 class RGBDMap
@@ -30,7 +31,7 @@ private:
 };
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam
 
 
 #endif //SLAM_RGBD_MAP_H

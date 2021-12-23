@@ -7,7 +7,7 @@
 
 #include "ceres/ceres.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 class Rat43Analytic : public ::ceres::SizedCostFunction<1,4>
@@ -90,6 +90,6 @@ public:
 };
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_SIZE_COST_FUNCTION_H

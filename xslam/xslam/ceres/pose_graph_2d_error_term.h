@@ -10,7 +10,7 @@
 #include "Eigen/Core"
 #include "ceres/ceres.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 namespace example {
 
@@ -87,6 +87,6 @@ private:
 
 } // namespace example
 } // namespace ceres
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_POSE_GRAPH_2D_ERROR_TERM_H

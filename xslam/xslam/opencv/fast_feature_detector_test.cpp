@@ -10,7 +10,7 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 TEST(FastFeature, cornerDetect)
@@ -21,4 +21,4 @@ TEST(FastFeature, cornerDetect)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

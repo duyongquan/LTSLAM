@@ -9,7 +9,7 @@
 #include "opencv2/opencv.hpp"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 class OpticalFlowPyrLK
@@ -37,7 +37,7 @@ private:
 };
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam
 
 
 #endif //SLAM_KLT_H

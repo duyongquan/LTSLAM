@@ -7,7 +7,7 @@
 #include "xslam/ceres/pose_graph_2d.h"
 #include "xslam/ceres/angle_local_parameterization.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 namespace example {
 
@@ -126,4 +126,4 @@ bool PoseGraph2D::OutputPoses(const std::string &filename,
 
 } // namespace example
 } // namespace ceres
-} // namespace slam
+} // namespace xslam

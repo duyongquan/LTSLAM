@@ -8,7 +8,7 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 TEST(PoseEstimation2D2D, pose_estimation_2d)
@@ -22,4 +22,4 @@ TEST(PoseEstimation2D2D, pose_estimation_2d)
 }
 
 } // namespace opencv
-} // namespace sla
+} // namespace xslam

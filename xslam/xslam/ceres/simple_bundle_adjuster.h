@@ -12,7 +12,7 @@
 #include "ceres/ceres.h"
 #include "ceres/rotation.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 // Read a Bundle Adjustment in the Large dataset.
@@ -112,7 +112,7 @@ public:
 };
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam
 
 
 #endif //SLAM_SIMPLE_BUNDLE_ADJUSTER_H

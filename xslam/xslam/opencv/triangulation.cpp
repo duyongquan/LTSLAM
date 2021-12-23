@@ -4,7 +4,7 @@
 
 #include "xslam/opencv/triangulation.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 void Triangulation::RunDemo(const std::string& iamge_1, const std::string& iamge_2)
@@ -194,4 +194,4 @@ cv::Point2f Triangulation::Pixel2Cam(const cv::Point2d &p, const cv::Mat &K)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

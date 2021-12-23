@@ -8,7 +8,7 @@
 #include "ceres/ceres.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 // A templated cost functor that implements the residual r = 10 -
@@ -32,5 +32,5 @@ public:
 };
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam
 #endif //SLAM_HELLO_WORLD_H

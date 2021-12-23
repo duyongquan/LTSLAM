@@ -8,7 +8,7 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 TEST(OpticalFlowPyrLK, follow)
@@ -21,4 +21,4 @@ TEST(OpticalFlowPyrLK, follow)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

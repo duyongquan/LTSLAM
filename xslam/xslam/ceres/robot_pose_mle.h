@@ -17,7 +17,7 @@ const double kRangeStddev    = 0.01;
 const double kCorridorLength = 30.0;
 const double kPoseSeparation = 0.5;
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 // Return a random number sampled from a uniform distribution in the range
@@ -134,7 +134,7 @@ private:
 };
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam
 
 
 #endif //SLAM_ROBOT_POSE_MLE_H

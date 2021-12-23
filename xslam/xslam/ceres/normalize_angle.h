@@ -9,7 +9,7 @@
 
 #include "ceres/ceres.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 namespace example {
 

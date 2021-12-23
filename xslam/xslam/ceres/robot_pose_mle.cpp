@@ -4,7 +4,7 @@
 
 #include "xslam/ceres/robot_pose_mle.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 void RobotPoseMLE::RunDemo()
@@ -86,4 +86,4 @@ void RobotPoseMLE::PrintState(
 }
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam

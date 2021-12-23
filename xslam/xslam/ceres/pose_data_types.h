@@ -12,7 +12,7 @@
 
 #include "Eigen/Core"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 namespace example {
 
@@ -104,6 +104,6 @@ typedef std::vector<Constraint3d, Eigen::aligned_allocator<Constraint3d> > Vecto
 
 } // namespace example
 } // namespace ceres
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_TYPES_H

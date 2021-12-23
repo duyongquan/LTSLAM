@@ -4,7 +4,7 @@
 
 #include "xslam/opencv/undistorted_transform.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 void UndistortedTransform::RunDemo(const std::string& filename)
@@ -49,5 +49,5 @@ void UndistortedTransform::RunDemo(const std::string& filename)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam
 

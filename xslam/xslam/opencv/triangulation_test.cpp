@@ -7,7 +7,7 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 TEST(Triangulation, triangulation)
@@ -20,4 +20,4 @@ TEST(Triangulation, triangulation)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

@@ -8,7 +8,7 @@
 #include <cmath>
 #include <chrono>
 
-namespace slam {
+namespace xslam {
 namespace g2o {
 
 void CurveFitting::RunDemo()
@@ -70,4 +70,4 @@ void CurveFitting::RunDemo()
 }
 
 } // namespace g2o
-} // namespace slam
+} // namespace xslam

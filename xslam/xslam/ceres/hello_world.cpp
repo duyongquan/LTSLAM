@@ -4,7 +4,7 @@
 
 #include "xslam/ceres/hello_world.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 // f(x) = 10 - x

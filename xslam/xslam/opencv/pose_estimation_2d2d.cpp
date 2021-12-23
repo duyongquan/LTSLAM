@@ -4,7 +4,7 @@
 
 #include "xslam/opencv/pose_estimation_2d2d.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 void PoseEstimation2D2D::RunDemo(const std::string& iamge_1, const std::string& iamge_2)
@@ -149,4 +149,4 @@ cv::Point2d PoseEstimation2D2D::Pixel2Cam(const cv::Point2d &p, const cv::Mat &K
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

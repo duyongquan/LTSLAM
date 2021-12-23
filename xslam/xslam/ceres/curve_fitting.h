@@ -8,7 +8,7 @@
 #include "ceres/ceres.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 struct ExponentialResidual
@@ -35,6 +35,6 @@ public:
 };
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_CURVE_FITTING_H

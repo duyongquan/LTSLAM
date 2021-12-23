@@ -4,7 +4,7 @@
 
 #include "xslam/ceres/curve_fitting.h"
 
-namespace slam {
+namespace xslam {
 namespace ceres{
 
 // Matlab & Octave
@@ -121,4 +121,4 @@ void CurveFitting::RunDemo()
 }
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam

@@ -10,7 +10,7 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 TEST(ORBFeatureDetector, OpenCVcornerDetect)
@@ -34,4 +34,4 @@ TEST(ORBFeatureDetector, SelfcornerDetect)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

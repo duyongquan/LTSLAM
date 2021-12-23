@@ -4,7 +4,7 @@
 
 #include "xslam/opencv/shi_tomasi.h"
 
-namespace slam {
+namespace xslam {
 namespace opencv {
 
 void ShiTomasi::CornerDetect(const std::string& filename)
@@ -35,4 +35,4 @@ void ShiTomasi::CornerDetect(const std::string& filename)
 }
 
 } // namespace opencv
-} // namespace slam
+} // namespace xslam

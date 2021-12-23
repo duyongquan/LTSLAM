@@ -7,12 +7,12 @@
 
 #include <string>
 
-namespace slam {
+namespace xslam {
 namespace ceres {
 
 std::string GetCeresDatasetDirectory();
 
 } // namespace ceres
-} // namespace slam
+} // namespace xslam
 
 #endif //SLAM_UTILS_H
