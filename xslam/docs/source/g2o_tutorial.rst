@@ -142,10 +142,10 @@ EdgePointOnCircle :
 .. rubric:: Footnotes
 
 .. [#f1] `circle_fit.cpp
-   <https://github.com/quanduyong/LTSLAM/blob/main/xslam/xslam/ceres/circle_fit.cpp>`_
+   <https://github.com/quanduyong/LTSLAM/blob/main/xslam/xslam/g2o/circle_fit.cpp>`_
 .. [#f2] `circle_fit.h
-   <https://github.com/quanduyong/LTSLAM/blob/main/xslam/xslam/ceres/circle_fit.h>`_
+   <https://github.com/quanduyong/LTSLAM/blob/main/xslam/xslam/g2o/circle_fit.h>`_
 .. [#f3] `circle_fit_test.cpp
-    <https://github.com/quanduyong/LTSLAM/blob/main/xslam/xslam/ceres/circle_fit_test.cpp>`_
+    <https://github.com/quanduyong/LTSLAM/blob/main/xslam/xslam/g2o/circle_fit_test.cpp>`_
 
 
