@@ -183,8 +183,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-   ('index', 'LTSLAM.tex', u'LTSLAM',
-     [u'Du Yongquan'], 1)
+  ('index', 'LTSLAM.tex', u'LTSLAM',
+   u'Du Yongquan', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -226,7 +226,18 @@ man_pages = [
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
+
 texinfo_documents = [
   ('index', 'LTSLAM', u'LTSLAM',
-   u'Du Yongquan'),
+   u'Du Yongquan', 'LTSLAM', 'One line description of project.',
+   'Miscellaneous'),
 ]
+
+# Documents to append as an appendix to all manuals.
+#texinfo_appendices = []
+
+# If false, no module index is generated.
+#texinfo_domain_indices = True
+
+# How to display URL addresses: 'footnote', 'no', or 'inline'.
+#texinfo_show_urls = 'footnote'
