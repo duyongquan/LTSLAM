@@ -8,7 +8,6 @@
 Ceres Solver Tutorial
 =====================
 
-
 .. _section-hello-world:
 
 Hello World!
