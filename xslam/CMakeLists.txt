@@ -54,12 +54,6 @@ set(G2OLIBS
         g2o_solver_cholmod
 )
 
-# Only build the documentation if we can find Sphinx.
-find_package(Sphinx)
-if(SPHINX_FOUND)
-    add_subdirectory("docs")
-endif()
-
 configure_file(
     ${PROJECT_SOURCE_DIR}/xslam/common/config.h.cmake
     ${PROJECT_BINARY_DIR}/xslam/common/config.h)
