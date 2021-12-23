@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.1.0)
-project(xslam_tutorial)
+project(ltslam)
+
 set(CMAKE_CXX_STANDARD 11)
 
 # catkin sets this to "on" by default, which causes linking problems
@@ -18,7 +19,12 @@ add_subdirectory(xslam)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
+# Only build the documentation if we can find Sphinx.
+find_package(Sphinx)
+if(SPHINX_FOUND)
+    add_subdirectory(docs)
+endif()
+
 # add catkin packages
 add_subdirectory(xslam_ros/xslam_ros)
-add_subdirectory(xslam_ros/docs)
 
