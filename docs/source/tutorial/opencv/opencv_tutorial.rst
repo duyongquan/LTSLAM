@@ -16,6 +16,7 @@ Basic
 
    basic/read_image
    basic/image_basic
+   basic/paint_shape
 
 Geometry
 ========
