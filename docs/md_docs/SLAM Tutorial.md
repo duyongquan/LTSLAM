@@ -10,6 +10,28 @@
 
 ### 1.1 vector definition
 
+
+$$
+\begin{align}
+        \mathbf{a}^T \mathbf{b} &= \mathbf{b}^T \mathbf{a} \\
+        &= 
+        
+        \begin{bmatrix}
+            a_1     \\
+            a_2     \\
+            \vdots  \\
+            a_n
+        \end{bmatrix}
+
+        \begin{bmatrix}
+            b_1, b_2, \cdots, b_n
+        \end{bmatrix}  \\
+        &=
+        a_1 b_1 + a_2 b_2 + a_3 b_3 + \cdots + a_n b_n
+    \end{align}
+$$
+
+
 n维向量表示：
 $$
 \mathbf{a} = [a_1, a_2, a_3, \cdots , a_n]^T
@@ -93,13 +115,13 @@ $$
 ### 2.1 四元数的和
 
 $$
- \mathbf{p} + \mathbf{q} = \begin{bmatrix} p_w \ \mathbf{p}_v \end{bmatrix} +
+\mathbf{p} + \mathbf{q} = \begin{bmatrix} p_w \ \mathbf{p}_v \end{bmatrix} +
 
 \begin{bmatrix} q_w \ \mathbf{q}_v \end{bmatrix} =
 
 \begin{bmatrix} p_w + q_w \ \mathbf{p}_v + \mathbf{q}_v \end{bmatrix} =
 
-\begin{bmatrix} p_w + q_w \ \mathbf{p}_x + \mathbf{q}_x \ \mathbf{p}_y + \mathbf{q}_y \ \mathbf{p}_z + \mathbf{q}_z \end{bmatrix} 
+\begin{bmatrix} p_w + q_w \ \mathbf{p}_x + \mathbf{q}_x \ \mathbf{p}_y + \mathbf{q}_y \ \mathbf{p}_z + \mathbf{q}_z \end{bmatrix}
 $$
 
 对应的元素直接相加即可。
@@ -127,15 +149,15 @@ $$
 
 写成标量和向量形式： 
 $$
- \mathbf{p} \otimes \mathbf{q} =
+\mathbf{p} \otimes \mathbf{q} =
 
 \begin{bmatrix} q_w & \mathbf{q}_x & \mathbf{q}_y & \mathbf{q}_z \end{bmatrix} =
 
-\begin{bmatrix} p_w q_w - \mathbf{p}^T_v\mathbf{q}_v \ p_w \mathbf{q}_v + q_w \mathbf{p}_v +\mathbf{p}_v \times \mathbf{q}_v \end{bmatrix} 
+\begin{bmatrix} p_w q_w - \mathbf{p}^T_v\mathbf{q}_v \ p_w \mathbf{q}_v + q_w \mathbf{p}_v +\mathbf{p}_v \times \mathbf{q}_v \end{bmatrix}
 $$
 $$  四元数不满足交换律 : $$
 $$
- \mathbf{p} \otimes \mathbf{q} \ne \mathbf{q} \otimes \mathbf{p}
+\mathbf{p} \otimes \mathbf{q} \ne \mathbf{q} \otimes \mathbf{p}
 $$
  $$ 结合律： $$ 
 $$
@@ -152,7 +174,7 @@ $$
 $$
 \mathbf{Q}^{+} = q_w\mathbf{I} +
 
-\begin{bmatrix} 0 & -\mathbf{q}_v^{T} \ \mathbf{q}_v & [\mathbf{q}*v]*{\times}
+\begin{bmatrix} 0 & -\mathbf{q}_v^{T} \mathbf{q}_v & [\mathbf{q}*v]_{\times}
 
 \end{bmatrix} 
 

@@ -43,6 +43,12 @@ list(REMOVE_ITEM ALL_LIBRARY_SRCS ${ALL_TESTS})
 
 set(GLOG_LIBRARY glog)
 
+#vlfeat 
+add_subdirectory(libs)
+set(VLFEAT_LIBRARY vlfeat)
+set(VLFEAT_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/libs)
+include_directories(${VLFEAT_INCLUDE_DIRS})
+
 set(G2OLIBS
         g2o_core
         g2o_stuff
@@ -67,7 +73,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${G2OLIBS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CERES_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CSPARSE_LIB})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(${PROJECT_NAME} PUBLIC rt)
+target_link_libraries(${PROJECT_NAME} PUBLIC rt ${VLFEAT_LIBRARY})
 
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${EIGEN3_INCLUDE_DIR}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${Pangolin_INCLUDE_DIR}")
@@ -77,6 +83,8 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${CERES_INCLUDE_DIRS}"
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${G2O_INCLUDE_DIRS}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${CSPARSE_INCLUDE_DIR}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${Boost_INCLUDE_DIRS}")
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${VLFEAT_INCLUDE_DIRS}")
+
 
 if (BUILD_TEST)
     foreach(ABS_FIL ${ALL_TESTS})
