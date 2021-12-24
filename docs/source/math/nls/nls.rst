@@ -21,6 +21,10 @@ Introduction and definitions
     :math:`m` are given functions, and :math:`m \leq n`;
         
 
+.. figure :: ../images/nls/nls_1.png
+    :align: center
+
+
 
 Descent Methods
 -----------------

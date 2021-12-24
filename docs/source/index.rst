@@ -23,6 +23,7 @@ XSLAM is an open source C++ demo for learn vision slam and lidar slam.
    introduction
    installation
    math/math
+   kalman_filter/kalman_filter
    tutorial/tutorial
    vslam/vision_slam
    license
