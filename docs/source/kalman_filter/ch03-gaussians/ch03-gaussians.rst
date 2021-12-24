@@ -3,7 +3,7 @@
 .. default-domain:: cpp
 
 ===============
-Ch03 gaussians
+Ch03 Gaussians
 ===============
 
 
