@@ -187,12 +187,12 @@ The Gauss–Newton Method
         -2 \\
         0
     \end{bmatrix},
-    H{f(x^{(0)})} = 
+    H({f(x^{(0)})} = 
     \begin{bmatrix} 
         3  & -1 \\
         -1 &  1
     \end{bmatrix},
-    H{f(x^{(0)})}^{-1} = 
+    H({f(x^{(0)})}^{-1} = 
     \begin{bmatrix} 
         \frac{1}{2}  & \frac{1}{2} \\
         \frac{1}{2}  & \frac{3}{2} 
@@ -202,7 +202,7 @@ The Gauss–Newton Method
 
 .. math::
 
-    x^{(1)} = x^{(0)} - H{f(x^{(0)})}^{-1}\nabla{f(x^{(0)})} = 
+    x^{(1)} = x^{(0)} - H({f(x^{(0)})}^{-1}\nabla{f(x^{(0)})} = 
     \begin{bmatrix} 
         0 \\
         0
