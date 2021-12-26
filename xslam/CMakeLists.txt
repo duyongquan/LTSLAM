@@ -120,3 +120,9 @@ project_binary(gflag_example
     SRCS
         xslam/examples/gflag_example.cpp
 )
+
+# VINS-Mono
+project_binary(vins
+    SRCS
+        xslam/vins/vins_main.cpp
+)
