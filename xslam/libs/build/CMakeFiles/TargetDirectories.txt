@@ -1,3 +1,0 @@
-/home/quan/workspace/slam/tutorial/LTSLAM/xslam/libs/build/CMakeFiles/rebuild_cache.dir
-/home/quan/workspace/slam/tutorial/LTSLAM/xslam/libs/build/CMakeFiles/vlfeat.dir
-/home/quan/workspace/slam/tutorial/LTSLAM/xslam/libs/build/CMakeFiles/edit_cache.dir

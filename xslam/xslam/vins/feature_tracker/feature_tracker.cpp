@@ -5,7 +5,7 @@ namespace xslam {
 namespace feature_tracker {
     
 
-FeatureTracker::FeatureTracker()
+FeatureTracker::FeatureTracker(const std::string& filename)
 {
 }
 

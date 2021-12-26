@@ -3,13 +3,15 @@
 
 #include "xslam/vins/common/time.h"
 
+#include <opencv2/opencv.hpp>
+
 namespace xslam {
 namespace sensor {
 
 struct CameraData 
 {
     common::Time time;
-
+    cv::Mat image;
 };
 
 }  // namespace sensor

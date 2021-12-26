@@ -10,7 +10,7 @@ namespace feature_tracker {
 class FeatureTracker 
 {
 public:
-    FeatureTracker();
+    FeatureTracker(const std::string& filename);
 
 };
 

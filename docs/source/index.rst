@@ -36,7 +36,7 @@ Contact Me
 If you use learn more xslam knowledge, please contact me::
 
     author: Du Yongquan
-    emmail: quandy2020@126.com
+    email: quandy2020@126.com
 
 
 哔哩哔哩
