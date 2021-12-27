@@ -5,6 +5,8 @@
 #include "xslam/vins/estimator/estimator.h"
 #include "xslam/vins/pose_graph/pose_graph.h"
 #include "xslam/vins/common/thread_pool.h"
+#include "xslam/vins/sensor/camera_data.h"
+#include "xslam/vins/sensor/imu_data.h"
 
 #include <map>
 #include <thread>
@@ -36,10 +38,10 @@ public:
     void ShowHelp();
 
     // IMU sensor data
-    void HandleIMUSensorMessages();
+    void HandleIMUSensorMessages(const sensor::ImuData& msg);
 
     // camera sensor data
-    void HandleCameraSensorMessage();
+    void HandleCameraSensorMessage(const sensor::CameraData& msg);
 
     // Shutdown all thread
     void Shutdown();
