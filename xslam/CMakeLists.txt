@@ -30,6 +30,8 @@ find_package(Ceres REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(Sophus REQUIRED)
 find_package(CSparse)
+find_package(DBoW3)
+
 
 file(GLOB_RECURSE ALL_LIBRARY_HDRS "xslam/*.h")
 file(GLOB_RECURSE ALL_LIBRARY_SRCS "xslam/*.cpp")
@@ -72,6 +74,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${GLOG_LIBRARY})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${G2OLIBS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CERES_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CSPARSE_LIB})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${DBOW3_LIBRARY})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(${PROJECT_NAME} PUBLIC rt ${VLFEAT_LIBRARY})
 
@@ -82,6 +85,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${OpenCV_INCLUDE_DIRS}
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${CERES_INCLUDE_DIRS}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${G2O_INCLUDE_DIRS}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${CSPARSE_INCLUDE_DIR}")
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${DBOW3_INCLUDE_DIR}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${Boost_INCLUDE_DIRS}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${VLFEAT_INCLUDE_DIRS}")
 
