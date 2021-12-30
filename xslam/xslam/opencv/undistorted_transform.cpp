@@ -40,7 +40,7 @@ void UndistortedTransform::RunDemo(const std::string& filename)
             }
         }
     }
-
+    
     // 画图去畸变后图像
     cv::imshow("distorted", image);
     cv::imshow("undistorted", image_undistort);
