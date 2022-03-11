@@ -13,10 +13,10 @@ namespace opencv {
 // 6DOF t1 t2 ...
 TEST(RGBDMap, BuildMap)
 {
-    std::string filename = GetOpenCVDatasetDirectory() + "/rgbd/pose.txt";
-    std::string color_depth_dir = GetOpenCVDatasetDirectory() + "/rgbd/";
-    RGBDMap demo;
-    demo.RunDemo(filename, color_depth_dir);
+    // std::string filename = GetOpenCVDatasetDirectory() + "/rgbd/pose.txt";
+    // std::string color_depth_dir = GetOpenCVDatasetDirectory() + "/rgbd/";
+    // RGBDMap demo;
+    // demo.RunDemo(filename, color_depth_dir);
 }
 
 } // namespace opencv

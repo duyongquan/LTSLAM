@@ -3,6 +3,8 @@
 #include <mutex>
 #include <vector>
 
+
+#if 0
 namespace xslam {
 namespace opencv {
 
@@ -272,3 +274,5 @@ void DirectMetod::DirectPoseEstimationMultiLayer(
 
 } // namespace opencv
 } // namespace xslam
+
+#endif 

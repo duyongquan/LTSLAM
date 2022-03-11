@@ -14,9 +14,9 @@ namespace opencv {
 
 TEST(DirectMetod, demo)
 {
-    std::string path = GetOpenCVDatasetDirectory() +  "/direct_method/";
-    DirectMetod demo;
-    demo.RunDemo(path);
+    // std::string path = GetOpenCVDatasetDirectory() +  "/direct_method/";
+    // DirectMetod demo;
+    // demo.RunDemo(path);
 }
 
 } // namespace opencv

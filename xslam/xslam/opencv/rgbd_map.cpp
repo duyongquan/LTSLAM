@@ -8,6 +8,8 @@
 #include <fstream>
 #include <pangolin/pangolin.h>
 
+
+/*
 namespace xslam {
 namespace opencv {
 
@@ -126,5 +128,8 @@ void RGBDMap::ShowPointCloud(const std::vector<Vector6d, Eigen::aligned_allocato
     }
 }
 
+
 } // namespace opencv
 } // namespace xslam
+
+*/

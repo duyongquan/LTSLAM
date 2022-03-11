@@ -6,6 +6,8 @@
 #include <Eigen/Geometry>
 #include "sophus/se3.hpp"
 
+
+/*
 namespace xslam {
 namespace sophus {
 
@@ -67,3 +69,5 @@ void SophusMethod::RunDemo()
 
 } // namespace sophus
 } // namespace xslam
+
+*/

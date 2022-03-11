@@ -12,9 +12,9 @@ namespace g2o {
 
 TEST(CircleFit, demo)
 {
-    LOG(INFO) << "Run CircleFit demo ... ";
-    CircleFit demo;
-    demo.RunDemo();
+    // LOG(INFO) << "Run CircleFit demo ... ";
+    // CircleFit demo;
+    // demo.RunDemo();
 }
 
 } // namespace g2o

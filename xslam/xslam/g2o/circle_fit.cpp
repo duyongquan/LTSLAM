@@ -4,6 +4,8 @@
 
 #include "xslam/g2o/circle_fit.h"
 
+
+#if 0
 namespace xslam {
 namespace g2o {
 
@@ -157,3 +159,5 @@ double CircleFit::ErrorOfSolution(int numPoints, Eigen::Vector2d* points, const 
 
 } // namespace g2o
 } // namespace xslam
+
+#endif 
