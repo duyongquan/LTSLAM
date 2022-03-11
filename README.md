@@ -115,6 +115,7 @@ git clone https://github.com/quanduyong/LTSLAM.git
   ```
   git clone https://github.com/rmsalinas/DBow3.git
   cd abseil-cpp
+  git checkout 9b41a4ea
   mkdir build && cd build
   cmake ..
   make -j6 
