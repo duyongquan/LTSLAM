@@ -39,7 +39,7 @@ git clone https://github.com/quanduyong/LTSLAM.git
 
 ### 2.2 Third party library
 
- 我已经提供了第三方库源码文件3rdparty目录下，执行以下命令安装：
+<font  color='green'>(推荐)</font>我已经提供了第三方库源码文件3rdparty目录下，执行以下命令安装，<font  color='red'>不然会出现版本不匹配问题</font>：
 
   ```shell
   mkdir build && cd build
@@ -48,7 +48,7 @@ git clone https://github.com/quanduyong/LTSLAM.git
   sudo make install
   ```
 
-​     如果你想自己源码安装第三方库请使用以下步骤：
+​     <font  color='red'>(不推荐)</font>如果你想自己源码安装第三方库请使用以下步骤：
 
 * 安装Eigen
 

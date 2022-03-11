@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1.0)
 project(ltslam)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 # catkin sets this to "on" by default, which causes linking problems
 set(BUILD_SHARED_LIBS OFF)
