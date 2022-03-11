@@ -1,7 +1,9 @@
 # LTSLAM
 ## 1 Introduction
 
-lean slam step by step, you can online learn [LTSLAM](https://ltslam-doc.readthedocs.io/en/latest/index.html)
+I hope you can lean slam step by step, you will can learn online  [LTSLAM documents tutorial](https://ltslam-doc.readthedocs.io/en/latest/index.html)
+
+You can learn slam knowledge by [哔哩哔哩 bilibili ](https://space.bilibili.com/478832908). This video website has a detailed explanation of the code and the corresponding SLAM technology principle. Let's start a happy journey. enjoy....
 
 project directory:
 
@@ -147,7 +149,23 @@ make -j6
 
 ## 4 如何运行工程demo
 
-```
+在工程的build/bin目录中，你可以看到对应的每个可执行二进制文件
+
+![](./xslam_readme_run.png)
+
+Let ‘s run xslam.opencv.KLT_test shell command 
 
 ```
+# KLT 光流跟踪算法
+./xslam.opencv.KLT_test
+```
 
+## 5 Contact Me
+
+我们有微信群，你可以加入我们一起成长，所有代码和教学视频免费。
+
+```
+email ： quandy2020@126.com
+```
+
+加入我们吧！！！
