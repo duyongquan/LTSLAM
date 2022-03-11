@@ -14,15 +14,15 @@ SENSOR = {
         camera_name = "camera",
         image_width = 752,
         image_height = 480,
-        
-        distortion_parameters = {
+
+        distortion = {
             k1 = -2.917e-01,
             k2 = 8.228e-02,
             p1 = 5.333e-05,
             p2 = -1.578e-04,
         },
 
-        projection_parameters = {
+        projection = {
             fx = 4.616e+02,
             fy = 4.603e+02,
             cx = 3.630e+02,
@@ -44,7 +44,7 @@ SENSOR = {
     
     -- rolling shutter parameters
     rolling_shutter = {
-        rolling_shutter: 0,       -- 0: global shutter camera, 1: rolling shutter camera
+        rolling_shutter = 0,      -- 0: global shutter camera, 1: rolling shutter camera
         rolling_shutter_tr = 0, 
     }
 }
