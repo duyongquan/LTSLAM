@@ -151,7 +151,7 @@ make -j6
 
 在工程的build/bin目录中，你可以看到对应的每个可执行二进制文件
 
-![](./xslam_readme_run.png)
+![](./image/xslam_readme_run.png)
 
 Let ‘s run xslam.opencv.KLT_test shell command 
 
@@ -162,10 +162,13 @@ Let ‘s run xslam.opencv.KLT_test shell command
 
 ## 5 Contact Me
 
-我们有微信群，你可以加入我们一起成长，所有代码和教学视频免费。
+我们有微信群和QQ群：<font color='green'> 710288823 </font>，你可以加入我们一起成长，所有代码和教学视频免费。
+
+![](./image/aibot_beginer_qq.png)
 
 ```
 email ： quandy2020@126.com
 ```
 
 加入我们吧！！！
+
