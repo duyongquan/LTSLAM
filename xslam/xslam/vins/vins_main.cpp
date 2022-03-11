@@ -1,4 +1,5 @@
 #include "xslam/vins/vins.h"
+#include "xslam/vins/common/config.h"
 #include "xslam/vins/common/logging.h"
 #include "gflags/gflags.h"
 
@@ -6,12 +7,12 @@
 #include <string>
 #include <memory>
 
-DEFINE_string(configuration_directory, "",
+DEFINE_string(configuration_directory, xslam::common::kConfigurationFilesDirectory,
               "First directory in which configuration files are searched, "
               "second is always the XSLAM installation to allow "
               "including files from there.");
 
-DEFINE_string(configuration_basename, "",
+DEFINE_string(configuration_basename, "vins.lua",
               "Basename, i.e. not containing any directory prefix, of the "
               "configuration file.");
 
@@ -22,14 +23,14 @@ namespace {
 void Run(int argc, char **argv)
 {
     // Create VINS system instance and load configuration file.
-    std::string config_filename = " ";
+    auto vins_options = LoadOptions(FLAGS_configuration_directory, FLAGS_configuration_basename);
     std::shared_ptr<xslam::vins::VINSSystem> system = 
-        std::make_shared<xslam::vins::VINSSystem>(config_filename);
+        std::make_shared<xslam::vins::VINSSystem>(vins_options);
 
     // Comamand parsing.
-    if (argc == 1) {
-        return system->ShowHelp();
-    }
+    // if (argc == 1) {
+    //     return system->ShowHelp();
+    // }
 
     // Run finish.
     system->Shutdown();

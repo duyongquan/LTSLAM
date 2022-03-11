@@ -18,6 +18,11 @@ VINSSystem::VINSSystem(const std::string& config_filename)
     pose_graph_      = std::make_shared<pose_graph::PoseGraph>(config_filename);
 }
 
+VINSSystem::VINSSystem(const VINSOptions& options)
+{
+
+}
+
 VINSSystem::VINSSystem(int argc, char **argv)
 {
     ParseCommandLineFlags();

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <streambuf>
 
+#include "xslam/vins/common/configuration_file_resolver.h"
 #include "xslam/vins/common/config.h"
 #include "glog/logging.h"
 

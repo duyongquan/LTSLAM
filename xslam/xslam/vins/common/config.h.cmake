@@ -6,10 +6,10 @@
 namespace xslam {
 namespace common {
 
-std::string kVinsSourceDirectory = "@PROJECT_SOURCE_DIR@";
+static std::string kVinsSourceDirectory = "@PROJECT_SOURCE_DIR@";
 
-constexpr char kConfigurationFilesDirectory[] =
-    "@XSLAM_CONFIGURATION_FILES_DIRECTORY@";
+static std::string  kConfigurationFilesDirectory =
+    "@PROJECT_SOURCE_DIR@/xslam/vins/configuration";
 
 
 }  // namespace common

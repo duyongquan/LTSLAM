@@ -63,9 +63,6 @@ set(G2OLIBS
         g2o_solver_cholmod
 )
 
-set(XSLAM_CONFIGURATION_FILES_DIRECTORY ${CMAKE_INSTALL_PREFIX}/share/xslam/configuration
-  CACHE PATH ".lua configuration files directory")
-
 configure_file(
     ${PROJECT_SOURCE_DIR}/xslam/common/config.h.cmake
     ${PROJECT_BINARY_DIR}/xslam/common/config.h)

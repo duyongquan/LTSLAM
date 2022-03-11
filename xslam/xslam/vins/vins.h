@@ -7,6 +7,7 @@
 #include "xslam/vins/common/thread_pool.h"
 #include "xslam/vins/sensor/camera_data.h"
 #include "xslam/vins/sensor/imu_data.h"
+#include "xslam/vins/vins_options.h"
 
 #include <map>
 #include <thread>
@@ -27,6 +28,7 @@ public:
     using CommandFunction = std::function<int(int, char**)>;
 
     VINSSystem(const std::string& config_filename);
+    VINSSystem(const VINSOptions& options);
     VINSSystem(int argc, char **argv);
 
     ~VINSSystem(); 
