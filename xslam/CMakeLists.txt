@@ -29,6 +29,7 @@ find_package(G2O REQUIRED)
 find_package(Ceres REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(Sophus REQUIRED)
+find_package(LuaGoogle REQUIRED)
 find_package(CSparse)
 find_package(DBoW3)
 
@@ -62,9 +63,16 @@ set(G2OLIBS
         g2o_solver_cholmod
 )
 
+set(XSLAM_CONFIGURATION_FILES_DIRECTORY ${CMAKE_INSTALL_PREFIX}/share/xslam/configuration
+  CACHE PATH ".lua configuration files directory")
+
 configure_file(
     ${PROJECT_SOURCE_DIR}/xslam/common/config.h.cmake
     ${PROJECT_BINARY_DIR}/xslam/common/config.h)
+
+configure_file(
+    ${PROJECT_SOURCE_DIR}/xslam/vins/common/config.h.cmake
+    ${PROJECT_BINARY_DIR}/xslam/vins/common/config.h)
 
 add_library(${PROJECT_NAME} STATIC ${ALL_LIBRARY_HDRS} ${ALL_LIBRARY_SRCS} ${ALL_LIBRARY_HPPS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
@@ -77,6 +85,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${CSPARSE_LIB})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${DBOW3_LIBRARY})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(${PROJECT_NAME} PUBLIC rt ${VLFEAT_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${LUA_LIBRARIES})
+
 
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${EIGEN3_INCLUDE_DIR}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${Pangolin_INCLUDE_DIR}")
@@ -88,6 +98,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${CSPARSE_INCLUDE_DIR}
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${DBOW3_INCLUDE_DIR}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${Boost_INCLUDE_DIRS}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${VLFEAT_INCLUDE_DIRS}")
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${LUA_INCLUDE_DIR}")
 
 
 if (BUILD_TEST)
