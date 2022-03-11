@@ -23,7 +23,8 @@ namespace {
 void Run(int argc, char **argv)
 {
     // Create VINS system instance and load configuration file.
-    auto vins_options = LoadOptions(FLAGS_configuration_directory, FLAGS_configuration_basename);
+    auto vins_options = LoadOptions(FLAGS_configuration_directory, 
+        FLAGS_configuration_basename);
     std::shared_ptr<xslam::vins::VINSSystem> system = 
         std::make_shared<xslam::vins::VINSSystem>(vins_options);
 
