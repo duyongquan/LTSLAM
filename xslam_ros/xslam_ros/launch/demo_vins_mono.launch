@@ -1,8 +1,12 @@
 <launch>
     <param name="/use_sim_time" value="true" />
 
-    <node name="vins_mono_node" pkg="xslam_ros" type="vins_mono_node" output="screen">
-        
+    <node name="vins_mono_node" pkg="xslam_ros" 
+        type="vins_mono_node" args="
+          -configuration_directory $(find xslam_ros)/configuration_files
+          -configuration_basename vins_mono.lua"
+        output="screen">
+
     </node>
 
 
