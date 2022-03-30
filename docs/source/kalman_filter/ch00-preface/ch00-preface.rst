@@ -61,7 +61,9 @@ NumPy
     x = np.array([1, 2, 3])
     print(type(x))
     x
-<class 'numpy.ndarray'>
+    <class 'numpy.ndarray'> 
+
+ 
 
 使用元组：
 
