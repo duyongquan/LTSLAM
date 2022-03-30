@@ -19,6 +19,7 @@ git clone https://github.com/quanduyong/LTSLAM.git
 ## 2 Install dependency
 
 ### 2.1 Generate study documents
+主要目的实现本地帮助文档doc下，以html网页的格式方便查看
 
 * 安装Sphinx
 
@@ -36,6 +37,7 @@ git clone https://github.com/quanduyong/LTSLAM.git
 
   ```shell
   pip install recommonmark
+  pip install myst-parser
   pip install sphinx_markdown_tables
   ```
 
