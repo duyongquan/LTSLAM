@@ -34,7 +34,7 @@ void Run()
 
     auto node_options = LoadOptions(FLAGS_configuration_directory, FLAGS_configuration_basename);
     auto vio_builder = xslam::vins::CreateVinsBuilder(node_options.vins_builder_options);
-    Node node(node_options, std::move(vio_builder), &tf_buffer);
+    Node node(node_options, vio_builder, &tf_buffer);
 
     if (FLAGS_start_default_topics) {
         node.StartDefaultTopics();

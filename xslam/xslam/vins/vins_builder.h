@@ -3,6 +3,9 @@
 
 #include <memory>
 
+#include "xslam/vins/sensor/imu_data.h"
+#include "xslam/vins/sensor/image_data.h"
+#include "xslam/vins/sensor/collator_interface.h"
 #include "xslam/vins/vins_builder_interface.h"
 #include "xslam/vins/estimator/proto/vins_builder_options.pb.h"
 
@@ -14,8 +17,11 @@ class VinsBuilder : public VinsBuilderInterface
 public:
     explicit VinsBuilder(const proto::VinsBuilderOptions &options);
     ~VinsBuilder() override {} 
-
   
+    void AddSensorData(const std::string& sensor_id, const sensor::ImuData& imu_data) override;
+
+    void AddSensorData(const std::string& sensor_id, const sensor::ImageData& image_data) override;
+
     estimator::Estimator* estimator() override 
     {
         return estimator_.get();
@@ -23,12 +29,11 @@ public:
 
 private:
     const proto::VinsBuilderOptions options_;
-
     std::unique_ptr<estimator::Estimator> estimator_;
-
+    std::unique_ptr<sensor::CollatorInterface> sensor_collator_;
 };
 
-std::unique_ptr<VinsBuilderInterface> CreateVinsBuilder(
+std::shared_ptr<VinsBuilderInterface> CreateVinsBuilder(
     const proto::VinsBuilderOptions& options);
 
 } // namespace vins

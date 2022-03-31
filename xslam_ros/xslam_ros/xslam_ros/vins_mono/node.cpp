@@ -24,9 +24,10 @@ template <typename MessageType>
 } // namespace
 
 Node::Node(const NodeOptions& node_options,
-        std::unique_ptr<xslam::vins::VinsBuilderInterface> vins_builder,
+        std::shared_ptr<xslam::vins::VinsBuilderInterface> vins_builder,
         tf2_ros::Buffer* tf_buffer)
-        : vins_builder_bridge_(node_options, std::move(vins_builder), tf_buffer)
+        : options_(node_options),
+          vins_builder_bridge_(node_options, vins_builder, tf_buffer)
 {
 
     // IMU trajectory
@@ -79,7 +80,7 @@ void Node::HandleImuMessage(
     std::lock_guard<std::mutex> lock(mutex_);
     auto sensor_bridge_ptr = vins_builder_bridge_.sensor_bridge();
     auto imu_data_ptr = sensor_bridge_ptr->ToImuData(msg);
-    sensor_bridge_ptr->HandleImuMessage(sensor_id, msg);
+    sensor_bridge_ptr->HandleImuMessage(sensor_id, std::move(imu_data_ptr));
 }
 
 void Node::HandleImageMessage(
@@ -89,7 +90,7 @@ void Node::HandleImageMessage(
     std::lock_guard<std::mutex> lock(mutex_);
     auto sensor_bridge_ptr = vins_builder_bridge_.sensor_bridge();
     auto image_data_ptr = sensor_bridge_ptr->ToImageData(msg);
-    sensor_bridge_ptr->HandleImageMessage(sensor_id, msg);
+    sensor_bridge_ptr->HandleImageMessage(sensor_id, std::move(image_data_ptr));
 }
 
 ::ros::NodeHandle* Node::node_handle()

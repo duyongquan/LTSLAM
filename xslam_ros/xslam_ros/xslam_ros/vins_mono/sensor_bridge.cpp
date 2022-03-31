@@ -8,19 +8,37 @@
 namespace xslam_ros {
 namespace vins_mono {
 
+SensorBridge::SensorBridge(
+    const std::string& tracking_frame,
+    const double lookup_transform_timeout_sec, tf2_ros::Buffer* const tf_buffer,
+    ::xslam::vins::VinsBuilderInterface*  vins_builder)
+    : tf_bridge_(tracking_frame, lookup_transform_timeout_sec, tf_buffer),
+      vins_builder_(vins_builder) {}
+
 void SensorBridge::HandleImuMessage(
     const std::string& sensor_id,
-    const sensor_msgs::Imu::ConstPtr& msg)
+    const std::unique_ptr<::xslam::vins::sensor::ImuData>& msg)
 {
-    LOG(INFO) << "sensor_id: " << sensor_id;
-}
 
+  LOG(INFO) << "**********************";
+    if (msg != nullptr) {
+        vins_builder_->AddSensorData(sensor_id, 
+            ::xslam::vins::sensor::ImuData {
+                msg->time, 
+                msg->linear_acceleration, 
+                msg->angular_velocity
+            });
+    }
+}
 
 void SensorBridge::HandleImageMessage(
     const std::string& sensor_id,
-    const sensor_msgs::Image::ConstPtr& msg)
+    const std::unique_ptr<::xslam::vins::sensor::ImageData>&  msg)
 {
-    LOG(INFO) << "sensor_id: " << sensor_id;
+    if (msg != nullptr) {
+        vins_builder_->AddSensorData(sensor_id,
+            ::xslam::vins::sensor::ImageData{msg->time, msg->image});
+    }
 }
 
 std::unique_ptr<::xslam::vins::sensor::ImuData> SensorBridge::ToImuData(

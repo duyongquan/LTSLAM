@@ -14,6 +14,7 @@ struct NodeOptions
 {
     ::xslam::vins::proto::VinsBuilderOptions vins_builder_options;
     std::string map_frame;
+    std::string tracking_frame;
     double lookup_transform_timeout_sec;
     double submap_publish_period_sec;
     double pose_publish_period_sec;

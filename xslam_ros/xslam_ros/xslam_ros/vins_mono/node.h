@@ -28,7 +28,7 @@ class Node
 {
 public:
     Node(const NodeOptions& node_options,
-        std::unique_ptr<xslam::vins::VinsBuilderInterface> vins_builder,
+        std::shared_ptr<xslam::vins::VinsBuilderInterface> vins_builder,
         tf2_ros::Buffer* tf_buffer);
     ~Node();
 
@@ -63,6 +63,7 @@ private:
     };
 
     std::mutex mutex_;
+    NodeOptions options_;
     VinsBuilderBridge vins_builder_bridge_;
 
     ::ros::NodeHandle node_handle_;
