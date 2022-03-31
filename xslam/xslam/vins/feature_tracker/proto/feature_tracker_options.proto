@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package xslam.feature_tracker.proto;
+package xslam.vins.feature_tracker.proto;
 
 message FeatureTrackerOptions 
 {

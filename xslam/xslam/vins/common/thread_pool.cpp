@@ -9,6 +9,7 @@
 #include "glog/logging.h"
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 void ThreadPoolInterface::Execute(Task* task) 
@@ -104,4 +105,5 @@ void ThreadPool::DoWork()
 }
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam

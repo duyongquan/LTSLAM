@@ -15,6 +15,7 @@
 #include <Eigen/Dense>
 
 namespace xslam {
+namespace vins {
 namespace feature_tracker {
 
 class FeatureTracker 
@@ -78,6 +79,7 @@ std::unique_ptr<FeatureTracker> CreateFeatureTracker(
     const proto::FeatureTrackerOptions& options);
 
 } // namespace feature_tracker
+} // namespace vins
 } // namespace xslam 
 
 #endif // XSLAM_VINS_FEATURE_TRACKER_H

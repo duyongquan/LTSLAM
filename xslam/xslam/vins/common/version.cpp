@@ -2,6 +2,7 @@
 #include "xslam/vins/common/string.h"
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 
@@ -17,4 +18,5 @@ std::string GetBuildInfo()
 }
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam

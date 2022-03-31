@@ -27,6 +27,7 @@
 #define CHECK_OPTION_GT(val1, val2) CHECK_OPTION_OP(_GT, >, val1, val2)
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 // Initialize glog at the beginning of the program.
@@ -61,6 +62,7 @@ bool __CheckOptionOpImpl(const char* file, const int line, const bool result,
 }
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam
 
 #endif  // XSLAM_VINS_COMMON_LOGGING_H_

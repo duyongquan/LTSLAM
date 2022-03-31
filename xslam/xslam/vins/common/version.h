@@ -4,6 +4,7 @@
 #include <string>
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 const static std::string VINS_VERSION = "1.0";
@@ -16,6 +17,7 @@ std::string GetVersionInfo();
 std::string GetBuildInfo();
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam
 
 #endif // XSLAM_VINS_COMMON_VERSION_H

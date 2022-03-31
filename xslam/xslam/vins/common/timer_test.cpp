@@ -4,6 +4,7 @@
 #include "glog/logging.h"
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 TEST(Timer, TestDefault) 
@@ -44,4 +45,5 @@ TEST(Timer, TestPause)
 }
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam

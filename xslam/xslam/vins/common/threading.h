@@ -11,6 +11,7 @@
 
 #include "xslam/vins/common/timer.h"
 
+#if 0
 namespace xslam {
 namespace vins {
 namespace common {
@@ -99,7 +100,7 @@ public:
     void AddCallback(const int id, const std::function<void()>& func);
 
     // Get timing information of the thread, properly accounting for pause times.
-    const xslam::common::Timer& GetTimer() const;
+    const xslam::vins::common::Timer& GetTimer() const;
 
 protected:
     // This is the main run function to be implemented by the child class. If you
@@ -132,7 +133,7 @@ private:
     std::condition_variable pause_condition_;
     std::condition_variable setup_condition_;
 
-    xslam::common::Timer timer_;
+    Timer timer_;
 
     bool started_;
     bool stopped_;
@@ -394,5 +395,7 @@ void JobQueue<T>::Clear()
 }  // namespace common
 }  // namespace vins 
 }  // namespace xslam
+
+#endif 
 
 #endif  // XSLAM_VINS_COMMON_THREADING_H_

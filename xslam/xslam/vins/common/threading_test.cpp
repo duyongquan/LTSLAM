@@ -3,6 +3,8 @@
 #include "gtest/gtest.h"
 #include "glog/logging.h"
 
+#if 0
+
 namespace xslam {
 namespace vins {
 namespace common {
@@ -889,3 +891,5 @@ TEST(Thread, TestGetEffectiveNumThreads)
 }  // namespace common
 }  // namespace vins 
 }  // namespace xslam
+
+#endif 

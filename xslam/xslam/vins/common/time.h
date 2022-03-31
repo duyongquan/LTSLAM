@@ -8,6 +8,7 @@
 #include <ratio>
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 constexpr int64 kUtsEpochOffsetFromUnixEpochInSeconds =
@@ -49,6 +50,7 @@ std::ostream& operator<<(std::ostream& os, Time time);
 double GetThreadCpuTimeSeconds();
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam
 
 #endif // XSLAM_VINS_COMMON_TIME_H_

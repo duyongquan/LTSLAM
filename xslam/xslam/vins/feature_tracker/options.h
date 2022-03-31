@@ -6,6 +6,7 @@
 #include "xslam/vins/common/lua_parameter_dictionary.h"
 
 namespace xslam {
+namespace vins {
 namespace feature_tracker {
 
 struct FeatureTrackerOptions
@@ -28,6 +29,7 @@ struct FeatureTrackerOptions
 };
 
 } // namespace feature_tracker
+} // namespace vins
 } // namespace xslam 
 
 #endif // XSLAM_VINS_OPTIONS_H

@@ -6,6 +6,7 @@
 #include <opencv2/opencv.hpp>
 
 namespace xslam {
+namespace vins {
 namespace sensor {
 
 struct CameraData 
@@ -15,6 +16,7 @@ struct CameraData
 };
 
 }  // namespace sensor
+}  // namespace vins 
 }  // namespace xslam
 
 #endif  // XSLAM_VINS_CAMERA_DATA_H

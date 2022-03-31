@@ -1,6 +1,7 @@
 #include "xslam/vins/common/logging.h"
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 void InitializeGlog(char** argv) 
@@ -42,4 +43,5 @@ bool __CheckOptionImpl(const char* file, const int line, const bool result,
 }
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam

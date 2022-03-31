@@ -5,6 +5,7 @@
 #include "xslam/vins/common/time.h"
 
 namespace xslam {
+namespace vins {
 namespace sensor {
 
 struct ImuData 
@@ -15,6 +16,7 @@ struct ImuData
 };
 
 }  // namespace sensor
+}  // namespace vins
 }  // namespace xslam
 
 #endif  // XSLAM_VINS_IMU_DATA_H

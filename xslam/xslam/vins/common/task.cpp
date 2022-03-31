@@ -1,6 +1,7 @@
 #include "xslam/vins/common/task.h"
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 Task::~Task() 
@@ -107,4 +108,5 @@ void Task::Execute()
 }
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam

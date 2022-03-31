@@ -13,6 +13,9 @@
 
 #include "ros/ros.h"
 #include "sensor_msgs/Imu.h"
+#include "sensor_msgs/Image.h"
+#include "sensor_msgs/image_encodings.h"
+#include "cv_bridge/cv_bridge.h"
 #include "tf2_ros/transform_broadcaster.h"
 #include "tf2_ros/transform_listener.h"
 
@@ -23,7 +26,7 @@ class Node
 {
 public:
     Node(const NodeOptions& node_options,
-        //  std::unique_ptr<cartographer::mapping::MapBuilderInterface> map_builder,
+        //  std::unique_ptr<cartographer::mapping::VinsBuilderInterface> map_builder,
         tf2_ros::Buffer* tf_buffer);
     ~Node(){};
 
@@ -37,6 +40,7 @@ public:
     void StartDefaultTopics();
 
     void HandleImuMessage(const std::string& sensor_id, const sensor_msgs::Imu::ConstPtr& msg);
+    void HandleImageMessage(const std::string& sensor_id, const sensor_msgs::Image::ConstPtr& msg);
 
     ::ros::NodeHandle* node_handle();
 

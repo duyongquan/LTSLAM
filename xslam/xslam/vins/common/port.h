@@ -6,6 +6,7 @@
 #include <string>
 
 namespace xslam {
+namespace vins {
 
 using int8   = int8_t;
 using int16  = int16_t;
@@ -39,6 +40,7 @@ inline int64 RoundToInt64(const double x)
 }
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam
 
 #endif  // XSLAM_VINS_COMMON_PORT_H

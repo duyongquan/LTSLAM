@@ -45,6 +45,11 @@ void Node::HandleImuMessage(const std::string& sensor_id, const sensor_msgs::Imu
 
 }
 
+void Node::HandleImageMessage(const std::string& sensor_id, const sensor_msgs::Image::ConstPtr& msg)
+{
+
+}
+
 ::ros::NodeHandle* Node::node_handle()
 {
     return &node_handle_;

@@ -9,6 +9,7 @@
 #if 0
 namespace xslam {
 namespace common {
+namespace vins {
 namespace {
 
 std::unique_ptr<LuaParameterDictionary> MakeNonReferenceCounted(
@@ -203,6 +204,7 @@ TEST_F(LuaParameterDictionaryTest, TestChooseInvalidArgument) {
 
 }  // namespace
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam
 
 #endif 

@@ -8,6 +8,7 @@
 #include <boost/algorithm/string.hpp>
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 void StringAppendV(std::string* dst, const char* format, va_list ap) 
@@ -147,5 +148,6 @@ bool StringContains(const std::string& str, const std::string& sub_str)
 }
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam
 

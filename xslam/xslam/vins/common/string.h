@@ -5,6 +5,7 @@
 #include <vector>
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 // Format string by replacing embedded format specifiers with their respective
@@ -39,6 +40,7 @@ void StringToUpper(std::string* str);
 bool StringContains(const std::string& str, const std::string& sub_str);
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam
 
 #endif  // XSLAM_VINS_COMMON_STRING_H

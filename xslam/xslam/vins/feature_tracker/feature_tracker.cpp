@@ -3,6 +3,7 @@
 #include <chrono>
 
 namespace xslam {
+namespace vins {
 namespace feature_tracker {
 
 FeatureTracker::FeatureTracker(const proto::FeatureTrackerOptions &options)
@@ -242,4 +243,5 @@ void FeatureTracker::ReduceVector(std::vector<int> &v, const std::vector<uchar> 
 }
 
 } // namespace feature_tracker
+} // namespace vins
 } // namespace xslam 
