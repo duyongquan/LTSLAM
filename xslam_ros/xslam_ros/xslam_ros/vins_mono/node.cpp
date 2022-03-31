@@ -24,10 +24,30 @@ template <typename MessageType>
 } // namespace
 
 Node::Node(const NodeOptions& node_options,
-        //  std::unique_ptr<cartographer::mapping::MapBuilderInterface> map_builder,
+        std::unique_ptr<xslam::vins::VinsBuilderInterface> vins_builder,
         tf2_ros::Buffer* tf_buffer)
+        : vins_builder_bridge_(node_options, std::move(vins_builder), tf_buffer)
 {
 
+    // IMU trajectory
+    wall_timers_.push_back(node_handle_.createWallTimer(
+        ::ros::WallDuration(1),
+        &Node::PublishIMUTrajectory, this));
+
+    // Image trajectory
+    wall_timers_.push_back(node_handle_.createWallTimer(
+        ::ros::WallDuration(1),
+        &Node::PublishImageTrajectory, this));
+
+    // Ground Truth trajectory
+    wall_timers_.push_back(node_handle_.createWallTimer(
+        ::ros::WallDuration(1),
+        &Node::PublishGroundTruthTrajectory, this));
+}
+
+Node::~Node()
+{
+    RunFinalOptimization();
 }
 
 void Node::RunFinalOptimization()
@@ -37,12 +57,27 @@ void Node::RunFinalOptimization()
 
 void Node::StartDefaultTopics()
 {
+    // IMU sensor message
+    subscribers_.push_back({
+        SubscribeWithHandler<sensor_msgs::Imu>(
+             &Node::HandleImuMessage, kImuTopic,
+             &node_handle_, this), kImuTopic
+    });
 
+    // Image sensor message
+    subscribers_.push_back({
+        SubscribeWithHandler<sensor_msgs::Image>(
+             &Node::HandleImageMessage, kImageTopic,
+             &node_handle_, this), kImageTopic
+    });
 }
 
 void Node::HandleImuMessage(const std::string& sensor_id, const sensor_msgs::Imu::ConstPtr& msg)
 {
-
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto sensor_bridge_ptr = vins_builder_bridge_.sensor_bridge();
+    auto imu_data_ptr = sensor_bridge_ptr->ToImuData(msg);
+    sensor_bridge_ptr->HandleImuMessage(sensor_id, msg);
 }
 
 void Node::HandleImageMessage(const std::string& sensor_id, const sensor_msgs::Image::ConstPtr& msg)
@@ -55,6 +90,20 @@ void Node::HandleImageMessage(const std::string& sensor_id, const sensor_msgs::I
     return &node_handle_;
 }
 
+void Node::PublishIMUTrajectory(const ::ros::WallTimerEvent& unused_timer_event)
+{
+
+}
+
+void Node::PublishImageTrajectory(const ::ros::WallTimerEvent& unused_timer_event)
+{
+
+}
+
+void Node::PublishGroundTruthTrajectory(const ::ros::WallTimerEvent& unused_timer_event)
+{
+
+}
 
 } // namespace vins_mono 
 } // namespace xslam_ros

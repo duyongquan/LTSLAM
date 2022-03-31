@@ -5,6 +5,8 @@
 #include <vector>
 
 namespace xslam_ros {
+namespace vins_mono {
+
 
 constexpr char kImuTopic[] = "imu";
 constexpr char kImageTopic[] = "image";
@@ -12,6 +14,7 @@ constexpr char kImageTopic[] = "image";
 constexpr int kInfiniteSubscriberQueueSize = 0;
 constexpr int kLatestOnlyPublisherQueueSize = 1;
 
+} // namespace vins_mono
 } // namespace xslam_ros
 
 #endif // XSLAM_ROS_VINS_MONO_NODE_CONSTANTS_H

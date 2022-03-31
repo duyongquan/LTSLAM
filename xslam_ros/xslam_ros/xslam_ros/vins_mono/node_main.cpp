@@ -1,5 +1,6 @@
+#include "xslam/vins/vins_builder.h"
 #include "xslam_ros/vins_mono/node.h"
-#include "xslam_ros/ros_log_sink.h"
+#include "xslam_ros/vins_mono/ros_log_sink.h"
 #include "xslam_ros/vins_mono/node_options.h"
 
 #include "gflags/gflags.h"
@@ -32,13 +33,13 @@ void Run()
     tf2_ros::TransformListener tf(tf_buffer);
 
     auto node_options = LoadOptions(FLAGS_configuration_directory, FLAGS_configuration_basename);
-    // auto vio_builder =
-    //   cartographer::mapping::CreateMapBuilder(node_options.map_builder_options);
-    Node node(node_options, &tf_buffer);
+    auto vio_builder = xslam::vins::CreateVinsBuilder(node_options.vins_builder_options);
+    Node node(node_options, std::move(vio_builder), &tf_buffer);
 
     if (FLAGS_start_default_topics) {
         node.StartDefaultTopics();
     }
+    
     ::ros::spin();
     node.RunFinalOptimization();
 }
@@ -60,7 +61,7 @@ int main(int argc, char** argv)
     ::ros::init(argc, argv, "vins_mono_node");
     ::ros::start();
 
-    xslam_ros::ScopedRosLogSink ros_log_sink;
+    xslam_ros::vins_mono::ScopedRosLogSink ros_log_sink;
     xslam_ros::vins_mono::Run();
     ::ros::shutdown();
 }

@@ -1,4 +1,4 @@
-#include "xslam/vins/sensor/camera_data.h"
+#include "xslam/vins/sensor/image_data.h"
 
 namespace xslam {
 namespace vins {

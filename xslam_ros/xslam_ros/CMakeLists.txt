@@ -31,6 +31,7 @@ find_package(catkin REQUIRED COMPONENTS ${PACKAGE_DEPENDENCIES})
 
 include(FindPkgConfig)
 
+find_package(xslam REQUIRED)
 find_package(absl REQUIRED)
 find_package(LuaGoogle REQUIRED)
 find_package(Eigen3 REQUIRED)
@@ -73,7 +74,8 @@ list(REMOVE_ITEM ALL_SRCS ${ALL_TESTS})
 list(REMOVE_ITEM ALL_SRCS ${ALL_EXECUTABLES})
 
 add_library(${PROJECT_NAME} STATIC ${ALL_SRCS})
-add_subdirectory("xslam_ros")
+add_subdirectory("xslam_ros/slam2d")
+add_subdirectory("xslam_ros/vins_mono")
 
 target_link_libraries(${PROJECT_NAME} PUBLIC xslam)
 

@@ -3,13 +3,15 @@
 
 #include <map>
 #include <memory>
-#include <set>
+#include <mutex>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
+#include "xslam/vins/vins_builder_interface.h"
 #include "xslam_ros/vins_mono/node_constants.h"
 #include "xslam_ros/vins_mono/node_options.h"
+#include "xslam_ros/vins_mono/vins_builder_bridge.h"
 
 #include "ros/ros.h"
 #include "sensor_msgs/Imu.h"
@@ -26,9 +28,9 @@ class Node
 {
 public:
     Node(const NodeOptions& node_options,
-        //  std::unique_ptr<cartographer::mapping::VinsBuilderInterface> map_builder,
+        std::unique_ptr<xslam::vins::VinsBuilderInterface> vins_builder,
         tf2_ros::Buffer* tf_buffer);
-    ~Node(){};
+    ~Node();
 
     Node(const Node&) = delete;
     Node& operator=(const Node&) = delete;
@@ -44,6 +46,9 @@ public:
 
     ::ros::NodeHandle* node_handle();
 
+    void PublishIMUTrajectory(const ::ros::WallTimerEvent& unused_timer_event);
+    void PublishImageTrajectory(const ::ros::WallTimerEvent& unused_timer_event);
+    void PublishGroundTruthTrajectory(const ::ros::WallTimerEvent& unused_timer_event);
 
 private:
     struct Subscriber 
@@ -57,10 +62,11 @@ private:
         std::string topic;
     };
 
+    std::mutex mutex_;
+    VinsBuilderBridge vins_builder_bridge_;
 
     ::ros::NodeHandle node_handle_;
-    std::unordered_map<int, std::vector<Subscriber>> subscribers_;
-    std::unordered_set<std::string> subscribed_topics_;
+    std::vector<Subscriber> subscribers_;
 
     // We have to keep the timer handles of ::ros::WallTimers around, otherwise
     // they do not fire.

@@ -5,13 +5,14 @@
 #include <string>
 #include <tuple>
 
+#include "xslam/vins/estimator/proto/vins_builder_options.pb.h"
 
 namespace xslam_ros {
 
 // Top-level options of VINS-Mono's ROS integration.
 struct NodeOptions 
 {
-    // ::cartographer::mapping::proto::MapBuilderOptions map_builder_options;
+    ::xslam::vins::proto::VinsBuilderOptions vins_builder_options;
     std::string map_frame;
     double lookup_transform_timeout_sec;
     double submap_publish_period_sec;

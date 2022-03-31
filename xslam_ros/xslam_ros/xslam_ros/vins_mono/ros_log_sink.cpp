@@ -1,4 +1,4 @@
-#include "xslam_ros/ros_log_sink.h"
+#include "xslam_ros/vins_mono/ros_log_sink.h"
 
 #include <chrono>
 #include <cstring>
@@ -9,7 +9,7 @@
 #include "ros/console.h"
 
 namespace xslam_ros {
-
+namespace vins_mono {
 namespace {
 
 const char* GetBasename(const char* filepath) 
@@ -59,4 +59,5 @@ void ScopedRosLogSink::WaitTillSent()
     }
 }
 
+}  // namespace vins_mono
 }  // namespace cartographer_ros

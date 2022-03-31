@@ -5,7 +5,7 @@
 #include "xslam/vins/estimator/estimator.h"
 #include "xslam/vins/pose_graph/pose_graph.h"
 #include "xslam/vins/common/thread_pool.h"
-#include "xslam/vins/sensor/camera_data.h"
+#include "xslam/vins/sensor/image_data.h"
 #include "xslam/vins/sensor/imu_data.h"
 #include "xslam/vins/vins_options.h"
 
@@ -43,7 +43,7 @@ public:
     void HandleIMUSensorMessages(const sensor::ImuData& msg);
 
     // camera sensor data
-    void HandleCameraSensorMessage(const sensor::CameraData& msg);
+    void HandleImageSensorMessage(const sensor::ImageData& msg);
 
     // Shutdown all thread
     void Shutdown();

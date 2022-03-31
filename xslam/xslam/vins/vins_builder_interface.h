@@ -19,8 +19,7 @@ public:
     VinsBuilderInterface(const VinsBuilderInterface&) = delete;
     VinsBuilderInterface& operator=(const VinsBuilderInterface&) = delete;
 
-    virtual mapping::PoseGraphInterface* pose_graph() = 0;
-
+    virtual estimator::Estimator* estimator() = 0;
 };
 
 } // namespace vins

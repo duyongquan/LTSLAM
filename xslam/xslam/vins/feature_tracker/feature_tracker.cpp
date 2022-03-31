@@ -21,7 +21,7 @@ FeatureTracker::FeatureTracker(const std::string& filename, common::ThreadPool* 
 {
 }
 
-void FeatureTracker::AddCameraData(const sensor::CameraData& cemara_data)
+void FeatureTracker::AddImageData(const sensor::ImageData& image)
 {
    
         

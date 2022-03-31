@@ -6,6 +6,7 @@
 #include "glog/logging.h"
 
 namespace xslam_ros {
+namespace vins_mono {
 
 // Makes Google logging use ROS logging for output while an instance of this
 // class exists.
@@ -25,6 +26,7 @@ private:
     bool will_die_;
 };
 
+}  // namespace vins_mono
 }  // namespace xslam_ros
 
 #endif  // XSLAM_ROS_ROS_LOG_SINK_H

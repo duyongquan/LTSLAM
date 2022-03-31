@@ -145,11 +145,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     $<INSTALL_INTERFACE:include>
 )
 
-project_binary(slam_main
-    SRCS
-        xslam/slam_main.cpp
-)
-
 ### Example
 project_binary(glog_example
     SRCS

@@ -1,5 +1,5 @@
-#ifndef XSLAM_VINS_CAMERA_DATA_H
-#define XSLAM_VINS_CAMERA_DATA_H
+#ifndef XSLAM_VINS_SENSOR_IMAGE_DATA_H
+#define XSLAM_VINS_SENSOR_IMAGE_DATA_H
 
 #include "xslam/vins/common/time.h"
 
@@ -9,7 +9,7 @@ namespace xslam {
 namespace vins {
 namespace sensor {
 
-struct CameraData 
+struct ImageData 
 {
     common::Time time;
     cv::Mat image;
@@ -19,4 +19,4 @@ struct CameraData
 }  // namespace vins 
 }  // namespace xslam
 
-#endif  // XSLAM_VINS_CAMERA_DATA_H
+#endif  // XSLAM_VINS_SENSOR_IMAGE_DATA_H

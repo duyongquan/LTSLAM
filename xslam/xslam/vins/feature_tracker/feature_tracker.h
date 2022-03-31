@@ -4,7 +4,7 @@
 #include "xslam/vins/common/port.h"
 #include "xslam/vins/common/task.h"
 #include "xslam/vins/common/thread_pool.h"
-#include "xslam/vins/sensor/camera_data.h"
+#include "xslam/vins/sensor/image_data.h"
 #include "xslam/vins/feature_tracker/proto/feature_tracker_options.pb.h"
 
 #include <thread>
@@ -26,7 +26,7 @@ public:
     FeatureTracker(const std::string& filename, common::ThreadPool* pool);
     FeatureTracker() {}
 
-    void AddCameraData(const sensor::CameraData& cemara_data);
+    void AddImageData(const sensor::ImageData& image);
 
     void SetMask();
 
