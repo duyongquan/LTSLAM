@@ -12,6 +12,7 @@
 
 #include "sensor_msgs/Imu.h"
 #include "sensor_msgs/Image.h"
+#include "cv_bridge/cv_bridge.h"
 
 namespace xslam_ros {
 namespace vins_mono {

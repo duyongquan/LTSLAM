@@ -72,7 +72,9 @@ void Node::StartDefaultTopics()
     });
 }
 
-void Node::HandleImuMessage(const std::string& sensor_id, const sensor_msgs::Imu::ConstPtr& msg)
+void Node::HandleImuMessage(
+    const std::string& sensor_id, 
+    const sensor_msgs::Imu::ConstPtr& msg)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     auto sensor_bridge_ptr = vins_builder_bridge_.sensor_bridge();
@@ -80,9 +82,14 @@ void Node::HandleImuMessage(const std::string& sensor_id, const sensor_msgs::Imu
     sensor_bridge_ptr->HandleImuMessage(sensor_id, msg);
 }
 
-void Node::HandleImageMessage(const std::string& sensor_id, const sensor_msgs::Image::ConstPtr& msg)
+void Node::HandleImageMessage(
+    const std::string& sensor_id, 
+    const sensor_msgs::Image::ConstPtr& msg)
 {
-
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto sensor_bridge_ptr = vins_builder_bridge_.sensor_bridge();
+    auto image_data_ptr = sensor_bridge_ptr->ToImageData(msg);
+    sensor_bridge_ptr->HandleImageMessage(sensor_id, msg);
 }
 
 ::ros::NodeHandle* Node::node_handle()
@@ -90,17 +97,20 @@ void Node::HandleImageMessage(const std::string& sensor_id, const sensor_msgs::I
     return &node_handle_;
 }
 
-void Node::PublishIMUTrajectory(const ::ros::WallTimerEvent& unused_timer_event)
+void Node::PublishIMUTrajectory(
+    const ::ros::WallTimerEvent& unused_timer_event)
 {
 
 }
 
-void Node::PublishImageTrajectory(const ::ros::WallTimerEvent& unused_timer_event)
+void Node::PublishImageTrajectory(
+    const ::ros::WallTimerEvent& unused_timer_event)
 {
 
 }
 
-void Node::PublishGroundTruthTrajectory(const ::ros::WallTimerEvent& unused_timer_event)
+void Node::PublishGroundTruthTrajectory(
+    const ::ros::WallTimerEvent& unused_timer_event)
 {
 
 }

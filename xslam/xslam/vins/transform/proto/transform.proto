@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package xslam.vins.transform.proto;
+
+// All coordinates are expressed in the right-handed Cartesian coordinate system
+// used by Cartographer (x forward, y left, z up). Message names are chosen to
+// mirror those used in the Eigen library.
+
+message Vector2d 
+{
+    double x = 1;
+    double y = 2;
+}
+
+message Vector2f 
+{
+    float x = 1;
+    float y = 2;
+}
+
+message Vector3d 
+{
+    double x = 1;
+    double y = 2;
+    double z = 3;
+}
+
+message Vector3f 
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message Vector4f 
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+    float t = 4;
+}
+
+message Quaterniond 
+{
+    double x = 1;
+    double y = 2;
+    double z = 3;
+    double w = 4;
+}
+
+message Quaternionf 
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+    float w = 4;
+}
+
+message Rigid2d 
+{
+    Vector2d translation = 1;
+    double rotation = 2;
+}
+
+message Rigid2f 
+{
+    Vector2f translation = 1;
+    float rotation = 2;
+}
+
+message Rigid3d 
+{
+    Vector3d translation = 1;
+    Quaterniond rotation = 2;
+}
+
+message Rigid3f 
+{
+    Vector3f translation = 1;
+    Quaternionf rotation = 2;
+}

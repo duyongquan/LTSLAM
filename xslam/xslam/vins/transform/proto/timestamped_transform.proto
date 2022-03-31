@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package xslam.vins.transform.proto;
+
+import "xslam/vins/transform/proto/transform.proto";
+
+// NEXT ID: 3
+message TimestampedTransform 
+{
+    int64 time = 1;
+    transform.proto.Rigid3d transform = 2;
+}

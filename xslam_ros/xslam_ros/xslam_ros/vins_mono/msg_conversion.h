@@ -1,6 +1,8 @@
 #ifndef XSLAM_ROS_VINS_MONO_MSG_CONVERSION_H
 #define XSLAM_ROS_VINS_MONO_MSG_CONVERSION_H
 
+#include "xslam/vins/transform/rigid_transform.h"
+
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/Transform.h"
 #include "geometry_msgs/TransformStamped.h"
@@ -12,6 +14,11 @@
 
 namespace xslam_ros {
 namespace vins_mono {
+
+::xslam::vins::transform::Rigid3d ToRigid3d(
+    const geometry_msgs::TransformStamped& transform);
+
+::xslam::vins::transform::Rigid3d ToRigid3d(const geometry_msgs::Pose& pose);
 
 Eigen::Vector3d ToEigen(const geometry_msgs::Vector3& vector3);
 
