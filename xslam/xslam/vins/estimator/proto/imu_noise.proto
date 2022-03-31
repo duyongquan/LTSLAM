@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package xslam.vins.estimator.proto;
+
+message ImuNoiseOptions 
+{
+    // accelerometer measurement noise standard deviation
+    double acceleration_n = 1;
+
+    // gyroscope measurement noise standard deviation
+    double gyro_n = 2;
+
+    // gyroscope bias random work noise standard deviation
+    double gyro_w = 3;
+
+    // accelerometer bias random work noise standard deviation
+    double acceleration_w = 4;    
+}

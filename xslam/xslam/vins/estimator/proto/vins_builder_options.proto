@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package xslam.vins.proto;
+package xslam.vins.estimator.proto;
 
 message VinsBuilderOptions 
 {

@@ -12,7 +12,7 @@ namespace xslam_ros {
 // Top-level options of VINS-Mono's ROS integration.
 struct NodeOptions 
 {
-    ::xslam::vins::proto::VinsBuilderOptions vins_builder_options;
+    ::xslam::vins::estimator::proto::VinsBuilderOptions vins_builder_options;
     std::string map_frame;
     std::string tracking_frame;
     double lookup_transform_timeout_sec;

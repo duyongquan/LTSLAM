@@ -5,7 +5,7 @@
 namespace xslam {
 namespace vins {
 
-VinsBuilder::VinsBuilder(const proto::VinsBuilderOptions& options)
+VinsBuilder::VinsBuilder(const estimator::proto::VinsBuilderOptions& options)
     : options_(options)
 {
     LOG(INFO) << "VinsBuilder ";
@@ -22,7 +22,7 @@ void VinsBuilder::AddSensorData(const std::string& sensor_id, const sensor::Imag
 }
 
 std::shared_ptr<VinsBuilderInterface> CreateVinsBuilder(
-    const proto::VinsBuilderOptions& options)
+    const estimator::proto::VinsBuilderOptions& options)
 { 
     return std::make_shared<VinsBuilder>(options);
 }

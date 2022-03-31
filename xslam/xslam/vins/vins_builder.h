@@ -15,7 +15,7 @@ namespace vins {
 class VinsBuilder : public VinsBuilderInterface 
 {
 public:
-    explicit VinsBuilder(const proto::VinsBuilderOptions &options);
+    explicit VinsBuilder(const estimator::proto::VinsBuilderOptions &options);
     ~VinsBuilder() override {} 
   
     void AddSensorData(const std::string& sensor_id, const sensor::ImuData& imu_data) override;
@@ -28,13 +28,13 @@ public:
     }
 
 private:
-    const proto::VinsBuilderOptions options_;
+    const estimator::proto::VinsBuilderOptions options_;
     std::unique_ptr<estimator::Estimator> estimator_;
     std::unique_ptr<sensor::CollatorInterface> sensor_collator_;
 };
 
 std::shared_ptr<VinsBuilderInterface> CreateVinsBuilder(
-    const proto::VinsBuilderOptions& options);
+    const estimator::proto::VinsBuilderOptions& options);
 
 } // namespace vins
 } // namespace xslam
