@@ -15,14 +15,14 @@ XSLAM is an open source C++ demo for learn vision slam and lidar slam. Through o
 * <font color='red'> **Kalman Filter**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/kalman_filter/kalman_filter.html)
 * <font color='red'> **VINS Mono( VINS Project)**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/vins/vins.html)
 
-project directory:
+### 1.1 <font color='green'>Project directory:</font>
 
 * xlsam
 * xlsam_ros
-  * slam2d
-  * vins-mono
+  * slam2d (2D lidar SLAM)
+  * vins-mono (VSLAM)
 
-download LTSLAM source:
+### 1.2  <font color='green'>Download LTSLAM source:</font>
 
 ```shell
 git clone https://github.com/quanduyong/LTSLAM.git
