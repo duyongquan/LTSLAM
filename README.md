@@ -5,6 +5,16 @@ I hope you can lean slam step by step, you will can learn online  [LTSLAM docume
 
 You can learn slam knowledge by [哔哩哔哩 bilibili ](https://space.bilibili.com/478832908). This video website has a detailed explanation of the code and the corresponding SLAM technology principle. Let's start a happy journey. enjoy....
 
+XSLAM is an open source C++ demo for learn vision slam and lidar slam. Through open source engineering, we can learn the following knowledge content:
+
+* <font color='red'> **C++**  </font> tutorial
+* <font color='red'> **Eigen**  </font> tutorial
+* <font color='red'> **OpenCV**  </font> tutorial
+* <font color='red'> **Quaternions**  </font> tutorial
+* <font color='red'> **Ceres Solver**  </font> tutorial
+* <font color='red'> **Kalman Filter**  </font> tutorial
+* <font color='red'> **VINS Mono( VINS Project)**  </font> tutorial
+
 project directory:
 
 * xlsam
