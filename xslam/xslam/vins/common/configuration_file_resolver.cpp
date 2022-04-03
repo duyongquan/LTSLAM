@@ -9,6 +9,7 @@
 #include "glog/logging.h"
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 ConfigurationFileResolver::ConfigurationFileResolver(
@@ -40,4 +41,5 @@ std::string ConfigurationFileResolver::GetFileContentOrDie(
 }
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam

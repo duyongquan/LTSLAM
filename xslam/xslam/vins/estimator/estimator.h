@@ -5,6 +5,7 @@
 #include <string>
 
 namespace xslam {
+namespace vins {
 namespace estimator {
     
 class Estimator 
@@ -15,6 +16,7 @@ public:
 };
 
 } // namespace estimator
+} // namespace vins
 } // namespace xslam 
 
 #endif // XSLAM_VINS_ESTIMATOR_ESTIMATOR_H

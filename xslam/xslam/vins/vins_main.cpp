@@ -7,7 +7,7 @@
 #include <string>
 #include <memory>
 
-DEFINE_string(configuration_directory, xslam::common::kConfigurationFilesDirectory,
+DEFINE_string(configuration_directory, xslam::vins::common::kConfigurationFilesDirectory,
               "First directory in which configuration files are searched, "
               "second is always the XSLAM installation to allow "
               "including files from there.");
@@ -43,7 +43,7 @@ void Run(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-    xslam::common::InitializeGlog(argv);
+    xslam::vins::common::InitializeGlog(argv);
     google::ParseCommandLineFlags(&argc, &argv, true);
 
     CHECK(!FLAGS_configuration_directory.empty()) 

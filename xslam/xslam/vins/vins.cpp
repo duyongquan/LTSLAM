@@ -59,7 +59,7 @@ void VINSSystem::HandleIMUSensorMessages(const sensor::ImuData& msg)
 }
 
 
-void VINSSystem::HandleCameraSensorMessage(const sensor::CameraData& msg)
+void VINSSystem::HandleImageSensorMessage(const sensor::ImageData& msg)
 {
 
 }

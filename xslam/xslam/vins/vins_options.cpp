@@ -27,11 +27,11 @@ VINSOptions LoadOptions(
     const std::string& configuration_basename) 
 {
     auto file_resolver =
-        std::make_unique<xslam::common::ConfigurationFileResolver>(
+        std::make_unique<common::ConfigurationFileResolver>(
             std::vector<std::string>{configuration_directory});
     const std::string code = 
     file_resolver->GetFileContentOrDie(configuration_basename);
-    xslam::common::LuaParameterDictionary lua_parameter_dictionary(
+      common::LuaParameterDictionary lua_parameter_dictionary(
         code, std::move(file_resolver));
 
     return CreateVinsOptions(&lua_parameter_dictionary);

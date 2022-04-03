@@ -1,6 +1,8 @@
 #include "xslam/vins/common/threading.h"
 #include "xslam/vins/common/logging.h"
 
+
+#if 0
 namespace xslam {
 namespace vins {
 namespace common {
@@ -121,7 +123,7 @@ void Thread::SignalInvalidSetup() {
   setup_condition_.notify_all();
 }
 
-const class xslam::common::Timer& Thread::GetTimer() const { return timer_; }
+const class Timer& Thread::GetTimer() const { return timer_; }
 
 void Thread::BlockIfPaused() {
   std::unique_lock<std::mutex> lock(mutex_);
@@ -252,3 +254,5 @@ int GetEffectiveNumThreads(const int num_threads) {
 }  // namespace common
 }  // namespace vins
 }  // namespace xslam
+
+#endif

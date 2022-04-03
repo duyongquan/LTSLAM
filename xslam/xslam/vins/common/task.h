@@ -12,6 +12,7 @@
 
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 class ThreadPoolInterface;
@@ -67,6 +68,7 @@ private:
 };
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam
 
 #endif  // XSLAM_VINS_COMMON_TASK_H_

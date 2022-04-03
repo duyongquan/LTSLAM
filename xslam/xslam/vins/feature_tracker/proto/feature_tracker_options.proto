@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package xslam.vins.feature_tracker.proto;
+
+message FeatureTrackerOptions 
+{
+    int32 row = 1;
+    int32 col = 2;
+    int32 focal_length = 3;
+    int32 num_cam = 4;
+
+    int32 max_count = 5;
+    int32 min_distance = 6;
+    int32 window_size = 7;
+    int32 frequency = 8;
+    int32 show_track = 9;
+    int32 stereo_track = 10;
+    int32 equalize = 11;
+    int32 fisheye = 12;
+    bool publish_this_frame = 13;
+    double fundamental_threshold = 14;
+}

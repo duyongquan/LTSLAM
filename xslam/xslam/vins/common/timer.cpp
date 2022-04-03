@@ -1,6 +1,7 @@
 #include "xslam/vins/common/timer.h"
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 
@@ -73,5 +74,6 @@ double Timer::ElapsedHours() const { return ElapsedMinutes() / 60; }
 // }
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam
 

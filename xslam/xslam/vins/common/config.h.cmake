@@ -4,6 +4,7 @@
 #include <string>
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 static std::string kVinsSourceDirectory = "@PROJECT_SOURCE_DIR@";
@@ -13,6 +14,7 @@ static std::string  kConfigurationFilesDirectory =
 
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam
 
 #endif // URANUS_COMMON_CONFIG_H

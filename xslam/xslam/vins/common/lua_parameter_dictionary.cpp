@@ -6,6 +6,7 @@
 #include <memory>
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 namespace {
@@ -441,4 +442,5 @@ int LuaParameterDictionary::LuaRead(lua_State* L) {
 }
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam

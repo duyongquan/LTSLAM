@@ -9,6 +9,7 @@
 #include "glog/logging.h"
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 Duration FromSeconds(const double seconds) 
@@ -57,4 +58,5 @@ double GetThreadCpuTimeSeconds()
 }
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam

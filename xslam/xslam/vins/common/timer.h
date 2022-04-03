@@ -4,6 +4,7 @@
 #include <chrono>
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 class Timer 
@@ -34,6 +35,7 @@ private:
 };
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam
 
 #endif  // XSLAM_VINS_COMMON_TIMER_H_

@@ -7,6 +7,7 @@
 #include "xslam/vins/common/port.h"
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 // A 'FileResolver' for the 'LuaParameterDictionary' that reads files from disk.
@@ -29,6 +30,7 @@ private:
 };
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam
 
 #endif  // XSLAM_COMMON_CONFIGURATION_FILE_RESOLVER_H_

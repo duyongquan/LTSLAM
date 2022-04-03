@@ -5,6 +5,7 @@ set(PACKAGE_DEPENDENCIES
   geometry_msgs
   message_runtime
   nav_msgs
+  cv_bridge
   pcl_conversions
   rosbag
   roscpp
@@ -31,9 +32,11 @@ find_package(catkin REQUIRED COMPONENTS ${PACKAGE_DEPENDENCIES})
 
 include(FindPkgConfig)
 
+find_package(xslam REQUIRED)
 find_package(absl REQUIRED)
 find_package(LuaGoogle REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 find_package(urdfdom_headers REQUIRED)
 if(DEFINED urdfdom_headers_VERSION)
@@ -61,6 +64,7 @@ catkin_package(
     PCL
     EIGEN3
     Boost
+    cv_bridge
     urdfdom_headers
   INCLUDE_DIRS "."
   LIBRARIES ${PROJECT_NAME}
@@ -73,7 +77,8 @@ list(REMOVE_ITEM ALL_SRCS ${ALL_TESTS})
 list(REMOVE_ITEM ALL_SRCS ${ALL_EXECUTABLES})
 
 add_library(${PROJECT_NAME} STATIC ${ALL_SRCS})
-add_subdirectory("xslam_ros")
+add_subdirectory("xslam_ros/slam2d")
+add_subdirectory("xslam_ros/vins_mono")
 
 target_link_libraries(${PROJECT_NAME} PUBLIC xslam)
 
@@ -103,7 +108,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
 
 # Catkin
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${catkin_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${catkin_LIBRARIES} ${OpenCV_LIBS}) 
 add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 
 # Add the binary directory first, so that port.h is included after it has

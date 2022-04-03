@@ -8,7 +8,9 @@
 #include "gtest/gtest.h"
 
 #if 0
-namespace cartographer {
+namespace xslam {
+namespace vins {
+namespace common {
 namespace {
 
 TEST(ConfigurationFilesTest, ValidateMapBuilderOptions) {
@@ -27,6 +29,8 @@ TEST(ConfigurationFilesTest, ValidateMapBuilderOptions) {
 }
 
 }  // namespace
+}  // namespace common
+}  // namespace vins
 }  // namespace xslam
 
 #endif 

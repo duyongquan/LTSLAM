@@ -11,6 +11,7 @@
 #include "glog/logging.h"
 
 namespace xslam {
+namespace vins {
 namespace common {
 
 // Resolves file paths and file content for the Lua 'read' and 'include'
@@ -128,6 +129,7 @@ class LuaParameterDictionary {
 };
 
 }  // namespace common
+}  // namespace vins
 }  // namespace xslam
 
 #endif  // XSLAM_COMMON_LUA_PARAMETER_DICTIONARY_H_

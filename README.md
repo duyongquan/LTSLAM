@@ -5,12 +5,24 @@ I hope you can lean slam step by step, you will can learn online  [LTSLAM docume
 
 You can learn slam knowledge by [哔哩哔哩 bilibili ](https://space.bilibili.com/478832908). This video website has a detailed explanation of the code and the corresponding SLAM technology principle. Let's start a happy journey. enjoy....
 
-project directory:
+XSLAM is an open source C++ demo for learn vision slam and lidar slam. Through open source engineering, we can learn the following knowledge content:
+
+* <font color='red'> **C++**  </font> tutorial
+* <font color='red'> **Eigen**  </font> tutorial
+* <font color='red'> **OpenCV**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/opencv/opencv_tutorial.html)
+* <font color='red'> **Quaternions**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/math/math.html)
+* <font color='red'> **Ceres Solver**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/ceres/ceres_solver_tutorial.html)
+* <font color='red'> **Kalman Filter**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/kalman_filter/kalman_filter.html)
+* <font color='red'> **VINS Mono( VINS Project)**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/vins/vins.html)
+
+### 1.1 <font color='green'>Project directory:</font>
 
 * xlsam
 * xlsam_ros
+  * slam2d (2D lidar SLAM)
+  * vins-mono (VSLAM)
 
-download LTSLAM source:
+### 1.2  <font color='green'>Download LTSLAM source:</font>
 
 ```shell
 git clone https://github.com/quanduyong/LTSLAM.git
@@ -19,6 +31,7 @@ git clone https://github.com/quanduyong/LTSLAM.git
 ## 2 Install dependency
 
 ### 2.1 Generate study documents
+主要目的实现本地帮助文档doc下，以html网页的格式方便查看
 
 * 安装Sphinx
 
@@ -36,6 +49,7 @@ git clone https://github.com/quanduyong/LTSLAM.git
 
   ```shell
   pip install recommonmark
+  pip install myst-parser
   pip install sphinx_markdown_tables
   ```
 
