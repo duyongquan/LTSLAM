@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package xslam.vins.camera.proto;
+
+message CameraOptions 
+{
+    int32 image_width = 1;
+    int32 image_height = 2;
+    int32 intrinsics = 3;
+    string model_type = 4;
+    string camera_name = 5;;
+}
+
+message PinholeOptions
+{
+    double k1 = 1;
+    double k2 = 2;
+    double p1 = 3;
+    double p2 = 4;
+    double fx = 5;
+    double fy = 6;
+    double cx = 7;
+    double cy = 8;
+};

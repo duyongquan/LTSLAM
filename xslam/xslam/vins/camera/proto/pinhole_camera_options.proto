@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package xslam.vins.camera.proto;
+
+import "xslam/vins/camera/proto/camera_options.proto";
+
+message PinholeCameraOptions
+{
+    CameraOptions info = 1;
+    PinholeOptions paramters = 2;
+}

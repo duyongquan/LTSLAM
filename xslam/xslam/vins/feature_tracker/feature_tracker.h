@@ -6,6 +6,7 @@
 #include "xslam/vins/common/thread_pool.h"
 #include "xslam/vins/sensor/image_data.h"
 #include "xslam/vins/feature_tracker/proto/feature_tracker_options.pb.h"
+#include "xslam/vins/camera/pinhole_camera.h"
 
 #include <thread>
 #include <string>
@@ -42,7 +43,6 @@ public:
 
     void RunTask();
 
-
 private:
     // Handles a new work item.
     void AddWorkItem(const common::Task::WorkItem& work_item);
@@ -68,7 +68,7 @@ private:
     std::map<int, cv::Point2f> cur_un_pts_map;
     std::map<int, cv::Point2f> prev_un_pts_map;
 
-    // camodocal::CameraPtr m_camera;
+    std::unique_ptr<camera::PinholeCamera> camera_;
     double cur_time;
     double prev_time;
 
