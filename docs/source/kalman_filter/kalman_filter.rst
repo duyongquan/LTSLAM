@@ -8,7 +8,6 @@ Kalman Filter
    :maxdepth: 4
 
    ch00-preface/ch00-preface
-   ch00-preface/test_makdown
    ch01-g-h-filter/ch01-g-h-filter
    ch02-discrete-bayes/ch02-discrete-bayes
    ch03-gaussians/ch03-gaussians
