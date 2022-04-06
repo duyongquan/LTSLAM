@@ -11,6 +11,8 @@ Math
    matrix/matrix
    quaternion/quaternion
    derivative/derivative
+   probability/probability
+   linear_equation/linear_equation
    nls/nls
 
 
