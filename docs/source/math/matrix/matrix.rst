@@ -300,7 +300,7 @@ Schur Complements
       A^{-1} + A^{-1}B(D- CA^{-1}B)CA^{-1} & -A^{-1}B(D- CA^{-1}B)CA^{-1} \\
       -(D- CA^{-1}B)CA^{-1} & (D- CA^{-1}B)^{-1}
     \end{bmatrix}
-    
+
 
 如果 :math:`A， D` 和两个 Schur 补 :math:`A − BD^{−1}C` 和 :math:`D − CA^{−1}B` 都是可逆的，则比较 :math:`M^{−1}` 的两个表达式，我们得到（非显而易见的）公式
 
@@ -324,7 +324,7 @@ Schur Complements
   \end{bmatrix}
 
 
-如果我们设置 :math:`D = I` 并将:math:`B` 更改为:math:`-B` 我们得到
+如果我们设置 :math:`D = I` 并将 :math:`B` 更改为 :math:`-B` 我们得到
 
 .. math::
 
