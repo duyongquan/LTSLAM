@@ -185,6 +185,16 @@ Eigen 矩阵单个元素操作
     R.array().abs2()          // abs(P.^2)
     (R.array() < s).select(P,Q);  // (R < s ? P : Q)
 
+Eigen 矩阵元素交换
+======================
+
+.. code-block:: c++
+
+    // Of particular note is Eigen's swap function which is highly optimized.
+    // Eigen                           // Matlab
+    R.row(i) = P.col(j);               // R(i, :) = P(:, i)
+    R.col(j1).swap(mat1.col(j2));      // R(:, [j1 j2]) = R(:, [j2, j1])
+
 
 Eigen 矩阵化简
 ======================
@@ -270,62 +280,3 @@ Eigen 矩阵特征值
     // For self-adjoint matrices use SelfAdjointEigenSolver<>
 
 
-访问元素
-===========
-
-Eigen 矩阵元素交换
----------------------
-
-.. code-block:: c++
-
-    // Of particular note is Eigen's swap function which is highly optimized.
-    // Eigen                           // Matlab
-    R.row(i) = P.col(j);               // R(i, :) = P(:, i)
-    R.col(j1).swap(mat1.col(j2));      // R(:, [j1 j2]) = R(:, [j2, j1])
-
-
-算术操作
-===========
-
-**矩阵/向量乘法**
------------------
-
-矩阵/向量加法/减法
--------------------
-
-标量加法/减法
-------------------
-
-标量加法/减法
------------------
-
-
-逐元素的操作
-=============
-
-逐元素乘法
------------------
-
-加/减标量
------------------
-
-逐元素除法
-----------------
-
-逐元素取倒数
-----------------
-
-逐元素比较运算
-----------------
-
-三角余弦
-----------------
-
-指数
-----------------
-
-最小值，最大值，绝对值
------------------------
-
-各种乘法运算
-----------------
