@@ -36,7 +36,7 @@ Through open source engineering, we can learn the following knowledge content.
    :align: right
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
    :hidden:
 
    introduction
