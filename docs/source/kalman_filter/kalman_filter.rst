@@ -5,7 +5,7 @@ Kalman Filter
 =============
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    ch00-preface/ch00-preface
    ch01-g-h-filter/ch01-g-h-filter
