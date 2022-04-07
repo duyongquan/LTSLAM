@@ -22,7 +22,6 @@ VinsBuilder::VinsBuilder(const estimator::proto::VinsBuilderOptions& options)
         {
             HandleCollatedSensorData(sensor_id, std::move(data));
         });
-
 }
 
 void VinsBuilder::AddSensorData(
@@ -41,9 +40,10 @@ void VinsBuilder::HandleCollatedSensorData(
     const std::string& sensor_id, std::unique_ptr<sensor::Data> data)
 {
     if (sensor_id == kImuTopic) {
-        LOG(INFO) << "kImuTopic sensor_id : " << sensor_id;
+        auto imu_tracker_ptr = estimator_->imu_tracker();
     } else if (sensor_id == kImageTopic) {
-        LOG(INFO) << "kImageTopic sensor_id : " << sensor_id;
+        // estimator_->feature_tracker()->AddImageData(std::move(data));
+        auto feature_tracker_ptr = estimator_->feature_tracker();
     }
 }
 

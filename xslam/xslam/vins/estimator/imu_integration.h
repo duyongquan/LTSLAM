@@ -1,7 +1,3 @@
-
-
-#include <ceres/ceres.h>
-
 #ifndef XSLAM_VINS_ESTIMATOR_IMU_INTEGRATION_H
 #define XSLAM_VINS_ESTIMATOR_IMU_INTEGRATION_H
 
@@ -12,6 +8,8 @@
 #include "xslam/vins/sensor/imu_data.h"
 #include "xslam/vins/common/time.h"
 #include "xslam/vins/estimator/proto/imu_noise.pb.h"
+
+#include <ceres/ceres.h>
 
 namespace xslam {
 namespace vins {
