@@ -6,19 +6,12 @@ namespace xslam {
 namespace vins {
 namespace feature_tracker {
 
-FeatureTracker::FeatureTracker(const proto::FeatureTrackerOptions &options)
-    : options_(options)
+FeatureTracker::FeatureTracker(
+    const proto::FeatureTrackerOptions &options, common::ThreadPool* pool)
+    : options_(options),
+      thread_pool_(pool)
 {
-
-}
-
-FeatureTracker::FeatureTracker(const std::string& filename)
-{
-}
-
-FeatureTracker::FeatureTracker(const std::string& filename, common::ThreadPool* pool)
-    : thread_pool_(pool)
-{
+    
 }
 
 void FeatureTracker::AddImageData(const sensor::ImageData& image)

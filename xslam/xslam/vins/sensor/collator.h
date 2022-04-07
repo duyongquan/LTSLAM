@@ -18,20 +18,18 @@ public:
     Collator(const Collator&) = delete;
     Collator& operator=(const Collator&) = delete;
 
-    void AddTrajectory(const std::set<std::string>& expected_sensor_ids, const Callback& callback) override;
+    // Callback handle
+    void HandleSensorData(const std::vector<std::string>& sensor_ids, const Callback& callback) override;
 
     void AddSensorData(std::unique_ptr<Data> data) override;
 
     void Flush() override;
-
-    int GetBlockingTrajectoryId() const override;
+    
+    std::string GetBlockingSensorId() const override;
 
   private:
     // Queue keys are a pair of trajectory ID and sensor identifier.
     OrderedMultiQueue queue_;
-
-    // Map of trajectory ID to all associated QueueKeys.
-    std::vector<QueueKey> queue_keys_;
 };
 
 

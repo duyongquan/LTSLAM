@@ -32,17 +32,12 @@ public:
     SensorBridge(const SensorBridge&) = delete;
     SensorBridge& operator=(const SensorBridge&) = delete;
 
-    void HandleImuMessage(const std::string& sensor_id,
-                          const std::unique_ptr<::xslam::vins::sensor::ImuData>& msg);
+    void HandleImuMessage(const std::string& sensor_id, const sensor_msgs::Imu::ConstPtr& msg);
 
-    void HandleImageMessage(const std::string& sensor_id,
-                            const std::unique_ptr<::xslam::vins::sensor::ImageData>& msg);
+    void HandleImageMessage(const std::string& sensor_id, const sensor_msgs::Image::ConstPtr& msg);
 
-    std::unique_ptr<::xslam::vins::sensor::ImuData> ToImuData(
-        const sensor_msgs::Imu::ConstPtr& msg);
-
-    std::unique_ptr<::xslam::vins::sensor::ImageData> ToImageData(
-        const sensor_msgs::Image::ConstPtr& msg);
+    ::xslam::vins::sensor::ImuData ToImuData(const sensor_msgs::Imu::ConstPtr& msg);
+    ::xslam::vins::sensor::ImageData ToImageData(const sensor_msgs::Image::ConstPtr& msg);
 
 private:
     const TfBridge tf_bridge_;

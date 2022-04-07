@@ -19,7 +19,6 @@ namespace sensor {
 struct QueueKey 
 {
     std::string sensor_id;
-
     bool operator<(const QueueKey& other) const 
     {
         return std::forward_as_tuple(sensor_id) < std::forward_as_tuple(other.sensor_id);
@@ -72,12 +71,12 @@ private:
 
     void Dispatch();
     void CannotMakeProgress(const QueueKey& queue_key);
-    common::Time GetCommonStartTime(int trajectory_id);
+    common::Time GetCommonStartTime();
 
     // Used to verify that values are dispatched in sorted order.
     common::Time last_dispatched_time_ = common::Time::min();
 
-    std::map<int, common::Time> common_start_time_per_trajectory_;
+    common::Time common_start_time_;
     std::map<QueueKey, Queue> queues_;
     QueueKey blocker_;
 };

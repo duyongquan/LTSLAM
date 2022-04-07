@@ -22,9 +22,10 @@ public:
     CollatorInterface(const CollatorInterface&) = delete;
     CollatorInterface& operator=(const CollatorInterface&) = delete;
 
-    virtual void AddTrajectory(const std::set<std::string>& expected_sensor_ids, const Callback& callback) = 0;
+    // Callback
+    virtual void HandleSensorData(const std::vector<std::string>& sensor_ids, const Callback& callback) = 0;
 
-    // Adds 'data' for 'trajectory_id' to be collated. 'data' must contain valid
+    // Adds 'data' to be collated. 'data' must contain valid
     // sensor data. Sensor packets with matching 'data.sensor_id_' must be added
     // in time order.
     virtual void AddSensorData(std::unique_ptr<Data> data) = 0;
@@ -33,7 +34,7 @@ public:
     // AddSensorData may not be called after Flush.
     virtual void Flush() = 0;
 
-    virtual int GetBlockingTrajectoryId() const = 0;
+    virtual std::string GetBlockingSensorId() const = 0;
 };
 
 }  // namespace sensor
