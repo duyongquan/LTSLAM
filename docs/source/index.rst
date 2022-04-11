@@ -46,6 +46,7 @@ Through open source engineering, we can learn the following knowledge content.
    tutorial/tutorial
    vslam/vision_slam
    vins/vins
+   msckf/msckf
    learning _resources/learning _resources
    faqs
    license
