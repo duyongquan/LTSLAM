@@ -7,13 +7,15 @@ You can learn slam knowledge by [哔哩哔哩 bilibili ](https://space.bilibili.
 
 XSLAM is an open source C++ demo for learn vision slam and lidar slam. Through open source engineering, we can learn the following knowledge content:
 
-* <font color='red'> **C++**  </font> tutorial
-* <font color='red'> **Eigen**  </font> tutorial
+* <font color='red'> **C++**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/c%2B%2B/c%2B%2B.html)
+* <font color='red'> **CMake** </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/cmake/cmake.html)
+* <font color='red'> **Eigen**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/eigen/eigen.html)
 * <font color='red'> **OpenCV**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/opencv/opencv_tutorial.html)
 * <font color='red'> **Quaternions**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/math/math.html)
 * <font color='red'> **Ceres Solver**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/ceres/ceres_solver_tutorial.html)
 * <font color='red'> **Kalman Filter**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/kalman_filter/kalman_filter.html)
 * <font color='red'> **VINS Mono( VINS Project)**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/vins/vins.html)
+* <font color='red'> **MSCKF-VIO( MSCKF Project)**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/msckf/msckf.html)
 
 ### 1.1 <font color='green'>Project directory:</font>
 
@@ -185,4 +187,15 @@ email ： quandy2020@126.com
 ```
 
 加入我们吧！！！
+
+
+
+## 6 Github贡献者
+
+* 123mrchen
+* Ze
+* Minghao HU
+* onwaying
+
+![github_gxz](./github_gxz.png)
 

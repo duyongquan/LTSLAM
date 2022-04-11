@@ -22,9 +22,9 @@ namespace feature_tracker {
 class FeatureTracker 
 {
 public:
-    explicit FeatureTracker(const proto::FeatureTrackerOptions &options);
-    FeatureTracker(const std::string& filename);
-    FeatureTracker(const std::string& filename, common::ThreadPool* pool);
+    FeatureTracker(
+        const proto::FeatureTrackerOptions &options,
+        common::ThreadPool* pool);
     FeatureTracker() {}
 
     void AddImageData(const sensor::ImageData& image);

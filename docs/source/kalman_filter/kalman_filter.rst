@@ -5,10 +5,9 @@ Kalman Filter
 =============
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    ch00-preface/ch00-preface
-   ch00-preface/test_makdown
    ch01-g-h-filter/ch01-g-h-filter
    ch02-discrete-bayes/ch02-discrete-bayes
    ch03-gaussians/ch03-gaussians
@@ -18,5 +17,10 @@ Kalman Filter
    ch07-kalman-filter-math/ch07-kalman-filter-math
    ch08-designing-kalman-filters/ch08-designing-kalman-filters
    ch09-nonlinear-filtering/ch09-nonlinear-filtering
+   ch10-Unscented-Kalman-Filter/ch10-Unscented-Kalman-Filter
+   ch11-Extended-Kalman-Filters/ch11-Extended-Kalman-Filters
+   ch12-Particle-Filters/ch12-Particle-Filters
+   ch13-Smoothing/ch13-Smoothing
+   ch14-Adaptive-Filtering/ch14-Adaptive-Filtering
   
 

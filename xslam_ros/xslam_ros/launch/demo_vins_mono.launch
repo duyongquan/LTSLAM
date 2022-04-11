@@ -6,7 +6,6 @@
           -configuration_directory $(find xslam_ros)/configuration_files
           -configuration_basename vins_mono.lua"
         output="screen">
-
     </node>
 
 

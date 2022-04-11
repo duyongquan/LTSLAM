@@ -12,7 +12,8 @@ Through open source engineering, we can learn the following knowledge content.
   * **Quaternions** learning tutorial
   * **Ceres Solver** learning tutorial
   * **Kalman Filter** learning tutorial
-  * **VINS Mono** learning tutorial
+  * **VINS Mono(Project)** learning tutorial
+  * **MSCKF-VIO(Project)** learning tutorial
 
 开源公告
 ==========
@@ -36,7 +37,7 @@ Through open source engineering, we can learn the following knowledge content.
    :align: right
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
    :hidden:
 
    introduction
@@ -46,6 +47,9 @@ Through open source engineering, we can learn the following knowledge content.
    tutorial/tutorial
    vslam/vision_slam
    vins/vins
+   msckf/msckf
+   learning _resources/learning _resources
+   faqs
    license
   
 

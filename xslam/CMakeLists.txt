@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 14)
 
 # set version
 set(SLAM_MAJOR_VERSION 0)
-set(SLAM_MINOR_VERSION 0)
-set(SLAM_PATCH_VERSION 1)
+set(SLAM_MINOR_VERSION 1)
+set(SLAM_PATCH_VERSION 0)
 set(SLAM_VERSION ${SLAM_MAJOR_VERSION}.${SLAM_MINOR_VERSION}.${SLAM_PATCH_VERSION})
 set(SLAM_SOVERSION ${SLAM_MAJOR_VERSION}.${SLAM_MINOR_VERSION})
 
@@ -37,11 +37,9 @@ find_package(Protobuf 3.0.0 REQUIRED)
 file(GLOB_RECURSE ALL_LIBRARY_HDRS "xslam/*.h")
 file(GLOB_RECURSE ALL_LIBRARY_SRCS "xslam/*.cpp")
 file(GLOB_RECURSE ALL_TESTS "xslam/*_test.cpp")
-file(GLOB_RECURSE ALL_EXECUTABLES "xslam/*_main.cpp")
 file(GLOB_RECURSE ALL_EXAMPLES "xslam/*_example.cpp")
 
 list(REMOVE_ITEM ALL_LIBRARY_SRCS ${ALL_EXAMPLES})
-list(REMOVE_ITEM ALL_LIBRARY_SRCS ${ALL_EXECUTABLES})
 list(REMOVE_ITEM ALL_LIBRARY_SRCS ${ALL_TESTS})
 
 set(GLOG_LIBRARY glog)
@@ -154,10 +152,4 @@ project_binary(glog_example
 project_binary(gflag_example
     SRCS
         xslam/examples/gflag_example.cpp
-)
-
-# VINS-Mono
-project_binary(vins
-    SRCS
-        xslam/vins/vins_main.cpp
 )

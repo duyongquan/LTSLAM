@@ -16,12 +16,6 @@ public:
         : Data(sensor_id), data_(data) {}
 
     common::Time GetTime() const override { return data_.time; }
-
-    void AddToTrajectoryBuilder(VinsBuilderInterface *const vins_builder) override 
-    {
-        vins_builder->AddSensorData(sensor_id_, data_);
-    }
-
     const DataType &data() const { return data_; }
 
 private:

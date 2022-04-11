@@ -79,8 +79,7 @@ void Node::HandleImuMessage(
 {
     std::lock_guard<std::mutex> lock(mutex_);
     auto sensor_bridge_ptr = vins_builder_bridge_.sensor_bridge();
-    auto imu_data_ptr = sensor_bridge_ptr->ToImuData(msg);
-    sensor_bridge_ptr->HandleImuMessage(sensor_id, std::move(imu_data_ptr));
+    sensor_bridge_ptr->HandleImuMessage(sensor_id, msg);
 }
 
 void Node::HandleImageMessage(
@@ -89,8 +88,7 @@ void Node::HandleImageMessage(
 {
     std::lock_guard<std::mutex> lock(mutex_);
     auto sensor_bridge_ptr = vins_builder_bridge_.sensor_bridge();
-    auto image_data_ptr = sensor_bridge_ptr->ToImageData(msg);
-    sensor_bridge_ptr->HandleImageMessage(sensor_id, std::move(image_data_ptr));
+    sensor_bridge_ptr->HandleImageMessage(sensor_id, msg);
 }
 
 ::ros::NodeHandle* Node::node_handle()

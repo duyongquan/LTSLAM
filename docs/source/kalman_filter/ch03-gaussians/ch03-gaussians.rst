@@ -3,7 +3,7 @@
 .. default-domain:: cpp
 
 ===============
-Ch03 Gaussians
+第3章 高斯分布
 ===============
 
 

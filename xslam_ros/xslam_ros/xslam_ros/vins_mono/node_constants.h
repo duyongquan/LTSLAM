@@ -8,8 +8,8 @@ namespace xslam_ros {
 namespace vins_mono {
 
 
-constexpr char kImuTopic[] = "imu0";
-constexpr char kImageTopic[] = "cam0/image_raw";
+constexpr char kImuTopic[] = "/imu0";
+constexpr char kImageTopic[] = "/cam0/image_raw";
 
 constexpr int kInfiniteSubscriberQueueSize = 0;
 constexpr int kLatestOnlyPublisherQueueSize = 1;

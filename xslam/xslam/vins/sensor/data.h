@@ -21,7 +21,6 @@ public:
 
     virtual common::Time GetTime() const = 0;
     const std::string &GetSensorId() const { return sensor_id_; }
-    virtual void AddToTrajectoryBuilder(VinsBuilderInterface *trajectory_builder) = 0;
 
 protected:
     const std::string sensor_id_;

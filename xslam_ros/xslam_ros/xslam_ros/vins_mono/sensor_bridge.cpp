@@ -15,46 +15,35 @@ SensorBridge::SensorBridge(
     : tf_bridge_(tracking_frame, lookup_transform_timeout_sec, tf_buffer),
       vins_builder_(vins_builder) {}
 
-void SensorBridge::HandleImuMessage(
-    const std::string& sensor_id,
-    const std::unique_ptr<::xslam::vins::sensor::ImuData>& msg)
+void SensorBridge::HandleImuMessage(const std::string& sensor_id, const sensor_msgs::Imu::ConstPtr& msg)
 {
-
-  LOG(INFO) << "**********************";
+    std::string sensor_name = "imu";
     if (msg != nullptr) {
-        vins_builder_->AddSensorData(sensor_id, 
-            ::xslam::vins::sensor::ImuData {
-                msg->time, 
-                msg->linear_acceleration, 
-                msg->angular_velocity
-            });
+        vins_builder_->AddSensorData(sensor_name, ToImuData(msg));
     }
 }
 
-void SensorBridge::HandleImageMessage(
-    const std::string& sensor_id,
-    const std::unique_ptr<::xslam::vins::sensor::ImageData>&  msg)
+void SensorBridge::HandleImageMessage(const std::string& sensor_id, const sensor_msgs::Image::ConstPtr& msg)
 {
+    std::string sensor_name = "image";
     if (msg != nullptr) {
-        vins_builder_->AddSensorData(sensor_id,
-            ::xslam::vins::sensor::ImageData{msg->time, msg->image});
+        vins_builder_->AddSensorData(sensor_name, ToImageData(msg));
     }
 }
 
-std::unique_ptr<::xslam::vins::sensor::ImuData> SensorBridge::ToImuData(
+::xslam::vins::sensor::ImuData SensorBridge::ToImuData(
         const sensor_msgs::Imu::ConstPtr& msg)
 {
     const ::xslam::vins::common::Time time = FromRos(msg->header.stamp);
 
-    return std::make_unique<::xslam::vins::sensor::ImuData>(
-        ::xslam::vins::sensor::ImuData{
-            time, 
-            ToEigen(msg->linear_acceleration),
-            ToEigen(msg->angular_velocity)
-    });
+    return  ::xslam::vins::sensor::ImuData{
+        time, 
+        ToEigen(msg->linear_acceleration),
+        ToEigen(msg->angular_velocity)
+    };
 }
 
-std::unique_ptr<::xslam::vins::sensor::ImageData> SensorBridge::ToImageData(
+::xslam::vins::sensor::ImageData SensorBridge::ToImageData(
       const sensor_msgs::Image::ConstPtr& msg)
 {
     const ::xslam::vins::common::Time time = FromRos(msg->header.stamp);
@@ -74,11 +63,7 @@ std::unique_ptr<::xslam::vins::sensor::ImageData> SensorBridge::ToImageData(
     }
 
     ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::MONO8);
-    return std::make_unique<::xslam::vins::sensor::ImageData>(
-        ::xslam::vins::sensor::ImageData{
-            time, 
-            ptr->image
-    });
+    return ::xslam::vins::sensor::ImageData{time, ptr->image};
 }
 
 }  // namespace vins_mono

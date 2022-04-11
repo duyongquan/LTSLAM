@@ -3,7 +3,7 @@
 .. default-domain:: cpp
 
 ===================
-Ch02 Discrete Bayes
+第2章 离散贝叶斯
 ===================
 
 
