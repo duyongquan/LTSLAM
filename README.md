@@ -15,6 +15,7 @@ XSLAM is an open source C++ demo for learn vision slam and lidar slam. Through o
 * <font color='red'> **Ceres Solver**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/ceres/ceres_solver_tutorial.html)
 * <font color='red'> **Kalman Filter**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/kalman_filter/kalman_filter.html)
 * <font color='red'> **VINS Mono( VINS Project)**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/vins/vins.html)
+* <font color='red'> **MSCKF-VIO( MSCKF Project)**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/msckf/msckf.html)
 
 ### 1.1 <font color='green'>Project directory:</font>
 
