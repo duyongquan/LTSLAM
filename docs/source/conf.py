@@ -32,7 +32,7 @@ templates_path = ['_templates']
 
 # The suffix of source filenames.
 # source_suffix = '.rst'
-extensions = ['myst_parser', 'sphinx.ext.mathjax']
+extensions = ['sphinx.ext.mathjax']
 
 source_suffix = ['.rst', '.md']
 
