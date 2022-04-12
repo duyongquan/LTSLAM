@@ -8,6 +8,7 @@ Math
    :maxdepth: 1
 
    vector/vector
+   matrix/matrix
    quaternion/quaternion
    derivative/derivative
    probability/probability
