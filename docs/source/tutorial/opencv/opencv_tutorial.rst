@@ -1,29 +1,15 @@
-.. highlight:: c++
-
-.. default-domain:: cpp
-
 .. _chapter-opencv_tutorial:
 
 ===============
 Opencv Tutorial
 ===============
 
-Basic
-=====
-
 .. toctree::
-   :maxdepth: 2
+  :maxdepth: 1
 
-   basic/read_image
-   basic/image_basic
-   basic/paint_shape
+  basic/basic
+  geometry/geometry
+  image_processing/image_processing
+  feature_detection/feature_detection
+  3d_reconstruction/3d_reconstruction
 
-Geometry
-========
-
-.. toctree::
-   :maxdepth: 2
-
-   geometry/fundamental_matrix
-   geometry/essential_matrix
-   geometry/pnp
