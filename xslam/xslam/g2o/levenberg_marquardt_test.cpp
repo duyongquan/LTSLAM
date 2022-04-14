@@ -6,11 +6,14 @@
 namespace xslam {
 namespace g2o {
 
-TEST(LevenbergMarquardt, demo)
+// https://zhuanlan.zhihu.com/p/42415718
+TEST(LMCurveFitting, demo)
 {
-    LOG(INFO) << "Run gaussian new function solve Ax = b.";
-    LevenbergMarquardt demo;
-    demo.RunDemo();
+    std::cout << "Run Levenberg-Marquardt solve y = exp(ax^2 + bx + c).\n";
+    double a = 0.0, b = 0.0, c = 0.0; // 初值
+    LevenbergMarquardt lm(a, b, c);
+    LMCurveFitting demo;
+    demo.RunDemo(lm);
 }
 
 } // namespace g2o

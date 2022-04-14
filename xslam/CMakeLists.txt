@@ -109,7 +109,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC rt ${VLFEAT_LIBRARY})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${LUA_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${PROTOBUF_LIBRARY})
 
-
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${EIGEN3_INCLUDE_DIR}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${Pangolin_INCLUDE_DIR}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${Sophus_INCLUDE_DIRS}")
@@ -122,7 +121,6 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${Boost_INCLUDE_DIRS}"
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${VLFEAT_INCLUDE_DIRS}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${LUA_INCLUDE_DIR}")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${PROTOBUF_INCLUDE_DIR}")
-
 
 if (BUILD_TEST)
     foreach(ABS_FIL ${ALL_TESTS})
