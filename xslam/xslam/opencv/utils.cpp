@@ -13,5 +13,10 @@ std::string GetOpenCVDatasetDirectory()
     return common::kSourceDirectory + "/data/opencv/";
 }
 
+std::string GetG2ODatasetDirectory()
+{
+    return common::kSourceDirectory + "/data/g2o/";
+}
+
 } // namespace opencv
 } // namespace xslam
