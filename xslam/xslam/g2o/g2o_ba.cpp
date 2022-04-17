@@ -46,27 +46,30 @@ void SimpleBA::RunDemo(const std::string& image1, const std::string& image2)
     {
         ::g2o::VertexSE3Expmap* v = new ::g2o::VertexSE3Expmap();
         v->setId(i);
-        if ( i == 0)
-            v->setFixed( true ); // 第一个点固定为零
+        if (i == 0) {
+            // 第一个点固定为零
+            v->setFixed(true); 
+        }
+            
         // 预设值为单位Pose，因为我们不知道任何信息
-        v->setEstimate(::g2o::SE3Quat() );
-        optimizer.addVertex( v );
+        v->setEstimate(::g2o::SE3Quat());
+        optimizer.addVertex(v);
     }
 
     // 很多个特征点的节点
     // 以第一帧为准
-    for ( size_t i = 0; i < pts1.size(); i++)
+    for (size_t i = 0; i < pts1.size(); i++)
     {
         ::g2o::VertexSBAPointXYZ* v = new ::g2o::VertexSBAPointXYZ();
-        v->setId( 2 + i );
+        v->setId(2 + i);
 
         // 由于深度不知道，只能把深度设置为1了
         double z = 1;
-        double x = ( pts1[i].x - cx ) * z / fx;
-        double y = ( pts1[i].y - cy ) * z / fy;
+        double x = (pts1[i].x - cx) * z / fx;
+        double y = (pts1[i].y - cy) * z / fy;
         v->setMarginalized(true);
-        v->setEstimate(Eigen::Vector3d(x,y,z) );
-        optimizer.addVertex( v );
+        v->setEstimate(Eigen::Vector3d(x,y,z));
+        optimizer.addVertex(v);
     }
 
 
@@ -96,11 +99,11 @@ void SimpleBA::RunDemo(const std::string& image1, const std::string& image2)
     // 第二帧
     for ( size_t i = 0; i < pts2.size(); i++)
     {
-        ::g2o::EdgeProjectXYZ2UV*  edge = new ::g2o::EdgeProjectXYZ2UV();
-        edge->setVertex( 0, dynamic_cast<::g2o::VertexSBAPointXYZ*>(optimizer.vertex(i+2)));
-        edge->setVertex( 1, dynamic_cast<::g2o::VertexSE3Expmap*>(optimizer.vertex(1)));
-        edge->setMeasurement( Eigen::Vector2d(pts2[i].x, pts2[i].y ) );
-        edge->setInformation( Eigen::Matrix2d::Identity() );
+        ::g2o::EdgeProjectXYZ2UV* edge = new ::g2o::EdgeProjectXYZ2UV();
+        edge->setVertex(0, dynamic_cast<::g2o::VertexSBAPointXYZ*>(optimizer.vertex(i+2)));
+        edge->setVertex(1, dynamic_cast<::g2o::VertexSE3Expmap*>(optimizer.vertex(1)));
+        edge->setMeasurement(Eigen::Vector2d(pts2[i].x, pts2[i].y));
+        edge->setInformation(Eigen::Matrix2d::Identity());
         edge->setParameterId(0,0);
 
         // 核函数
@@ -118,12 +121,14 @@ void SimpleBA::RunDemo(const std::string& image1, const std::string& image2)
     //我们比较关心两帧之间的变换矩阵
     ::g2o::VertexSE3Expmap* v = dynamic_cast<::g2o::VertexSE3Expmap*>(optimizer.vertex(1));
     Eigen::Isometry3d pose = v->estimate();
-    std::cout << "Pose=" << std::endl << pose.matrix() << std::endl;
+    std::cout << "Pose = " << std::endl 
+              << pose.matrix() 
+              << std::endl;
 
     // 以及所有特征点的位置
     for (size_t i = 0; i < pts1.size(); i++)
     {
-        ::g2o::VertexSBAPointXYZ* v = dynamic_cast<::g2o::VertexSBAPointXYZ*> (optimizer.vertex(i+2));
+        ::g2o::VertexSBAPointXYZ* v = dynamic_cast<::g2o::VertexSBAPointXYZ*>(optimizer.vertex(i+2));
         std::cout << "vertex id " << i + 2 << ", pos = ";
         Eigen::Vector3d pos = v->estimate();
         std::cout << pos(0) << "," << pos(1) << "," << pos(2) << std::endl;
@@ -145,8 +150,6 @@ void SimpleBA::RunDemo(const std::string& image1, const std::string& image2)
     std::cout << "inliers in total points: "<< inliers << "/" << pts1.size() + pts2.size() << std::endl;
     optimizer.save("ba.g2o");
 }
-  
-
 
 int SimpleBA::FindCorrespondingPoints(
     const cv::Mat& img1, const cv::Mat& img2, 
@@ -167,9 +170,9 @@ int SimpleBA::FindCorrespondingPoints(
     descriptor->compute(img1, keypoints_1, descriptors_1);
     descriptor->compute(img2, keypoints_2, descriptors_2);
 
-    // cv::Mat outimg1;
-    // drawKeypoints(img_1, keypoints_1, outimg1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT);
-    // imshow("ORB features", outimg1);
+    cv::Mat outimg1;
+    drawKeypoints(img1, keypoints_1, outimg1, cv::Scalar::all(-1), cv::DrawMatchesFlags::DEFAULT);
+    imshow("ORB features", outimg1);
 
     //-- 第三步:对两幅图像中的BRIEF描述子进行匹配，使用 Hamming 距离
     std::vector<cv::DMatch> matches;
