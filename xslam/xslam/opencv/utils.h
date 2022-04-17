@@ -12,6 +12,8 @@ namespace opencv {
 
 std::string GetOpenCVDatasetDirectory();
 
+std::string GetG2ODatasetDirectory();
+
 } // namespace opencv
 } // namespace xslam
 
