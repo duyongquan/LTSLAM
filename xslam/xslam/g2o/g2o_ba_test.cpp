@@ -6,6 +6,9 @@
 
 namespace xslam {
 namespace g2o {
+    
+// Reference 
+// https://www.cnblogs.com/gaoxiang12/p/5304272.html
 
 TEST(SimpleBA, demo)
 {
