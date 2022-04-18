@@ -8,6 +8,10 @@
 #include <eigen3/Eigen/Cholesky>
 #include <chrono>
 
+
+// You can reference web cite
+// http://users.ics.forth.gr/~lourakis/sparseLM/index.html
+
 namespace xslam {
 namespace g2o {
 
