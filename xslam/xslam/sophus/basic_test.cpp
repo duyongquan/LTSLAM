@@ -8,9 +8,9 @@ namespace sophus {
 
 TEST(SophusMethod, demo)
 {
-//     LOG(INFO) << "Run sophus basic demos.";
-//     SophusMethod demo;
-//     demo.RunDemo();
+    LOG(INFO) << "Run sophus basic demos.";
+    SophusMethod demo;
+    demo.RunDemo();
 }
 
 

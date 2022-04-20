@@ -7,6 +7,8 @@
 namespace xslam {
 namespace g2o {
 
+// sudo apt-get install meshlab
+// 可视化点云数据
 
 TEST(LargeBA, demo)
 {

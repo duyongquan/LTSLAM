@@ -22,12 +22,12 @@ void VertexCameraBAL::oplusImpl(const double* update)
     Sophus::Vector6d update_se3;
     update_se3 << update[3],update[4],update[5],update[0],update[1],update[2];
 
-    // Sophus::SE3 Update_SE3 = Sophus::SE3::exp(update_se3)*Sophus::SE3::exp(SE3_Rt);
-    // Vector9d u;
-    // u << Update_SE3.log()[3],Update_SE3.log()[4],Update_SE3.log()[5],
-    //         Update_SE3.log()[0],Update_SE3.log()[1],Update_SE3.log()[2],
-    //         _estimate[6] + v[6],_estimate[7] +v[7],_estimate[8] +v[8];
-    // _estimate = u;
+    Sophus::SE3d Update_SE3 = Sophus::SE3d::exp(update_se3)*Sophus::SE3d::exp(SE3_Rt);
+    Vector9d u;
+    u << Update_SE3.log()[3],Update_SE3.log()[4],Update_SE3.log()[5],
+            Update_SE3.log()[0],Update_SE3.log()[1],Update_SE3.log()[2],
+            _estimate[6] + v[6],_estimate[7] +v[7],_estimate[8] +v[8];
+    _estimate = u;
 }
 
 /*==========================================================================================
@@ -186,7 +186,7 @@ void EdgeObservationBAL::linearizeOplus()
     _jacobianOplusXi.block<2,1>(0,8) = de_dk2;
 
       Eigen::Vector3d angleAxis(camera_param[0],camera_param[1], camera_param[2]);
-    // _jacobianOplusXj = de_dp * Sophus::SO3::exp(angleAxis).matrix();
+    _jacobianOplusXj = de_dp * Sophus::SO3d::exp(angleAxis).matrix();
 }
 
 /*==========================================================================================
@@ -294,15 +294,16 @@ void LoadBALProblem::WriteToPLYFile(const std::string& filename)
 
 void LoadBALProblem::Camera2World(const Eigen::Vector3d angleAxis, const Eigen::Vector3d P_c, Eigen::Vector3d& P_w)
 {
-    // cv::Mat Rcw;
-    // Sophus::Vector6d Tcw;
-    // Tcw <<P_c[0], P_c[1], P_c[2], angleAxis[0],angleAxis[1],angleAxis[2];
-    // Eigen::Matrix4d Twc;
-    // //Twc = Tcw^-1
-    // Twc = Sophus::SE3::exp(Tcw).matrix().inverse();
-    // P_w[0] = Twc(0,3);
-    // P_w[1] = Twc(1,3);
-    // P_w[2] = Twc(2,3);
+    cv::Mat Rcw;
+    Sophus::Vector6d Tcw;
+    Tcw << P_c[0], P_c[1], P_c[2], angleAxis[0],angleAxis[1],angleAxis[2];
+    Eigen::Matrix4d Twc;
+
+    // Twc = Tcw^-1
+    Twc = Sophus::SE3d::exp(Tcw).matrix().inverse();
+    P_w[0] = Twc(0,3);
+    P_w[1] = Twc(1,3);
+    P_w[2] = Twc(2,3);
 }
 
 /*==========================================================================================
@@ -319,14 +320,14 @@ void LargeBA::RunDemo(const std::string& problem_filename)
 
 void LargeBA::SolveBALProblem(const std::string filename)
 {
-    //生成初始数据
+    // 生成初始数据
     LoadBALProblem loadBALProblem(filename);
     loadBALProblem.ReadData();
 
-    //生成初始为未被优化的ply点云文件
-    loadBALProblem.WriteToPLYFile("../old.ply");
+    // 生成初始为未被优化的ply点云文件
+    loadBALProblem.WriteToPLYFile("optimize_before.ply");
 
-    //创建一个稀疏优化器对象
+    // 创建一个稀疏优化器对象
     ::g2o::SparseOptimizer optimizer;
 
     //使用稀疏求解器
@@ -334,102 +335,109 @@ void LargeBA::SolveBALProblem(const std::string filename)
     //            new g2o::LinearSolverCholmod<BalBlockSolver::PoseMatrixType>();
     //    dynamic_cast<g2o::LinearSolverCholmod<BalBlockSolver::PoseMatrixType>* >(linearSolver)->setBlockOrdering(true);
 
-    ::g2o::LinearSolver<BalBlockSolver::PoseMatrixType>* linearSolver =
-            new ::g2o::LinearSolverCSparse<BalBlockSolver::PoseMatrixType>();
-    dynamic_cast<::g2o::LinearSolverCSparse<BalBlockSolver::PoseMatrixType>* >(linearSolver)->setBlockOrdering(true);
+    // ::g2o::LinearSolver<BalBlockSolver::PoseMatrixType>* linearSolver =
+    //         new ::g2o::LinearSolverCSparse<BalBlockSolver::PoseMatrixType>();
+    // dynamic_cast<::g2o::LinearSolverCSparse<BalBlockSolver::PoseMatrixType>*>(linearSolver)->setBlockOrdering(true);
 
-    // //矩阵块求解器
+    //矩阵块求解器
     // BalBlockSolver* solver_ptr = new BalBlockSolver(linearSolver);
 
     // //使用LM算法
     // ::g2o::OptimizationAlgorithmLevenberg* solver = new ::g2o::OptimizationAlgorithmLevenberg(solver_ptr);
 
-    // //优化器构建完成
-    // optimizer.setAlgorithm(solver);
+    auto linearSolver = ::g2o::make_unique<::g2o::LinearSolverCholmod<BalBlockSolver::PoseMatrixType>>();
 
-    // //打开调试输出
-    // optimizer.setVerbose(true);
-
-    // //增加pose顶点
-    // const int num_cam = loadBALProblem.num_cameras();
-    // for(int i = 0; i < num_cam; i++)
-    // {
-    //     Vector9d temVecCamera;
-    //     for (int j = 0; j < 9; j++)
-    //     {
-    //         temVecCamera[j] = loadBALProblem.num_observations_cameras(9*i+j);
-    //     }
-    //     VertexCameraBAL* pCamera = new VertexCameraBAL();
-    //     pCamera->setEstimate(temVecCamera);
-    //     pCamera->setId(i);
-    //     optimizer.addVertex(pCamera);
-
-    // }
-
-    // //增加路标顶点
-    // const int point_num = loadBALProblem.num_points();
-    // for(int i = 0; i < point_num; i++)
-    // {
-    //     Eigen::Vector3d temVecPoint;
-    //     for (int j = 0; j < 3; j++)
-    //     {
-    //         temVecPoint[j] = loadBALProblem.num_observations_points(3*i+j);
-    //     }
-    //     VertexPointBAL* pPoint = new VertexPointBAL();
-    //     pPoint->setEstimate(temVecPoint);
-
-    //     //这里加上pose的数量,避免跟pose的ID重复
-    //     pPoint->setId(i + num_cam);
-    //     pPoint->setMarginalized(true);
-    //     optimizer.addVertex(pPoint);
-    // }
-    // //增加边
-    // const int  num_observations =loadBALProblem.num_observations();
-    // for(int i = 0; i < num_observations; ++i)
-    // {
-    //     EdgeObservationBAL* bal_edge = new EdgeObservationBAL();
-
-    //     //得到相机ID和空间点ID
-    //     const int camera_id = loadBALProblem.camera_index(i);
-    //     const int point_id = loadBALProblem.point_index(i) + num_cam;
-
-    //     //使用了鲁棒核函数
-    //     ::g2o::RobustKernelHuber* rk = new ::g2o::RobustKernelHuber;
-    //     rk->setDelta(1.0);
-    //     bal_edge->setRobustKernel(rk);
+      // 6*3 的参数
+      // L-M 下降
+      ::g2o::OptimizationAlgorithmLevenberg* algorithm = new ::g2o::OptimizationAlgorithmLevenberg(
+          ::g2o::make_unique<BalBlockSolver>(std::move(linearSolver)));
 
 
-    //     bal_edge->setVertex(0,dynamic_cast<VertexCameraBAL*>(optimizer.vertex(camera_id)));
-    //     bal_edge->setVertex(1,dynamic_cast<VertexPointBAL*>(optimizer.vertex(point_id)));
-    //     bal_edge->setInformation(Eigen::Matrix2d::Identity());
-    //     bal_edge->setMeasurement(Eigen::Vector2d(loadBALProblem.num_observations_uv(2*i + 0),
-    //                                              loadBALProblem.num_observations_uv(2*i + 1)));
+    // 优化器构建完成
+    optimizer.setAlgorithm(algorithm);
 
-    //     optimizer.addEdge(bal_edge);
-    // }
+    // 打开调试输出
+    optimizer.setVerbose(true);
 
-    // optimizer.initializeOptimization();
-    // optimizer.setVerbose(true);
-    // optimizer.optimize(20);
+    // 增加pose顶点
+    const int num_cam = loadBALProblem.num_cameras();
+    for(int i = 0; i < num_cam; i++)
+    {
+        Vector9d temVecCamera;
+        for (int j = 0; j < 9; j++)
+        {
+            temVecCamera[j] = loadBALProblem.num_observations_cameras(9*i+j);
+        }
+        VertexCameraBAL* pCamera = new VertexCameraBAL();
+        pCamera->setEstimate(temVecCamera);
+        pCamera->setId(i);
+        optimizer.addVertex(pCamera);
+    }
 
-    // double* cameras = loadBALProblem.ReWritePoses();
-    // for(int i = 0; i < num_cam; i++)
-    // {
-    //     VertexCameraBAL* pCamera = dynamic_cast<VertexCameraBAL*>(optimizer.vertex(i));
-    //     Vector9d NewCameraVec = pCamera->estimate();
-    //     memcpy(cameras + i * 9, NewCameraVec.data(), sizeof(double) * 9);
-    // }
+    // 增加路标顶点
+    const int point_num = loadBALProblem.num_points();
+    for(int i = 0; i < point_num; i++)
+    {
+        Eigen::Vector3d temVecPoint;
+        for (int j = 0; j < 3; j++)
+        {
+            temVecPoint[j] = loadBALProblem.num_observations_points(3*i+j);
+        }
+        VertexPointBAL* pPoint = new VertexPointBAL();
+        pPoint->setEstimate(temVecPoint);
 
-    // double* points = loadBALProblem.ReWritePoints();
-    // for(int j = 0; j < point_num; j++)
-    // {
-    //     VertexPointBAL* pPoint = dynamic_cast<VertexPointBAL*>(optimizer.vertex(j + num_cam));
-    //     Eigen::Vector3d NewPointVec = pPoint->estimate();
-    //     memcpy(points + j * 3, NewPointVec.data(), sizeof(double) * 3);
-    // }
+        //这里加上pose的数量,避免跟pose的ID重复
+        pPoint->setId(i + num_cam);
+        pPoint->setMarginalized(true);
+        optimizer.addVertex(pPoint);
+    }
 
-    loadBALProblem.WriteToPLYFile("../new.ply");
-    LOG(INFO)<<"finished..." ;
+    // 增加边
+    const int  num_observations =loadBALProblem.num_observations();
+    for(int i = 0; i < num_observations; ++i)
+    {
+        EdgeObservationBAL* bal_edge = new EdgeObservationBAL();
+
+        //得到相机ID和空间点ID
+        const int camera_id = loadBALProblem.camera_index(i);
+        const int point_id = loadBALProblem.point_index(i) + num_cam;
+
+        //使用了鲁棒核函数
+        ::g2o::RobustKernelHuber* rk = new ::g2o::RobustKernelHuber;
+        rk->setDelta(1.0);
+        bal_edge->setRobustKernel(rk);
+
+        bal_edge->setVertex(0,dynamic_cast<VertexCameraBAL*>(optimizer.vertex(camera_id)));
+        bal_edge->setVertex(1,dynamic_cast<VertexPointBAL*>(optimizer.vertex(point_id)));
+        bal_edge->setInformation(Eigen::Matrix2d::Identity());
+        bal_edge->setMeasurement(Eigen::Vector2d(loadBALProblem.num_observations_uv(2*i + 0),
+                                                 loadBALProblem.num_observations_uv(2*i + 1)));
+
+        optimizer.addEdge(bal_edge);
+    }
+
+    optimizer.initializeOptimization();
+    optimizer.setVerbose(true);
+    optimizer.optimize(20);
+
+    double* cameras = loadBALProblem.ReWritePoses();
+    for(int i = 0; i < num_cam; i++)
+    {
+        VertexCameraBAL* pCamera = dynamic_cast<VertexCameraBAL*>(optimizer.vertex(i));
+        Vector9d NewCameraVec = pCamera->estimate();
+        memcpy(cameras + i * 9, NewCameraVec.data(), sizeof(double) * 9);
+    }
+
+    double* points = loadBALProblem.ReWritePoints();
+    for(int j = 0; j < point_num; j++)
+    {
+        VertexPointBAL* pPoint = dynamic_cast<VertexPointBAL*>(optimizer.vertex(j + num_cam));
+        Eigen::Vector3d NewPointVec = pPoint->estimate();
+        memcpy(points + j * 3, NewPointVec.data(), sizeof(double) * 3);
+    }
+
+    loadBALProblem.WriteToPLYFile("optimize_afler.ply");
+    LOG(INFO)<< "finished..." ;
 }
 
 void World2Camera(const Vector9d camera, const Eigen::Vector3d P_w, Eigen::Vector3d& P_c)
@@ -439,10 +447,10 @@ void World2Camera(const Vector9d camera, const Eigen::Vector3d P_w, Eigen::Vecto
     Sophus::Vector6d se3_RT;
     se3_RT << camera[3],camera[4], camera[5],camera[0],camera[1], camera[2];
 
-    // Eigen::Vector4d P = Sophus::SE3::exp(se3_RT).matrix() * Pw;
-    // P_c[0] = P[0];
-    // P_c[1] = P[1];
-    // P_c[2] = P[2];
+    Eigen::Vector4d P = Sophus::SE3d::exp(se3_RT).matrix() * Pw;
+    P_c[0] = P[0];
+    P_c[1] = P[1];
+    P_c[2] = P[2];
 }
 
 inline void CamProjectionWithDistortion(const Vector9d camera, const Eigen::Vector3d point, Eigen::Vector2d& u)
