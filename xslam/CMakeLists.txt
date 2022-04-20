@@ -30,7 +30,6 @@ find_package(Ceres REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(Sophus REQUIRED)
 find_package(LuaGoogle REQUIRED)
-find_package(CSparse)
 find_package(DBoW3)
 find_package(Protobuf 3.0.0 REQUIRED)
 
@@ -49,6 +48,18 @@ add_subdirectory(libs)
 set(VLFEAT_LIBRARY vlfeat)
 set(VLFEAT_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/libs)
 include_directories(${VLFEAT_INCLUDE_DIRS})
+
+find_package(CSparse)
+if(CSPARSE_FOUND)
+  set(BUILD_CSPARSE OFF CACHE BOOL "Build local CSparse library")
+else(CSPARSE_FOUND)
+  set(BUILD_CSPARSE ON CACHE BOOL "Build local CSparse library")
+  if(BUILD_CSPARSE)
+    set(CSPARSE_FOUND TRUE)
+  endif()
+endif(CSPARSE_FOUND)
+
+
 
 set(G2OLIBS
         g2o_core
@@ -102,7 +113,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${Pangolin_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${GLOG_LIBRARY})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${G2OLIBS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CERES_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${CSPARSE_LIB})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${CSPARSE_LIBRARY})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${DBOW3_LIBRARY})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(${PROJECT_NAME} PUBLIC rt ${VLFEAT_LIBRARY})

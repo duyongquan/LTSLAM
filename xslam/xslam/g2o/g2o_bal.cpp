@@ -1,5 +1,7 @@
 #include "xslam/g2o/g2o_bal.h"
 
+#include "glog/logging.h"
+
 namespace xslam {
 namespace g2o {
 
@@ -20,12 +22,12 @@ void VertexCameraBAL::oplusImpl(const double* update)
     Sophus::Vector6d update_se3;
     update_se3 << update[3],update[4],update[5],update[0],update[1],update[2];
 
-    Sophus::SE3  Update_SE3 = Sophus::SE3::exp(update_se3)*Sophus::SE3::exp(SE3_Rt);
-    Vector9d u;
-    u << Update_SE3.log()[3],Update_SE3.log()[4],Update_SE3.log()[5],
-            Update_SE3.log()[0],Update_SE3.log()[1],Update_SE3.log()[2],
-            _estimate[6] + v[6],_estimate[7] +v[7],_estimate[8] +v[8];
-    _estimate = u;
+    // Sophus::SE3 Update_SE3 = Sophus::SE3::exp(update_se3)*Sophus::SE3::exp(SE3_Rt);
+    // Vector9d u;
+    // u << Update_SE3.log()[3],Update_SE3.log()[4],Update_SE3.log()[5],
+    //         Update_SE3.log()[0],Update_SE3.log()[1],Update_SE3.log()[2],
+    //         _estimate[6] + v[6],_estimate[7] +v[7],_estimate[8] +v[8];
+    // _estimate = u;
 }
 
 /*==========================================================================================
@@ -184,7 +186,7 @@ void EdgeObservationBAL::linearizeOplus()
     _jacobianOplusXi.block<2,1>(0,8) = de_dk2;
 
       Eigen::Vector3d angleAxis(camera_param[0],camera_param[1], camera_param[2]);
-    _jacobianOplusXj = de_dp * Sophus::SO3::exp(angleAxis).matrix();
+    // _jacobianOplusXj = de_dp * Sophus::SO3::exp(angleAxis).matrix();
 }
 
 /*==========================================================================================
@@ -194,20 +196,20 @@ void EdgeObservationBAL::linearizeOplus()
  *==========================================================================================*/
 void LoadBALProblem::ReadData()
 {
-    ifstream fin(filename_);
+    std::ifstream fin(filename_);
     if(!fin)
     {
-        cout<< "Error opening .txt file"<< endl;
+        LOG(INFO) << "Error opening .txt file";
         return;
     }
-    fin>>num_cameras_;
-    fin>>num_points_;
-    fin>>num_observations_;
+    fin >> num_cameras_;
+    fin >> num_points_;
+    fin >> num_observations_;
 
     //输出第一行数据,这里包括，相机的姿态数量,空间点的数量,观测数据数量
-    std::cout << "pose number: " << num_cameras_ <<endl;
-    std::cout << "point number: " << num_points_  <<endl;
-    std::cout << "observations number: " << num_observations_ <<endl;
+    LOG(INFO) << "pose number: " << num_cameras_ ;
+    LOG(INFO)  << "point number: " << num_points_  ;
+    LOG(INFO)  << "observations number: " << num_observations_ ;
 
     //根据读入的数据来初始化数组
     point_index_ = new int[num_observations_];
@@ -292,15 +294,15 @@ void LoadBALProblem::WriteToPLYFile(const std::string& filename)
 
 void LoadBALProblem::Camera2World(const Eigen::Vector3d angleAxis, const Eigen::Vector3d P_c, Eigen::Vector3d& P_w)
 {
-    cv::Mat Rcw;
-    Sophus::Vector6d Tcw;
-    Tcw <<P_c[0], P_c[1], P_c[2], angleAxis[0],angleAxis[1],angleAxis[2];
-    Eigen::Matrix4d Twc;
-    //Twc = Tcw^-1
-    Twc = Sophus::SE3::exp(Tcw).matrix().inverse();
-    P_w[0] = Twc(0,3);
-    P_w[1] = Twc(1,3);
-    P_w[2] = Twc(2,3);
+    // cv::Mat Rcw;
+    // Sophus::Vector6d Tcw;
+    // Tcw <<P_c[0], P_c[1], P_c[2], angleAxis[0],angleAxis[1],angleAxis[2];
+    // Eigen::Matrix4d Twc;
+    // //Twc = Tcw^-1
+    // Twc = Sophus::SE3::exp(Tcw).matrix().inverse();
+    // P_w[0] = Twc(0,3);
+    // P_w[1] = Twc(1,3);
+    // P_w[2] = Twc(2,3);
 }
 
 /*==========================================================================================
@@ -312,7 +314,156 @@ void LargeBA::RunDemo(const std::string& problem_filename)
 {
   // const string filename = "../problem-16-22106-pre.txt";
   //const string filename = "../problem-52-64053-pre.txt";
-  SolveBALProblem(filename);
+  SolveBALProblem(problem_filename);
+}
+
+void LargeBA::SolveBALProblem(const std::string filename)
+{
+    //生成初始数据
+    LoadBALProblem loadBALProblem(filename);
+    loadBALProblem.ReadData();
+
+    //生成初始为未被优化的ply点云文件
+    loadBALProblem.WriteToPLYFile("../old.ply");
+
+    //创建一个稀疏优化器对象
+    ::g2o::SparseOptimizer optimizer;
+
+    //使用稀疏求解器
+    //    g2o::LinearSolver<BalBlockSolver::PoseMatrixType>* linearSolver =
+    //            new g2o::LinearSolverCholmod<BalBlockSolver::PoseMatrixType>();
+    //    dynamic_cast<g2o::LinearSolverCholmod<BalBlockSolver::PoseMatrixType>* >(linearSolver)->setBlockOrdering(true);
+
+    ::g2o::LinearSolver<BalBlockSolver::PoseMatrixType>* linearSolver =
+            new ::g2o::LinearSolverCSparse<BalBlockSolver::PoseMatrixType>();
+    dynamic_cast<::g2o::LinearSolverCSparse<BalBlockSolver::PoseMatrixType>* >(linearSolver)->setBlockOrdering(true);
+
+    // //矩阵块求解器
+    // BalBlockSolver* solver_ptr = new BalBlockSolver(linearSolver);
+
+    // //使用LM算法
+    // ::g2o::OptimizationAlgorithmLevenberg* solver = new ::g2o::OptimizationAlgorithmLevenberg(solver_ptr);
+
+    // //优化器构建完成
+    // optimizer.setAlgorithm(solver);
+
+    // //打开调试输出
+    // optimizer.setVerbose(true);
+
+    // //增加pose顶点
+    // const int num_cam = loadBALProblem.num_cameras();
+    // for(int i = 0; i < num_cam; i++)
+    // {
+    //     Vector9d temVecCamera;
+    //     for (int j = 0; j < 9; j++)
+    //     {
+    //         temVecCamera[j] = loadBALProblem.num_observations_cameras(9*i+j);
+    //     }
+    //     VertexCameraBAL* pCamera = new VertexCameraBAL();
+    //     pCamera->setEstimate(temVecCamera);
+    //     pCamera->setId(i);
+    //     optimizer.addVertex(pCamera);
+
+    // }
+
+    // //增加路标顶点
+    // const int point_num = loadBALProblem.num_points();
+    // for(int i = 0; i < point_num; i++)
+    // {
+    //     Eigen::Vector3d temVecPoint;
+    //     for (int j = 0; j < 3; j++)
+    //     {
+    //         temVecPoint[j] = loadBALProblem.num_observations_points(3*i+j);
+    //     }
+    //     VertexPointBAL* pPoint = new VertexPointBAL();
+    //     pPoint->setEstimate(temVecPoint);
+
+    //     //这里加上pose的数量,避免跟pose的ID重复
+    //     pPoint->setId(i + num_cam);
+    //     pPoint->setMarginalized(true);
+    //     optimizer.addVertex(pPoint);
+    // }
+    // //增加边
+    // const int  num_observations =loadBALProblem.num_observations();
+    // for(int i = 0; i < num_observations; ++i)
+    // {
+    //     EdgeObservationBAL* bal_edge = new EdgeObservationBAL();
+
+    //     //得到相机ID和空间点ID
+    //     const int camera_id = loadBALProblem.camera_index(i);
+    //     const int point_id = loadBALProblem.point_index(i) + num_cam;
+
+    //     //使用了鲁棒核函数
+    //     ::g2o::RobustKernelHuber* rk = new ::g2o::RobustKernelHuber;
+    //     rk->setDelta(1.0);
+    //     bal_edge->setRobustKernel(rk);
+
+
+    //     bal_edge->setVertex(0,dynamic_cast<VertexCameraBAL*>(optimizer.vertex(camera_id)));
+    //     bal_edge->setVertex(1,dynamic_cast<VertexPointBAL*>(optimizer.vertex(point_id)));
+    //     bal_edge->setInformation(Eigen::Matrix2d::Identity());
+    //     bal_edge->setMeasurement(Eigen::Vector2d(loadBALProblem.num_observations_uv(2*i + 0),
+    //                                              loadBALProblem.num_observations_uv(2*i + 1)));
+
+    //     optimizer.addEdge(bal_edge);
+    // }
+
+    // optimizer.initializeOptimization();
+    // optimizer.setVerbose(true);
+    // optimizer.optimize(20);
+
+    // double* cameras = loadBALProblem.ReWritePoses();
+    // for(int i = 0; i < num_cam; i++)
+    // {
+    //     VertexCameraBAL* pCamera = dynamic_cast<VertexCameraBAL*>(optimizer.vertex(i));
+    //     Vector9d NewCameraVec = pCamera->estimate();
+    //     memcpy(cameras + i * 9, NewCameraVec.data(), sizeof(double) * 9);
+    // }
+
+    // double* points = loadBALProblem.ReWritePoints();
+    // for(int j = 0; j < point_num; j++)
+    // {
+    //     VertexPointBAL* pPoint = dynamic_cast<VertexPointBAL*>(optimizer.vertex(j + num_cam));
+    //     Eigen::Vector3d NewPointVec = pPoint->estimate();
+    //     memcpy(points + j * 3, NewPointVec.data(), sizeof(double) * 3);
+    // }
+
+    loadBALProblem.WriteToPLYFile("../new.ply");
+    LOG(INFO)<<"finished..." ;
+}
+
+void World2Camera(const Vector9d camera, const Eigen::Vector3d P_w, Eigen::Vector3d& P_c)
+{
+    //这里的非齐次坐标的变换要注意
+    Eigen::Vector4d Pw(P_w[0],P_w[1],P_w[2],1.0);
+    Sophus::Vector6d se3_RT;
+    se3_RT << camera[3],camera[4], camera[5],camera[0],camera[1], camera[2];
+
+    // Eigen::Vector4d P = Sophus::SE3::exp(se3_RT).matrix() * Pw;
+    // P_c[0] = P[0];
+    // P_c[1] = P[1];
+    // P_c[2] = P[2];
+}
+
+inline void CamProjectionWithDistortion(const Vector9d camera, const Eigen::Vector3d point, Eigen::Vector2d& u)
+{
+    Eigen::Vector3d p;
+    World2Camera(camera, point, p);
+
+    // Compute the center fo distortion
+    double xp = -p[0]/p[2];
+    double yp = -p[1]/p[2];
+
+    // Apply second and fourth order radial distortion
+    const double k1 = camera[7];
+    const double k2 = camera[8];
+
+    double r2 = xp*xp + yp*yp;
+    double distortion = 1.0 + k1*r2 + k2*r2*r2 ;
+
+    const double f = camera[6];
+    u[0] = f * distortion * xp;
+    u[1] = f * distortion * yp;
 }
 
 } // namespace g2o

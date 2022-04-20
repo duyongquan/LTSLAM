@@ -25,7 +25,7 @@
 #include "g2o/solvers/pcg/linear_solver_pcg.h"
 #include "g2o/types/sba/types_six_dof_expmap.h"
 #include "g2o/solvers/structure_only/structure_only_solver.h"
-// #include <sophus/se3.h>
+#include "sophus/se3.hpp"
 
 namespace xslam {
 namespace g2o {
@@ -59,7 +59,7 @@ public:
     VertexPointBAL() {}
     virtual void setToOriginImpl() {}
 
-    virtual void oplusImpl (const double* update)
+    virtual void oplusImpl (const double* update);
 
     virtual bool read (std::istream& in ) { return false;}
     virtual bool write (std::ostream& out) const {return false;}
@@ -75,21 +75,20 @@ public:
     virtual bool read ( std::istream& in ) {return false;}
     virtual bool write ( std::ostream& out ) const {return false;}
 
-    //使用G20数值导,不像书上调用ceres的自动求导功能.
+    // 使用G20数值导,不像书上调用ceres的自动求导功能.
     virtual void computeError() override;
 
     /***
      * 自己写雅克比矩阵
      */
     virtual void linearizeOplus() override;
-
 };
 
 //加载BAL的文本文件
 class LoadBALProblem
 {
 public:
-    LoadBALProblem( string filename ):filename_(filename) {}
+    LoadBALProblem(std::string filename ) : filename_(filename) {}
     ~LoadBALProblem()
     {
         delete[] point_index_;
@@ -136,7 +135,7 @@ private:
     int num_observations_;
     int observations_cameras_;
     int observations_points_;
-    string filename_;
+    std::string filename_;
 
     int* point_index_;
     int* camera_index_;
@@ -156,29 +155,29 @@ private:
      * 解决BAL问题
      * @param filename 将.txt文件传进来,最后将优化的后点云输出
      */
-    void SolveBALProblem(const string filename);
-
-    /***
-     * 实现将空间点坐标转换成相机坐标系所看到的点,即 Pc = Tcw * Pw
-     * @param camera 相机的9的数据，实际上只用到前面6个数据
-     * @param P_w 世界坐标系下的空间点
-     * @param P_c 相机坐标系下的空间点
-     */
-    void World2Camera(const Vector9d camera, const Eigen::Vector3d P_w, Eigen::Vector3d& P_c);
-
-    /***
-     * 去畸变，世界坐标下的空间点转换成相机坐标系下的空间,最后变成像素坐标的像素点,基本跟书上的一致
-     * 思想如下：
-     * P  =  R * X + t       (conversion from world to camera coordinates)
-     * p  = -P / P.z         (perspective division) 这里有个负号需要注意
-     * p' =  f * r(p) * p    (conversion to pixel coordinates)
-     * r(p) = 1.0 + k1 * ||p||^2 + k2 * ||p||^4.
-     * @param camera 相机的9的数据，实际上只用到前面6个数据
-     * @param point 世界坐标系下的空间点
-     * @param u 像素坐标的像素点
-     */
-    inline void CamProjectionWithDistortion(const Vector9d camera, const Vector3d point, Vector2d& u);
+    void SolveBALProblem(const std::string filename);
 };
+
+/***
+ * 实现将空间点坐标转换成相机坐标系所看到的点,即 Pc = Tcw * Pw
+ * @param camera 相机的9的数据，实际上只用到前面6个数据
+ * @param P_w 世界坐标系下的空间点
+ * @param P_c 相机坐标系下的空间点
+ */
+void World2Camera(const Vector9d camera, const Eigen::Vector3d P_w, Eigen::Vector3d& P_c);
+
+/***
+ * 去畸变，世界坐标下的空间点转换成相机坐标系下的空间,最后变成像素坐标的像素点,基本跟书上的一致
+ * 思想如下：
+ * P  =  R * X + t       (conversion from world to camera coordinates)
+ * p  = -P / P.z         (perspective division) 这里有个负号需要注意
+ * p' =  f * r(p) * p    (conversion to pixel coordinates)
+ * r(p) = 1.0 + k1 * ||p||^2 + k2 * ||p||^4.
+ * @param camera 相机的9的数据，实际上只用到前面6个数据
+ * @param point 世界坐标系下的空间点
+ * @param u 像素坐标的像素点
+ */
+inline void CamProjectionWithDistortion(const Vector9d camera, const Eigen::Vector3d point, Eigen::Vector2d& u);
 
 } // namespace g2o
 } // namespace xslam
