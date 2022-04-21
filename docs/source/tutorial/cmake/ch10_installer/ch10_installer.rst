@@ -7,236 +7,369 @@
 ==========================
 
 10.1 安装项目
---------------------------
+-------------------------
 
 .. NOTE::
 
-  此示例代码可以在 https://github.com/dev-cafe/cmake-cookbook/tree/v1.0/chapter-11/recipe-01 中找到。
+  此示例代码可以在 https://github.com/dev-cafe/cmake-cookbook/tree/v1.0/chapter-10/recipe-01 中找到，其中有一个C++示例和一个Fortran示例。
   该示例在CMake 3.6版(或更高版本)中是有效的，并且已经在GNU/Linux、macOS和Windows上进行过测试。
 
-如果代码是开源的，用户将能够下载项目的源代码，并使用完全定制的CMake脚本自行构建。当然，打包操作也可以使用脚本完成，
-但是CPack提供了更简单和可移植的替代方案。本示例将指导您创建一些包:
+第一个示例中，将介绍我们的小项目和一些基本概念，这些概念也将在后面的示例中使用。安装文件、库和可执行文件是一项非常基础的任务，但是也可能会带来一些缺陷。
+我们将带您了解这些问题，并展示如何使用CMake有效地避开这些缺陷。
 
+**准备工作**
 
-* 源代码包：可以将源代码直接压缩成归档文件，进行发送。用户将不必为特定的版本控制系统操心。
-* 二进制包：工具将新构建的目标以打包的方式到归档文件中。这个功能非常有用，但可能不够健壮，无法发布库和可执行程序。
-* 平台原生的二进制安装：CPack能够以许多不同的格式生成二进制安装程序，因此可以将软件发布到不同的平台。我们将展示如何生成安装程序:
-
-  * 基于Debian的GNU/Linux发行版的.deb格式： https://manpages.debian.org/unstable/dpkg-dev/deb.5.en.html
-  * 基于Red Hat的GNU/Linux发行版的.rpm格式： http://rpm.org/
-  * macOS包的.dmg格式: https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html
-  * Windows的NSIS格式: http://nsis.sourceforge.net/Main_Page
-
-*准备工作*
-
-我们将使用第10章第3节的示例，项目树由以下目录和文件组成:
+第1章第3节的示例，几乎复用：只添加对UUID库的依赖。这个依赖是有条件的，如果没有找到UUID库，我们将通过预处理程序排除使用UUID库的代码。项目布局如下:
 
 .. code-block:: bash
 
   .
-  ├── cmake
-  │    ├── coffee.icns
-  │    ├── Info.plist.in
-  │    └── messageConfig.cmake.in
-  ├── CMakeCPack.cmake
   ├── CMakeLists.txt
-  ├── INSTALL.md
-  ├── LICENSE
   ├── src
   │    ├── CMakeLists.txt
   │    ├── hello-world.cpp
   │    ├── Message.cpp
   │    └── Message.hpp
   └── tests
-      ├── CMakeLists.txt
-      └── use_target
-          ├── CMakeLists.txt
-          └── use_message.cpp
+      └── CMakeLists.txt
 
-由于本示例的重点是使用CPack，所以不会讨论源码。我们只会在CMakeCPack.cmake中添加打包指令。此外，还添加了INSTALL.md和LICENSE文件：
-打包要求需要包含安装说明和项目许可信息。
+我们已经看到，有三个CMakeLists.txt，一个是主CMakeLists.txt，另一个是位于src目录下的，还有一个是位于test目录下的。
+
+Message.hpp头文件包含以下内容:
+
+.. code-block:: c++
+
+  #pragma once
+  #include <iosfwd>
+  #include <string>
+  class Message
+  {
+  public:
+    Message(const std::string &m) : message_(m) {}
+    friend std::ostream &operator<<(std::ostream &os, Message &obj)
+    {
+      return obj.printObject(os);
+    }
+  private:
+    std::string message_;
+    std::ostream &printObject(std::ostream &os);
+  };
+  std::string getUUID();
+
+Message.cpp中有相应的实现：
+
+.. code-block:: c++
+
+  #include "Message.hpp"
+  #include <iostream>
+  #include <string>
+  #ifdef HAVE_UUID
+  #include <uuid/uuid.h>
+  #endif
+  std::ostream &Message::printObject(std::ostream &os)
+  {
+    os << "This is my very nice message: " << std::endl;
+    os << message_ << std::endl;
+    os << "...and here is its UUID: " << getUUID();
+    return os;
+  }
+  #ifdef HAVE_UUID
+  std::string getUUID()
+  {
+    uuid_t uuid;
+    uuid_generate(uuid);
+    char uuid_str[37];
+    uuid_unparse_lower(uuid, uuid_str);
+    uuid_clear(uuid);
+    std::string uuid_cxx(uuid_str);
+    return uuid_cxx;
+  }
+  #else
+  std::string getUUID()
+  {
+    return "Ooooops, no UUID for you!";
+  }
+  #endif
+
+最后，示例hello-world.cpp内容如下:
+
+.. code-block:: c++
+
+  #include <cstdlib>
+  #include <iostream>
+  #include "Message.hpp"
+  int main()
+  {
+    Message say_hello("Hello, CMake World!");
+    std::cout << say_hello << std::endl;
+    Message say_goodbye("Goodbye, CMake World");
+    std::cout << say_goodbye << std::endl;
+    return EXIT_SUCCESS;
+  }
 
 **具体实施**
 
-让我们看看需要添加到这个项目中的打包指令。我们将在CMakeCPack.cmake中收集它们，并在在CMakeLists.txt的末尾包含这个模块include(cmakecpackage.cmake):
+我们先来看一下主CMakeLists.txt:
 
-1 我们声明包的名称，与项目的名称相同，因此我们使用PROJECT_NAME的CMake变量:
-
-.. code-block:: cmake
-
-  set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
-
-2 声明包的供应商：
+1 声明CMake最低版本，并定义一个C++11项目。请注意，我们已经为我们的项目设置了一个版本，在project中使用VERSION进行指定:
 
 .. code-block:: cmake
 
-  set(CPACK_PACKAGE_VENDOR "CMake Cookbook")
+  # CMake 3.6 needed for IMPORTED_TARGET option
+  # to pkg_search_module
+  cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
+  project(recipe-01
+  LANGUAGES CXX
+  VERSION 1.0.0
+  )
+  # <<< General set up >>>
+  set(CMAKE_CXX_STANDARD 11)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-3 打包的源代码将包括一个描述文件。这是带有安装说明的纯文本文件:
-
-.. code-block:: cmake
-
-  set(CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/INSTALL.md")
-
-4 还添加了一个包的描述:
-
-.. code-block:: cmake
-
-  set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "message: a small messaging library")
-
-5 许可证文件也将包括在包中:
-
-.. code-block:: cmake
-
-  set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
-
-6 从发布包中安装时，文件将放在/opt/recipe-01目录下:
+2 用户可以通过CMAKE_INSTALL_PREFIX变量定义安装目录。CMake会给这个变量设置一个默认值：Windows上的C:\Program Files和Unix上的/usr/local。
+我们将会打印安装目录的信息：
 
 .. code-block:: cmake
 
-  set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/${PROJECT_NAME}")
+  message(STATUS "Project will be installed to ${CMAKE_INSTALL_PREFIX}")
 
-7 CPack所需的主要、次要和补丁版本:
-
-.. code-block:: cmake
-
-  set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
-  set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
-  set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
-
-8 设置了在包装的时候需要忽略的文件列表和目录:
+3 默认情况下，我们更喜欢以Release的方式配置项目。用户可以通过CMAKE_BUILD_TYPE设置此变量，从而改变配置类型，我们将检查是否存在这种情况。
+如果没有，将设置为默认值:
 
 .. code-block:: cmake
 
-  set(CPACK_SOURCE_IGNORE_FILES "${PROJECT_BINARY_DIR};/.git/;.gitignore")
+  if(NOT CMAKE_BUILD_TYPE)
+      set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+  endif()
+  message(STATUS "Build type set to ${CMAKE_BUILD_TYPE}")
 
-9 列出了源代码归档的打包生成器——在我们的例子中是ZIP，用于生成.ZIP归档，TGZ用于.tar.gz归档:
-
-.. code-block:: cmake
-
-  set(CPACK_SOURCE_GENERATOR "ZIP;TGZ")
-
-10 我们还列出了二进制存档生成器:
+4 接下来，告诉CMake在何处构建可执行、静态和动态库目标。便于在用户不打算安装项目的情况下，访问这些构建目标。
+这里使用标准CMake的GNUInstallDirs.cmake模块。这将确保的项目布局的合理性和可移植性：
 
 .. code-block:: cmake
 
-  set(CPACK_GENERATOR "ZIP;TGZ")
+  include(GNUInstallDirs)
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+      ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY
+      ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
+      ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 
-11 现在也可声明平台原生二进制安装程序，从DEB和RPM包生成器开始，不过只适用于GNU/Linux:
+5 虽然，前面的命令配置了构建目录中输出的位置，但是需要下面的命令来配置可执行程序、库以及安装前缀中包含的文件的位置。
+  它们大致遵循相同的布局，但是我们定义了新的INSTALL_LIBDIR、INSTALL_BINDIR、INSTALL_INCLUDEDIR和INSTALL_CMAKEDIR变量。当然，也可以覆盖这些变量：
 
 .. code-block:: cmake
 
-  if(UNIX)
-    if(CMAKE_SYSTEM_NAME MATCHES Linux)
-      list(APPEND CPACK_GENERATOR "DEB")
-      set(CPACK_DEBIAN_PACKAGE_MAINTAINER "robertodr")
-      set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
-      set(CPACK_DEBIAN_PACKAGE_DEPENDS "uuid-dev")
-      list(APPEND CPACK_GENERATOR "RPM")
-      set(CPACK_RPM_PACKAGE_RELEASE "1")
-      set(CPACK_RPM_PACKAGE_LICENSE "MIT")
-      set(CPACK_RPM_PACKAGE_REQUIRES "uuid-devel")
+  # Offer the user the choice of overriding the installation directories
+  set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR} CACHE PATH "Installation directory for libraries")
+  set(INSTALL_BINDIR ${CMAKE_INSTALL_BINDIR} CACHE PATH "Installation directory for executables")
+  set(INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR} CACHE PATH "Installation directory for header files")
+  if(WIN32 AND NOT CYGWIN)
+      set(DEF_INSTALL_CMAKEDIR CMake)
+  else()
+      set(DEF_INSTALL_CMAKEDIR share/cmake/${PROJECT_NAME})
+  endif()
+  set(INSTALL_CMAKEDIR ${DEF_INSTALL_CMAKEDIR} CACHE PATH "Installation directory for CMake files")
+
+6 报告组件安装的路径:
+
+.. code-block:: cmake
+
+  # Report to user
+  foreach(p LIB BIN INCLUDE CMAKE)
+    file(TO_NATIVE_PATH ${CMAKE_INSTALL_PREFIX}/${INSTALL_${p}DIR} _path )
+    message(STATUS "Installing ${p} components to ${_path}")
+    unset(_path)
+  endforeach()
+
+7 主CMakeLists.txt文件中的最后一个指令添加src子目录，启用测试，并添加tests子目录：
+
+.. code-block:: cmake
+
+  add_subdirectory(src)
+  enable_testing()
+  add_subdirectory(tests)
+
+现在我们继续分析src/CMakeLists.txt，其定义了构建的实际目标：
+
+1 我们的项目依赖于UUID库：
+
+.. code-block:: cmake
+
+  # Search for pkg-config and UUID
+  find_package(PkgConfig QUIET)
+  if(PKG_CONFIG_FOUND)
+    pkg_search_module(UUID uuid IMPORTED_TARGET)
+    if(TARGET PkgConfig::UUID)
+      message(STATUS "Found libuuid")
+      set(UUID_FOUND TRUE)
     endif()
   endif()
 
-12 如果我们在Windows上，我们会想要生成一个NSIS安装程序:
+2 我们希望建立一个动态库，将该目标声明为message-shared:
 
 .. code-block:: cmake
 
-  if(WIN32 OR MINGW)
-    list(APPEND CPACK_GENERATOR "NSIS")
-    set(CPACK_NSIS_PACKAGE_NAME "message")
-    set(CPACK_NSIS_CONTACT "robertdr")
-    set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
-  endif()
+  add_library(message-shared SHARED "")
 
-13 另一方面，在macOS上，bundle包是我们的安装程序的选择:
+3 这个目标由target_sources命令指定:
 
 .. code-block:: cmake
 
+  target_sources(message-shared
+    PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/Message.cpp
+    )
+
+4 我们为目标声明编译时定义和链接库。请注意，所有这些都是PUBLIC，以确保所有依赖的目标将正确继承它们:
+
+.. code-block:: cmake
+
+    target_compile_definitions(message-shared
+    PUBLIC
+        $<$<BOOL:${UUID_FOUND}>:HAVE_UUID>
+    )
+    target_link_libraries(message-shared
+    PUBLIC
+        $<$<BOOL:${UUID_FOUND}>:PkgConfig::UUID>
+    )
+
+5 然后设置目标的附加属性:
+
+.. code-block:: cmake
+
+  set_target_properties(message-shared
+    PROPERTIES
+      POSITION_INDEPENDENT_CODE 1
+      SOVERSION ${PROJECT_VERSION_MAJOR}
+      OUTPUT_NAME "message"
+      DEBUG_POSTFIX "_d"
+      PUBLIC_HEADER "Message.hpp"
+      MACOSX_RPATH ON
+      WINDOWS_EXPORT_ALL_SYMBOLS ON
+    )
+
+6 最后，为“Hello, world”程序添加可执行目标:
+
+.. code-block:: bash
+
+  add_executable(hello-world_wDSO hello-world.cpp)
+  hello-world_wDSO可执行目标，会链接到动态库：
+
+  target_link_libraries(hello-world_wDSO
+    PUBLIC
+        message-shared
+    )
+
+src/CMakeLists.txt文件中，还包含安装指令。考虑这些之前，我们需要设置可执行文件的RPATH：
+
+1 使用CMake路径操作，我们可以设置message_RPATH变量。这将为GNU/Linux和macOS设置适当的RPATH:
+
+.. code-block:: bash
+
+  RPATH
+  file(RELATIVE_PATH _rel ${CMAKE_INSTALL_PREFIX}/${INSTALL_BINDIR} ${CMAKE_INSTALL_PREFIX})
   if(APPLE)
-    list(APPEND CPACK_GENERATOR "Bundle")
-    set(CPACK_BUNDLE_NAME "message")
-    configure_file(${PROJECT_SOURCE_DIR}/cmake/Info.plist.in Info.plist @ONLY)
-    set(CPACK_BUNDLE_PLIST ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
-    set(CPACK_BUNDLE_ICON ${PROJECT_SOURCE_DIR}/cmake/coffee.icns)
+      set(_rpath "@loader_path/${_rel}")
+  else()
+      set(_rpath "\$ORIGIN/${_rel}")
   endif()
+  file(TO_NATIVE_PATH "${_rpath}/${INSTALL_LIBDIR}" message_RPATH)
 
-14 我们在现有系统的包装生成器上，向用户打印一条信息:
-
-.. code-block:: cmake
-
-  message(STATUS "CPack generators: ${CPACK_GENERATOR}")
-
-15 最后，我们包括了CPack.cmake标准模块。这将向构建系统添加一个包和一个package_source目标:
+2 现在，可以使用这个变量来设置可执行目标hello-world_wDSO的RPATH(通过目标属性实现)。我们也可以设置额外的属性，稍后会对此进行更多的讨论:
 
 .. code-block:: cmake
 
-  include(CPack)
+  set_target_properties(hello-world_wDSO
+    PROPERTIES
+      MACOSX_RPATH ON
+      SKIP_BUILD_RPATH OFF
+      BUILD_WITH_INSTALL_RPATH OFF
+      INSTALL_RPATH "${message_RPATH}"
+      INSTALL_RPATH_USE_LINK_PATH ON
+    )
 
-现在来配置这个项目：
+3 终于可以安装库、头文件和可执行文件了！使用CMake提供的install命令来指定安装位置。注意，路径是相对的，我们将在后续进一步讨论这一点:
+
+.. code-block:: cmake
+
+  install(
+    TARGETS
+      message-shared
+      hello-world_wDSO
+    ARCHIVE
+      DESTINATION ${INSTALL_LIBDIR}
+      COMPONENT lib
+    RUNTIME
+      DESTINATION ${INSTALL_BINDIR}
+      COMPONENT bin
+    LIBRARY
+      DESTINATION ${INSTALL_LIBDIR}
+      COMPONENT lib
+    PUBLIC_HEADER
+      DESTINATION ${INSTALL_INCLUDEDIR}/message
+      COMPONENT dev
+    )
+
+4 tests目录中的CMakeLists.txt文件包含简单的指令，以确保“Hello, World”可执行文件能够正确运行：
+
+.. code-block:: cmake
+
+  add_test(
+    NAME test_shared
+    COMMAND $<TARGET_FILE:hello-world_wDSO>
+    )
+
+6 现在让我们配置、构建和安装项目，并查看结果。添加安装指令时，CMake就会生成一个名为install的新目标，该目标将运行安装规则:
 
 .. code-block:: bash
 
   $ mkdir -p build
   $ cd build
-  $ cmake ..
+  $ cmake -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$HOME/Software/recipe-01
+  $ cmake --build . --target install
 
-使用下面的命令，我们可以列出可用的目标(示例输出是在使用Unix Makefile作为生成器的GNU/Linux系统上获得的):
-
-.. code-block:: bash
-
-  $ cmake --build . --target help
-  The following are some of the valid targets for this Makefile:
-  ... all (the default if no target is provided)
-  ... clean
-  ... depend
-  ... install/strip
-  ... install
-  ... package_source
-  ... package
-  ... install/local
-  ... test
-  ... list_install_components
-  ... edit_cache
-  ... rebuild_cache
-  ... hello- world
-  ... message
-
-我们可以看到package和package_source目标是可用的。可以使用以下命令生成源包:
+GNU/Linux构建目录的内容如下:
 
 .. code-block:: bash
 
-  $ cmake --build . --target package_source
-  Run CPack packaging tool for source...
-  CPack: Create package using ZIP
-  CPack: Install projects
-  CPack: - Install directory: /home/user/cmake-cookbook/chapter-11/recipe-01/cxx-example
-  CPack: Create package
-  CPack: - package: /home/user/cmake-cookbook/chapter- 11/recipe-01/cxx-example/build/recipe-01-1.0.0-Source.zip generated.
-  CPack: Create package using TGZ
-  CPack: Install projects
-  CPack: - Install directory: /home/user/cmake-cookbook/chapter- 11/recipe-01/cxx-example
-  CPack: Create package
-  CPack: - package: /home/user/cmake-cookbook/chapter-11/recipe-01/cxx-example/build/recipe-01- 1.0.0-Source.tar.gz generated.
+  build
+  ├── bin
+  │    └── hello-world_wDSO
+  ├── CMakeCache.txt
+  ├── CMakeFiles
+  ├── cmake_install.cmake
+  ├── CTestTestfile.cmake
+  ├── install_manifest.txt
+  ├── lib64
+  │    ├── libmessage.so -> libmessage.so.1
+  │    └── libmessage.so.1
+  ├── Makefile
+  ├── src
+  ├── Testing
+  └── tests
 
-同样，也可以构建二进制包:
-
-.. code-block:: bash
-
-  $ cmake --build . --target package message-1.0.0-Linux.deb
-
-例子中，最后得到了以下二进制包:
+另一方面，在安装位置，可以找到如下的目录结构:
 
 .. code-block:: bash
 
-  message-1.0.0-Linux.rpm
-  message-1.0.0-Linux.tar.gz
-  message-1.0.0-Linux.zip
+  $HOME/Software/recipe-01/
+  ├── bin
+  │    └── hello-world_wDSO
+  ├── include
+  │    └── message
+  │        └── Message.hpp
+  └── lib64
+      ├── libmessage.so -> libmessage.so.1
+      └── libmessage.so.1
+
+这意味着安装指令中给出的位置，是相对于用户给定的CMAKE_INSTALL_PREFIX路径。
 
 
 10.2 生成输出头文件
---------------------------
+-------------------------------------------------------------
 
 .. NOTE::
 
@@ -513,7 +646,7 @@ GNU/Linux上，使用GNU编译器，CMake将生成以下messageExport.h头文件
 
 
 10.3 输出目标
---------------------------
+-----------------------------------------------------------------------
 
 .. NOTE::
 
@@ -843,7 +976,7 @@ CMakeLists.txt的最后一部分生成配置文件。包括CMakePackageConfigHel
 
 
 10.4 安装超级构建
---------------------------
+----------------------------------------------------
 
 .. NOTE::
 
@@ -851,7 +984,8 @@ CMakeLists.txt的最后一部分生成配置文件。包括CMakePackageConfigHel
   该示例在CMake 3.6版(或更高版本)中是有效的，并且已经在GNU/Linux、macOS和Windows上进行过测试。
 
 我们的消息库取得了巨大的成功，许多其他程序员都使用它，并且非常满意。也希望在自己的项目中使用它，但是不确定如何正确地管理依赖关系。
-可以用自己的代码附带消息库的源代码，但是如果该库已经安装在系统上了应该怎么做呢？第8章，展示了超级构建的场景，但是不确定如何安装这样的项目。本示例将带您了解安装超级构建的安装细节。
+可以用自己的代码附带消息库的源代码，但是如果该库已经安装在系统上了应该怎么做呢？第8章，展示了超级构建的场景，但是不确定如何安装这样的项目。
+本示例将带您了解安装超级构建的安装细节。
 
 **准备工作**
 
