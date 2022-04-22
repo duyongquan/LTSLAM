@@ -8,20 +8,11 @@ namespace g2o {
 
 TEST(ICP, demo_point)
 {
-    LOG(INFO) << "Run G2O ICP kPoint2Point.";
+    LOG(INFO) << "Run G2O ICP.";
     
     ICP demo;
-    demo.RunDemo(ICP::Mode::kPoint2Point);
+    demo.RunDemo();
 }
-
-TEST(ICP, demo_plane)
-{
-    LOG(INFO) << "Run G2O ICP kPoint2Plane.";
-    
-    ICP demo;
-    demo.RunDemo(ICP::Mode::kPoint2Plane);
-}
-
 
 } // namespace g2o
 } // namespace xslam
