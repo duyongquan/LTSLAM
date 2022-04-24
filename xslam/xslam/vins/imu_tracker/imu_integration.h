@@ -7,13 +7,13 @@
 
 #include "xslam/vins/sensor/imu_data.h"
 #include "xslam/vins/common/time.h"
-#include "xslam/vins/estimator/proto/imu_noise.pb.h"
+#include "xslam/vins/imu_tracker/proto/imu_tracker_options.pb.h"
 
 #include <ceres/ceres.h>
 
 namespace xslam {
 namespace vins {
-namespace estimator {
+namespace imu_tracker {
     
 enum StateOrder
 {
@@ -93,7 +93,7 @@ public:
     States Evaluate(const ImuPose& pose_i, const ImuPose& pose_j);
 
 private:
-    proto::ImuNoiseOptions options_;
+    proto::ImuTrackerOptions* options_;
     common::Time time_;
     double sum_dt_;
     sensor::ImuData imu_i; // i 时刻
@@ -113,7 +113,7 @@ private:
     std::deque<sensor::ImuData> queue_;
 };
 
-} // namespace estimator
+} // namespace imu_tracker
 } // namespace vins
 } // namespace xslam 
 

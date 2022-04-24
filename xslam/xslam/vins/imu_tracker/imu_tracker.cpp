@@ -1,8 +1,8 @@
-#include "xslam/vins/estimator/imu_tracker.h"
+#include "xslam/vins/imu_tracker/imu_tracker.h"
 
 namespace xslam {
 namespace vins {
-namespace estimator {
+namespace imu_tracker {
 
 ImuTracker::ImuTracker(const proto::ImuTrackerOptions& options, common::ThreadPool* pool)
   : thread_pool_(pool)
@@ -27,6 +27,6 @@ void ImuTracker::DebugOptionsString()
   
 }
 
-} // namespace estimator
+} // namespace imu_tracker
 } // namespace vins
 } // namespace xslam 

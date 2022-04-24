@@ -16,11 +16,11 @@ Estimator::Estimator(const proto::EstimatorOptions &options)
         options_.feature_tracker_options(), pool_.get());
 
     // IMU
-    imu_tracker_ = std::make_shared<ImuTracker>(
+    imu_tracker_ = std::make_shared<imu_tracker::ImuTracker>(
         options_.imu_tracker_options(), pool_.get());
 }
 
-ImuTracker* Estimator::imu_tracker()
+imu_tracker::ImuTracker* Estimator::imu_tracker()
 {
     return imu_tracker_.get();
 }

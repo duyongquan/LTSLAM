@@ -3,13 +3,13 @@
 
 #include "xslam/vins/sensor/imu_data.h"
 #include "xslam/vins/common/thread_pool.h"
-#include "xslam/vins/estimator/proto/imu_tracker_options.pb.h"
+#include "xslam/vins/imu_tracker/proto/imu_tracker_options.pb.h"
 
 #include <deque>
 
 namespace xslam {
 namespace vins {
-namespace estimator {
+namespace imu_tracker {
 
 class ImuTracker
 {
@@ -29,7 +29,7 @@ private:
     const proto::ImuTrackerOptions options_;
 };
 
-} // namespace estimator
+} // namespace imu_tracker
 } // namespace vins
 } // namespace xslam 
 

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package xslam.vins.estimator.proto;
+package xslam.vins.imu_tracker.proto;
 
 message ImuTrackerOptions 
 {
@@ -15,10 +15,6 @@ message ImuTrackerOptions
 
     // accelerometer bias random work noise standard deviation
     double acceleration_w = 4;  
-
-
-
-
 
     bool print_options = 20;  
 }

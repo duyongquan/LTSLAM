@@ -1,9 +1,9 @@
-#include "xslam/vins/estimator/imu_integration.h"
+#include "xslam/vins/imu_tracker/imu_integration.h"
 
 
 namespace xslam {
 namespace vins {
-namespace estimator {
+namespace imu_tracker {
 
 double ACC_N, ACC_W;
 double GYR_N, GYR_W;
@@ -99,6 +99,6 @@ ImuIntegration::States ImuIntegration::Evaluate(const ImuPose& pose_i, const Imu
     return residuals;
 }
 
-} // namespace estimator
+} // namespace imu_tracker
 } // namespace vins
 } // namespace xslam 

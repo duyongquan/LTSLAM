@@ -3,7 +3,7 @@ syntax = "proto3";
 package xslam.vins.estimator.proto;
 
 import "xslam/vins/feature_tracker/proto/feature_tracker_options.proto";
-import "xslam/vins/estimator/proto/imu_tracker_options.proto";
+import "xslam/vins/imu_tracker/proto/imu_tracker_options.proto";
 
 message EstimatorOptions 
 {
@@ -11,7 +11,7 @@ message EstimatorOptions
   feature_tracker.proto.FeatureTrackerOptions feature_tracker_options = 1; 
 
   // imu tracker 
-  ImuTrackerOptions imu_tracker_options = 2;
+  imu_tracker.proto.ImuTrackerOptions imu_tracker_options = 2;
 
   int32 thread_nums = 3;
 }
