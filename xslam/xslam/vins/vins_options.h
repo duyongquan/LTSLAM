@@ -5,21 +5,16 @@
 #include <tuple>
 
 #include "xslam/vins/common/lua_parameter_dictionary.h"
+#include "xslam/vins/estimator/proto/estimator_options.pb.h"
 
 namespace xslam {
 namespace vins {
 
-struct VINSOptions {
-    std::string tracking_frame;
-    std::string filestem;
-    double resolution;
-};
+estimator::proto::EstimatorOptions CreateVinsOptions(common::LuaParameterDictionary* const lua_parameter_dictionary);
 
-VINSOptions CreateVinsOptions(common::LuaParameterDictionary* const lua_parameter_dictionary);
+estimator::proto::EstimatorOptions LoadOptions(const std::string& configuration_directory, const std::string& configuration_basename);
 
-VINSOptions LoadOptions(const std::string& configuration_directory, const std::string& configuration_basename);
-
-void VinsOptionsDebugToString(const VINSOptions& options);
+void VinsOptionsDebugToString(const estimator::proto::EstimatorOptions& options);
 
 } // namespace vins
 } // namespace xslam

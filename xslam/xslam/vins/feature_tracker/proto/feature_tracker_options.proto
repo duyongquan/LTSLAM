@@ -19,4 +19,6 @@ message FeatureTrackerOptions
     int32 fisheye = 12;
     bool publish_this_frame = 13;
     double fundamental_threshold = 14;
+
+    bool print_options = 15;
 }

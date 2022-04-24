@@ -7,27 +7,38 @@
 #include "xslam/vins/sensor/image_data.h"
 #include "xslam/vins/feature_tracker/proto/feature_tracker_options.pb.h"
 #include "xslam/vins/camera/pinhole_camera.h"
+#include "xslam/vins/common/messages/point_cloud.h"
 
 #include <thread>
 #include <string>
 #include <memory>
+#include <deque>
 
 #include <opencv2/opencv.hpp>
 #include <Eigen/Dense>
 
 namespace xslam {
 namespace vins {
+
 namespace feature_tracker {
 
 class FeatureTracker 
 {
 public:
+    using FeaturePoints = common::messages::PointCloud;
+
     FeatureTracker(
         const proto::FeatureTrackerOptions &options,
         common::ThreadPool* pool);
-    FeatureTracker() {}
+
+    FeatureTracker(const FeatureTracker&) = delete;
+    FeatureTracker& operator=(const FeatureTracker&) = delete;
 
     void AddImageData(const sensor::ImageData& image);
+
+    bool GetNewestFeaturePoints(FeaturePoints& points);
+
+private:
 
     void SetMask();
 
@@ -43,7 +54,6 @@ public:
 
     void RunTask();
 
-private:
     // Handles a new work item.
     void AddWorkItem(const common::Task::WorkItem& work_item);
 
@@ -52,6 +62,8 @@ private:
     void ReduceVector(std::vector<cv::Point2f>& v, std::vector<uchar> status);
 
     void ReduceVector(std::vector<int> &v, std::vector<uchar> status);
+
+    void DebugOptionsString();
 
     common::ThreadPool *thread_pool_;
     const proto::FeatureTrackerOptions options_;
@@ -73,6 +85,7 @@ private:
     double prev_time;
 
     inline static int n_id = 0;
+    std::deque<FeaturePoints> queue_;
 };
 
 std::unique_ptr<FeatureTracker> CreateFeatureTracker(

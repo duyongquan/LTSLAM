@@ -10,19 +10,19 @@ namespace xslam {
 namespace vins {
 
 
-VINSOptions CreateVinsOptions(common::LuaParameterDictionary* const lua_parameter_dictionary) 
+estimator::proto::EstimatorOptions CreateVinsOptions(common::LuaParameterDictionary* const lua_parameter_dictionary) 
 {
-    VINSOptions options;
-    options.tracking_frame  = lua_parameter_dictionary->GetString("tracking_frame");
-    options.filestem   = lua_parameter_dictionary->GetString("filestem");
-    options.resolution = lua_parameter_dictionary->GetDouble("resolution");
+    estimator::proto::EstimatorOptions options;
+    // options.tracking_frame  = lua_parameter_dictionary->GetString("tracking_frame");
+    // options.filestem   = lua_parameter_dictionary->GetString("filestem");
+    // options.resolution = lua_parameter_dictionary->GetDouble("resolution");
 
     // Debug 
     VinsOptionsDebugToString(options);
     return options;
 }
 
-VINSOptions LoadOptions(
+estimator::proto::EstimatorOptions LoadOptions(
     const std::string& configuration_directory,
     const std::string& configuration_basename) 
 {
@@ -37,11 +37,11 @@ VINSOptions LoadOptions(
     return CreateVinsOptions(&lua_parameter_dictionary);
 }
 
-void VinsOptionsDebugToString(const VINSOptions& options)
+void VinsOptionsDebugToString(const estimator::proto::EstimatorOptions& options)
 {
-    LOG(INFO) << "tracking_frame = " << options.tracking_frame;
-    LOG(INFO) << "filestem = " << options.filestem;
-    LOG(INFO) << "resolution = " << options.resolution;
+    // LOG(INFO) << "tracking_frame = " << options.tracking_frame;
+    // LOG(INFO) << "filestem = " << options.filestem;
+    // LOG(INFO) << "resolution = " << options.resolution;
 }
 
 

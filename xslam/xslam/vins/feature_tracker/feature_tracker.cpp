@@ -1,23 +1,80 @@
 #include "xslam/vins/feature_tracker/feature_tracker.h"
 
 #include <chrono>
+#include <vector>
+#include <set>
 
 namespace xslam {
 namespace vins {
 namespace feature_tracker {
 
 FeatureTracker::FeatureTracker(
-    const proto::FeatureTrackerOptions &options, common::ThreadPool* pool)
+    const proto::FeatureTrackerOptions &options,
+    common::ThreadPool* pool)
     : options_(options),
       thread_pool_(pool)
 {
-    
+    if (options_.print_options()) {
+      DebugOptionsString();
+    }
 }
 
 void FeatureTracker::AddImageData(const sensor::ImageData& image)
 {
    
-        
+    if (!options_.publish_this_frame()) {
+      return;
+    }
+
+    FeaturePoints feature_points;
+    common::messages::ChannelFloat32 id_of_point;
+    common::messages::ChannelFloat32 u_of_point;
+    common::messages::ChannelFloat32 v_of_point;
+    common::messages::ChannelFloat32 velocity_x_of_point;
+    common::messages::ChannelFloat32 velocity_y_of_point;
+
+    // feature_points_.header = img_msg->header;
+    feature_points.header.frame_id = "world";
+    for (unsigned int j = 0; j < ids.size(); j++)
+    {
+        if (track_cnt[j] > 1)
+        {
+            int p_id = ids[j];
+            common::messages::Point32 p;
+            // p.x = un_pts[j].x;
+            // p.y = un_pts[j].y;
+            p.z = 1;
+
+            feature_points.points.push_back(p);
+            id_of_point.values.push_back(p_id);
+            u_of_point.values.push_back(cur_pts[j].x);
+            v_of_point.values.push_back(cur_pts[j].y);
+            velocity_x_of_point.values.push_back(pts_velocity[j].x);
+            velocity_y_of_point.values.push_back(pts_velocity[j].y);
+        }
+    }
+  
+    feature_points.channels.push_back(id_of_point);
+    feature_points.channels.push_back(u_of_point);
+    feature_points.channels.push_back(v_of_point);
+    feature_points.channels.push_back(velocity_x_of_point);
+    feature_points.channels.push_back(velocity_y_of_point);
+    queue_.push_back(feature_points);
+
+    if (!options_.show_track()) {
+      return;
+    }
+}
+
+bool FeatureTracker::GetNewestFeaturePoints(FeaturePoints& points)
+{
+    if (queue_.empty()) {
+      return false;
+    }
+
+    points = queue_.front();
+    queue_.pop_front();
+    return true;
 }
 
 void FeatureTracker::SetMask()
@@ -233,6 +290,11 @@ void FeatureTracker::ReduceVector(std::vector<int> &v, const std::vector<uchar> 
         }
     }     
     v.resize(j);
+}
+
+void FeatureTracker::DebugOptionsString()
+{
+
 }
 
 } // namespace feature_tracker

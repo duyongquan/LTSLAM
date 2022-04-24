@@ -9,10 +9,10 @@ namespace vins {
 const std::string kImuTopic = "imu";
 const std::string kImageTopic = "image";
 
-VinsBuilder::VinsBuilder(const estimator::proto::VinsBuilderOptions& options)
+VinsBuilder::VinsBuilder(const estimator::proto::EstimatorOptions& options)
     : options_(options)
 {
-    // estimator_ = std::make_unique<estimator::Estimator>();
+    estimator_ = std::make_unique<estimator::Estimator>(options_);
     collator_ = std::make_unique<sensor::Collator>();
 
     // Register Callback functon handle sensor data
@@ -47,8 +47,7 @@ void VinsBuilder::HandleCollatedSensorData(
     }
 }
 
-std::shared_ptr<VinsBuilderInterface> CreateVinsBuilder(
-    const estimator::proto::VinsBuilderOptions& options)
+std::shared_ptr<VinsBuilderInterface> CreateVinsBuilder(const estimator::proto::EstimatorOptions& options)
 { 
     return std::make_shared<VinsBuilder>(options);
 }

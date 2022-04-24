@@ -28,6 +28,7 @@ struct FeatureTrackerOptions
     double fundamental_threshold;
 };
 
+
 } // namespace feature_tracker
 } // namespace vins
 } // namespace xslam 

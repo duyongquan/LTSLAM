@@ -3,11 +3,11 @@
 
 #include <memory>
 
+#include "xslam/vins/vins_options.h"
 #include "xslam/vins/sensor/imu_data.h"
 #include "xslam/vins/sensor/image_data.h"
 #include "xslam/vins/sensor/collator_interface.h"
 #include "xslam/vins/vins_builder_interface.h"
-#include "xslam/vins/estimator/proto/vins_builder_options.pb.h"
 
 namespace xslam {
 namespace vins {
@@ -15,7 +15,7 @@ namespace vins {
 class VinsBuilder : public VinsBuilderInterface 
 {
 public:
-    explicit VinsBuilder(const estimator::proto::VinsBuilderOptions &options);
+    explicit VinsBuilder(const estimator::proto::EstimatorOptions& options);
     ~VinsBuilder() override {} 
 
     void AddSensorData(const std::string& sensor_id, const sensor::ImuData& imu_data) override;
@@ -30,13 +30,12 @@ public:
 private:
     void HandleCollatedSensorData(const std::string& sensor_id, std::unique_ptr<sensor::Data> data);
 
-    const estimator::proto::VinsBuilderOptions options_;
+    estimator::proto::EstimatorOptions options_;
     std::unique_ptr<estimator::Estimator> estimator_;
     std::unique_ptr<sensor::CollatorInterface> collator_;
 };
 
-std::shared_ptr<VinsBuilderInterface> CreateVinsBuilder(
-    const estimator::proto::VinsBuilderOptions& options);
+std::shared_ptr<VinsBuilderInterface> CreateVinsBuilder(const estimator::proto::EstimatorOptions& options);
 
 } // namespace vins
 } // namespace xslam

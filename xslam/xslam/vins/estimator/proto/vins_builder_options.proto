@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-package xslam.vins.estimator.proto;
-
-message VinsBuilderOptions 
-{
-    int32 row = 1;
-}
