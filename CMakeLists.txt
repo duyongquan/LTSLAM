@@ -11,7 +11,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/xslam/cmake/modu
 find_package(GMock REQUIRED)
 
 # use configuration files from the source location instead of the install location
-set(XSLAM_CONFIGURATION_FILES_DIRECTORY "${CMAKE_SOURCE_DIR}/xslam/configuration_files"
+set(XSLAM_CONFIGURATION_FILES_DIRECTORY "${CMAKE_SOURCE_DIR}/xslam/xslam/vins/configuration"
   CACHE PATH ".lua config file directory")
 
 # add the libxslam directory

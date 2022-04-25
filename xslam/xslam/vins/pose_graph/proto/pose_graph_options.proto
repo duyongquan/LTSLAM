@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package xslam.vins.pose_graph.proto;
+
+message PoseGraphOptions
+{
+    // optimization parameters
+    double max_solver_time = 1;    // max solver itration time (ms), to guarantee real time
+    int32 max_num_iterations = 2; // max solver itrations, to guarantee real time
+    double keyframe_parallax = 3;  // keyframe selection threshold (pixel)
+
+    // loop_closure
+    int32 loop_closure = 4;               // start loop closure
+    int32 load_previous_pose_graph = 5;   // oad and reuse previous pose graph; load from 'pose_graph_save_path'
+    int32 fast_relocalization = 6;        // useful in real-time and large project
+}

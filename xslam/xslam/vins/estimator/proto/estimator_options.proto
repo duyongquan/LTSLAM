@@ -4,6 +4,7 @@ package xslam.vins.estimator.proto;
 
 import "xslam/vins/feature_tracker/proto/feature_tracker_options.proto";
 import "xslam/vins/imu_tracker/proto/imu_tracker_options.proto";
+import "xslam/vins/pose_graph/proto/pose_graph_options.proto";
 
 message EstimatorOptions 
 {
@@ -13,5 +14,9 @@ message EstimatorOptions
   // imu tracker 
   imu_tracker.proto.ImuTrackerOptions imu_tracker_options = 2;
 
-  int32 thread_nums = 3;
+  // pose graph 
+  pose_graph.proto.PoseGraphOptions pose_graph_options = 3;
+
+  // thread
+  int32 thread_nums = 4;
 }

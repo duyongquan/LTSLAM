@@ -9,7 +9,7 @@ Estimator::Estimator(const proto::EstimatorOptions &options)
   : options_(options)
 {
     // Thread pool
-    pool_ = std::make_shared<common::ThreadPool>(options_.thread_nums());
+    pool_ = std::make_shared<common::ThreadPool>(4);
 
     // image
     feature_tracker_ = std::make_shared<feature_tracker::FeatureTracker>(

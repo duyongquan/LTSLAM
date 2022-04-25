@@ -1,10 +1,9 @@
+include "imu_tracker.lua"
+include "feature_tracker.lua"
 include "pose_graph.lua"
 
-options = {
-    pose_graph = POSE_GRAPH,
-    tracking_frame = "base_link",
-    filestem = "map",
-    resolution = 0.05,
+VINSOptions = {
+    imu_tracker = IMU_TRACKER,
+    -- feature_tracker = FEATURE_TRACKER,
+    -- pose_graph = POSE_GRAPH,
 }
-  
-return options

@@ -14,7 +14,6 @@ estimator::proto::EstimatorOptions CreateVinsOptions(common::LuaParameterDiction
 
 estimator::proto::EstimatorOptions LoadOptions(const std::string& configuration_directory, const std::string& configuration_basename);
 
-void VinsOptionsDebugToString(const estimator::proto::EstimatorOptions& options);
 
 } // namespace vins
 } // namespace xslam

@@ -2,23 +2,51 @@ syntax = "proto3";
 
 package xslam.vins.feature_tracker.proto;
 
-message FeatureTrackerOptions 
+
+message FeatureTrackerOptions
 {
-    int32 row = 1;
-    int32 col = 2;
-    int32 focal_length = 3;
-    int32 num_cam = 4;
+    // camera calibration 
+    string model_type = 1;
+    string camera_name = 2;
+    int32 image_width = 3;
+    int32 image_height = 4;
 
-    int32 max_count = 5;
-    int32 min_distance = 6;
-    int32 window_size = 7;
-    int32 frequency = 8;
-    int32 show_track = 9;
-    int32 stereo_track = 10;
-    int32 equalize = 11;
-    int32 fisheye = 12;
-    bool publish_this_frame = 13;
-    double fundamental_threshold = 14;
+    // distortion
+    double k1 = 5;
+    double k2 = 6;
+    double p1 = 7;
+    double p2 = 8;
 
-    bool print_options = 15;
+    // projection
+    double fx = 9;
+    double fy = 10;
+    double cx = 11;
+    double cy = 12;
+
+    // Extrinsic parameter between IMU and Camera.
+    int32 estimate_extrinsic = 13;  // 0  Have an accurate extrinsic parameters. We will trust the following imu^R_cam, imu^T_cam, don't change it.
+                                    // 1  Have an initial guess about extrinsic parameters. We will optimize around your initial guess.
+                                    // 2  Don't know anything about extrinsic parameters. You don't need to give R,T. We will try to calibrate it. 
+                                    //    Do some rotation movement at beginning. 
+
+
+    // unsynchronization parameters
+    int32 estimate_td = 14;    // online estimate time offset between camera and imu
+    double td = 15;            // 
+
+    // rolling shutter parameters
+    int32 rolling_shutter = 16;      // 0: global shutter camera, 1: rolling shutter camera
+    int32 vrolling_shutter_tr = 17; 
+
+
+    // feature traker paprameters
+    int32 max_cnt = 18;        // max feature number in feature tracking
+    int32 min_distance = 19;   // min distance between two features 
+    int32 freq = 20;           // frequence (Hz) of publish tracking result. At least 10Hz for good estimation. 
+                               // If set 0, the frequence will be same as raw image 
+
+    double F_threshold = 21;   // ransac threshold (pixel)
+    bool show_track = 22;      // publish tracking image as topic
+    bool equalize = 23;        // if image is too dark or light, trun on equalize to find enough features
+    bool fisheye = 24;         // if using fisheye, trun on it. A circle mask will be loaded to remove edge noisy points
 }

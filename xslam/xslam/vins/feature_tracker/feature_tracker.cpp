@@ -14,17 +14,11 @@ FeatureTracker::FeatureTracker(
     : options_(options),
       thread_pool_(pool)
 {
-    if (options_.print_options()) {
-      DebugOptionsString();
-    }
 }
 
+/*
 void FeatureTracker::AddImageData(const sensor::ImageData& image)
 {
-   
-    if (!options_.publish_this_frame()) {
-      return;
-    }
 
     FeaturePoints feature_points;
     common::messages::ChannelFloat32 id_of_point;
@@ -61,7 +55,8 @@ void FeatureTracker::AddImageData(const sensor::ImageData& image)
     feature_points.channels.push_back(velocity_y_of_point);
     queue_.push_back(feature_points);
 
-    if (!options_.show_track()) {
+
+    if (!options_.feature().show_track()) {
       return;
     }
 }
@@ -79,7 +74,7 @@ bool FeatureTracker::GetNewestFeaturePoints(FeaturePoints& points)
 
 void FeatureTracker::SetMask()
 {
-    if(options_.fisheye()) {
+    if(options_.feature().fisheye()) {
         mask_ = fisheye_mask_.clone();
     } 
 
@@ -270,6 +265,7 @@ bool FeatureTracker::CheckInBorder(const cv::Point2f& point)
          kBorderSize <= img_y && img_y < options_.row() - kBorderSize;
 }
 
+*/
 void FeatureTracker::ReduceVector(std::vector<cv::Point2f>& v, const std::vector<uchar> status)
 {
     int j = 0;

@@ -16,5 +16,6 @@ message ImuTrackerOptions
     // accelerometer bias random work noise standard deviation
     double acceleration_w = 4;  
 
-    bool print_options = 20;  
+    // gravity
+    double constant_gravity = 5; 
 }
