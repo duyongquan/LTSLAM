@@ -23,22 +23,15 @@ function ok() {
     (>&2 echo -e "[${GREEN}${BOLD} OK ${NO_COLOR}] $*")
 }
 
-export RCFILES_DIR="/opt/apollo/rcfiles"
-export APOLLO_DIST="${APOLLO_DIST:-stable}"
+export RCFILES_DIR="/opt/ltslam/rcfiles"
+export LTSLAM_DIST="${LTSLAM_DIST:-stable}"
 
-export PKGS_DIR="/opt/apollo/pkgs"
-export SYSROOT_DIR="/opt/apollo/sysroot"
+export PKGS_DIR="/opt/ltslam/pkgs"
+export SYSROOT_DIR="/opt/ltslam/sysroot"
 
-export APOLLO_PROFILE="/etc/profile.d/apollo.sh"
-export APOLLO_LD_FILE="/etc/ld.so.conf.d/apollo.conf"
-export DOWNLOAD_LOG="/opt/apollo/build.log"
-export LOCAL_HTTP_ADDR="http://172.17.0.1:8388"
-
-if [[ "$(uname -m)" == "x86_64" ]]; then
-    export SUPPORTED_NVIDIA_SMS="5.2 6.0 6.1 7.0 7.5 8.0 8.6"
-else # AArch64
-    export SUPPORTED_NVIDIA_SMS="5.3 6.2 7.2"
-fi
+export LTSLAM_PROFILE="/etc/profile.d/ltslam.sh"
+export LTSLAM_LD_FILE="/etc/ld.so.conf.d/ltslam.conf"
+export DOWNLOAD_LOG="/opt/ltslam/build.log"
 
 function py3_version() {
     local version
@@ -61,7 +54,6 @@ function apt_get_remove() {
     apt-get -y purge --autoremove "$@"
 }
 
-# Ref: https://reproducible-builds.org/docs/source-date-epoch
 function source_date_epoch_setup() {
     DATE_FMT="+%Y-%m-%d"
     export SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-$(date +%s)}"
@@ -70,7 +62,7 @@ function source_date_epoch_setup() {
         || date -u "$DATE_FMT")
 }
 
-function apollo_environ_setup() {
+function ltslam_environ_setup() {
     if [ -z "${SOURCE_DATE_EPOCH}" ]; then
         source_date_epoch_setup
     fi
@@ -81,20 +73,20 @@ function apollo_environ_setup() {
     if [ ! -d "${SYSROOT_DIR}" ]; then
         mkdir -p ${SYSROOT_DIR}/{bin,include,lib,share}
     fi
-    if [ ! -f "${APOLLO_LD_FILE}" ]; then
-        echo "${SYSROOT_DIR}/lib" | tee -a "${APOLLO_LD_FILE}"
+    if [ ! -f "${LTSLAM_LD_FILE}" ]; then
+        echo "${SYSROOT_DIR}/lib" | tee -a "${LTSLAM_LD_FILE}"
     fi
-    if [ ! -f "${APOLLO_PROFILE}" ]; then
-        cp -f /opt/apollo/rcfiles/apollo.sh.sample "${APOLLO_PROFILE}"
-        echo "add_to_path ${SYSROOT_DIR}/bin" >> "${APOLLO_PROFILE}"
+    if [ ! -f "${LTSLAM_PROFILE}" ]; then
+        cp -f /opt/ltslam/rcfiles/ltslam.sh.sample "${LTSLAM_PROFILE}"
+        echo "add_to_path ${SYSROOT_DIR}/bin" >> "${LTSLAM_PROFILE}"
     fi
     if [ ! -f "${DOWNLOAD_LOG}" ]; then
-        echo "##==== Summary: Apollo Package Downloads ====##" > "${DOWNLOAD_LOG}"
+        echo "##==== Summary: Ltslam Package Downloads ====##" > "${DOWNLOAD_LOG}"
         echo -e "Package\tSHA256\tDOWNLOADLINK" | tee -a "${DOWNLOAD_LOG}"
     fi
 }
 
-apollo_environ_setup
+ltslam_environ_setup
 
 # We only accept predownloaded git tarballs with format
 # "pkgname.git.53549ad.tgz" or "pkgname_version.git.53549ad.tgz"
