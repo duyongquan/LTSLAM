@@ -3,25 +3,20 @@
 
 function install_filesystem_support() {
   MACHINE_VERSION=$(uname -r)
-  if [ "$MACHINE_VERSION" == "4.4.32-apollo-2-RT" ]; then
-    echo "system have install realtime kernel"
-    echo "it support overlay2, no need to install aufs"
+
+  MAIN_KERNEL_VERSION=${MACHINE_VERSION:0:1}
+  if [ ${MAIN_KERNEL_VERSION} -gt 3 \
+      -a -f /lib/modules/$MACHINE_VERSION/kernel/fs/overlayfs/overlay.ko ]; then
+    echo "the kernel version 4 or higher;"
+    echo "it has support overlay2"
     sudo modprobe overlay
   else
-    MAIN_KERNEL_VERSION=${MACHINE_VERSION:0:1}
-    if [ ${MAIN_KERNEL_VERSION} -gt 3 \
-        -a -f /lib/modules/$MACHINE_VERSION/kernel/fs/overlayfs/overlay.ko ]; then
-      echo "the kernel version 4 or higher;"
-      echo "it has support overlay2"
-      sudo modprobe overlay
-    else
-      echo "the kernel version is lower than 4"
-      echo "try to install aufs"
-      sudo apt-get update
-      sudo apt-get install -y \
-          linux-image-extra-${MACHINE_VERSION} \
-          linux-image-extra-virtual
-    fi
+    echo "the kernel version is lower than 4"
+    echo "try to install aufs"
+    sudo apt-get update
+    sudo apt-get install -y \
+        linux-image-extra-${MACHINE_VERSION} \
+        linux-image-extra-virtual
   fi
 
   sudo apt-get update
