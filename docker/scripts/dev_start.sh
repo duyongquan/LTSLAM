@@ -52,7 +52,6 @@ function parse_arguments() {
     local custom_version=""
     local custom_dist=""
     local shm_size=""
-    local geo=""
 
     while [ $# -gt 0 ]; do
         local opt="$1"
@@ -252,18 +251,18 @@ function main() {
         info "Start docker container based on local image : ${DEV_IMAGE}"
     fi
 
-    if ! docker_pull "${DEV_IMAGE}"; then
-        error "Failed to pull docker image ${DEV_IMAGE}"
-        exit 1
-    fi
+    # if ! docker_pull "${DEV_IMAGE}"; then
+    #     error "Failed to pull docker image ${DEV_IMAGE}"
+    #     exit 1
+    # fi
 
     info "Remove existing Ltslam Development container ..."
     remove_container_if_exists ${DEV_CONTAINER}
 
-    local local_volumes=
-    setup_devices_and_mount_local_volumes local_volumes
+    # local local_volumes= 
+    # setup_devices_and_mount_local_volumes local_volumes
 
-    mount_map_volumes
+    # mount_map_volumes
 
     info "Starting Docker container \"${DEV_CONTAINER}\" ..."
 
@@ -276,41 +275,41 @@ function main() {
 
     set -x
 
-    ${DOCKER_RUN_CMD} -itd \
-        --privileged \
-        --name "${DEV_CONTAINER}" \
-        -e DISPLAY="${display}" \
-        -e DOCKER_USER="${user}" \
-        -e USER="${user}" \
-        -e DOCKER_USER_ID="${uid}" \
-        -e DOCKER_GRP="${group}" \
-        -e DOCKER_GRP_ID="${gid}" \
-        -e DOCKER_IMG="${DEV_IMAGE}" \
-        ${MAP_VOLUMES_CONF} \
-        ${local_volumes} \
-        --net host \
-        -w /ltslam \
-        --add-host "${DEV_INSIDE}:127.0.0.1" \
-        --add-host "${local_host}:127.0.0.1" \
-        --hostname "${DEV_INSIDE}" \
-        --shm-size "${SHM_SIZE}" \
-        --pid=host \
-        -v /dev/null:/dev/raw1394 \
-        "${DEV_IMAGE}" \
-        /bin/bash
+    # ${DOCKER_RUN_CMD} -itd \
+    #     --privileged \
+    #     --name "${DEV_CONTAINER}" \
+    #     -e DISPLAY="${display}" \
+    #     -e DOCKER_USER="${user}" \
+    #     -e USER="${user}" \
+    #     -e DOCKER_USER_ID="${uid}" \
+    #     -e DOCKER_GRP="${group}" \
+    #     -e DOCKER_GRP_ID="${gid}" \
+    #     -e DOCKER_IMG="${DEV_IMAGE}" \
+    #     ${MAP_VOLUMES_CONF} \
+    #     ${local_volumes} \
+    #     --net host \
+    #     -w /ltslam \
+    #     --add-host "${DEV_INSIDE}:127.0.0.1" \
+    #     --add-host "${local_host}:127.0.0.1" \
+    #     --hostname "${DEV_INSIDE}" \
+    #     --shm-size "${SHM_SIZE}" \
+    #     --pid=host \
+    #     -v /dev/null:/dev/raw1394 \
+    #     "${DEV_IMAGE}" \
+    #     /bin/bash
 
-    if [ $? -ne 0 ]; then
-        error "Failed to start docker container \"${DEV_CONTAINER}\" based on image: ${DEV_IMAGE}"
-        exit 1
-    fi
-    set +x
+    # if [ $? -ne 0 ]; then
+    #     error "Failed to start docker container \"${DEV_CONTAINER}\" based on image: ${DEV_IMAGE}"
+    #     exit 1
+    # fi
+    # set +x
 
-    postrun_start_user "${DEV_CONTAINER}"
+    # postrun_start_user "${DEV_CONTAINER}"
 
-    ok "Congratulations! You have successfully finished setting up Ltslam Dev Environment."
-    ok "To login into the newly created ${DEV_CONTAINER} container, please run the following command:"
-    ok "  bash docker/scripts/dev_into.sh"
-    ok "Enjoy!"
+    # ok "Congratulations! You have successfully finished setting up LTSLAM Dev Environment."
+    # ok "To login into the newly created ${DEV_CONTAINER} container, please run the following command:"
+    # ok "  bash docker/scripts/dev_into.sh"
+    # ok "Enjoy!"
 }
 
 main "$@"
