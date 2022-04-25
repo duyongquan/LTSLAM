@@ -1,31 +1,21 @@
 #!/usr/bin/env bash
 
-
 CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 source "${CURR_DIR}/docker_base.sh"
 
-CACHE_ROOT_DIR="${APOLLO_ROOT_DIR}/.cache"
+CACHE_ROOT_DIR="${LTSLAM_ROOT_DIR}/.cache"
 
-DOCKER_REPO="apolloauto/apollo"
-DEV_CONTAINER="apollo_dev_${USER}"
+DOCKER_REPO="ltslam/ltslam"
+DEV_CONTAINER="ltslam_dev_${USER}"
 DEV_INSIDE="in-dev-docker"
 
-SUPPORTED_ARCHS=(x86_64 aarch64)
+SUPPORTED_ARCHS=(x86_64)
 TARGET_ARCH="$(uname -m)"
 
-VERSION_X86_64="dev-x86_64-18.04-20210914_1336"
-TESTING_VERSION_X86_64="dev-x86_64-18.04-testing-20210112_0008"
-
-VERSION_AARCH64="dev-aarch64-18.04-20201218_0030"
-USER_VERSION_OPT=
+VERSION_X86_64="dev-x86_64-18.04"
 
 FAST_MODE="no"
-
-GEOLOC=
-
 USE_LOCAL_IMAGE=0
-CUSTOM_DIST=
-USER_AGREED="no"
 
 VOLUME_VERSION="latest"
 SHM_SIZE="2G"
@@ -51,13 +41,10 @@ Usage: $0 [options] ...
 OPTIONS:
     -h, --help             Display this help and exit.
     -f, --fast             Fast mode without pulling all map volumes.
-    -g, --geo <us|cn|none> Pull docker image from geolocation specific registry mirror.
     -l, --local            Use local docker image.
     -t, --tag <TAG>        Specify docker image with tag <TAG> to start.
-    -d, --dist             Specify Apollo distribution(stable/testing)
     --shm-size <bytes>     Size of /dev/shm . Passed directly to "docker run"
-    -y                     Agree to Apollo License Agreement non-interactively.
-    stop                   Stop all running Apollo containers.
+    stop                   Stop all running Ltslam containers.
 EOF
 }
 
@@ -80,12 +67,6 @@ function parse_arguments() {
                 optarg_check_for_opt "${opt}" "${custom_version}"
                 ;;
 
-            -d | --dist)
-                custom_dist="$1"
-                shift
-                optarg_check_for_opt "${opt}" "${custom_dist}"
-                ;;
-
             -h | --help)
                 show_usage
                 exit 1
@@ -93,12 +74,6 @@ function parse_arguments() {
 
             -f | --fast)
                 FAST_MODE="yes"
-                ;;
-
-            -g | --geo)
-                geo="$1"
-                shift
-                optarg_check_for_opt "${opt}" "${geo}"
                 ;;
 
             -l | --local)
@@ -111,17 +86,9 @@ function parse_arguments() {
                 optarg_check_for_opt "${opt}" "${shm_size}"
                 ;;
 
-            --map)
-                map_name="$1"
-                shift
-                USER_SPECIFIED_MAPS="${USER_SPECIFIED_MAPS} ${map_name}"
-                ;;
-            -y)
-                USER_AGREED="yes"
-                ;;
             stop)
-                info "Now, stop all Apollo containers created by ${USER} ..."
-                stop_all_apollo_containers "-f"
+                info "Now, stop all Ltslam containers created by ${USER} ..."
+                stop_all_ltslam_containers "-f"
                 exit 0
                 ;;
             *)
@@ -131,9 +98,6 @@ function parse_arguments() {
         esac
     done # End while loop
 
-    [[ -n "${geo}" ]] && GEOLOC="${geo}"
-    [[ -n "${custom_version}" ]] && USER_VERSION_OPT="${custom_version}"
-    [[ -n "${custom_dist}" ]] && CUSTOM_DIST="${custom_dist}"
     [[ -n "${shm_size}" ]] && SHM_SIZE="${shm_size}"
 }
 
@@ -142,15 +106,9 @@ function determine_dev_image() {
     # If no custom version specified
     if [[ -z "${version}" ]]; then
         if [[ "${TARGET_ARCH}" == "x86_64" ]]; then
-            if [[ "${CUSTOM_DIST}" == "testing" ]]; then
-                version="${TESTING_VERSION_X86_64}"
-            else
                 version="${VERSION_X86_64}"
-            fi
-        elif [[ "${TARGET_ARCH}" == "aarch64" ]]; then
-            version="${VERSION_AARCH64}"
         else
-            error "Logic can't reach here! Please report this issue to Apollo@GitHub."
+            error "Logic can't reach here! Please report this issue to Ltslam@GitHub."
             exit 3
         fi
     fi
@@ -159,7 +117,7 @@ function determine_dev_image() {
 
 function check_host_environment() {
     if [[ "${HOST_OS}" != "Linux" ]]; then
-        warning "Running Apollo dev container on ${HOST_OS} is UNTESTED, exiting..."
+        warning "Running Ltslam dev container on ${HOST_OS} is UNTESTED, exiting..."
         exit 1
     fi
 }
@@ -180,13 +138,13 @@ function setup_devices_and_mount_local_volumes() {
 
     [ -d "${CACHE_ROOT_DIR}" ] || mkdir -p "${CACHE_ROOT_DIR}"
 
-    source "${APOLLO_ROOT_DIR}/scripts/apollo_base.sh"
+    source "${LTSLAM_ROOT_DIR}/scripts/ltslam_base.sh"
     setup_device
 
-    local volumes="-v $APOLLO_ROOT_DIR:/apollo"
-    local teleop="${APOLLO_ROOT_DIR}/../apollo-teleop"
+    local volumes="-v $LTSLAM_ROOT_DIR:/ltslam"
+    local teleop="${LTSLAM_ROOT_DIR}/../ltslam-teleop"
     if [ -d "${teleop}" ]; then
-        volumes="-v ${teleop}:/apollo/modules/teleop ${volumes}"
+        volumes="-v ${teleop}:/ltslam/modules/teleop ${volumes}"
     fi
 
     local os_release="$(lsb_release -rs)"
@@ -246,8 +204,8 @@ function docker_restart_volume() {
 function restart_map_volume_if_needed() {
     local map_name="$1"
     local map_version="$2"
-    local map_volume="apollo_map_volume-${map_name}_${USER}"
-    local map_path="/apollo/modules/map/data/${map_name}"
+    local map_volume="ltslam_map_volume-${map_name}_${USER}"
+    local map_path="/ltslam/modules/map/data/${map_name}"
 
     if [[ ${MAP_VOLUMES_CONF} == *"${map_volume}"* ]]; then
         info "Map ${map_name} has already been included."
@@ -284,55 +242,11 @@ function mount_map_volumes() {
     fi
 }
 
-function mount_other_volumes() {
-    info "Mount other volumes ..."
-    local volume_conf=
-
-    # AUDIO
-    local audio_volume="apollo_audio_volume_${USER}"
-    local audio_image="${DOCKER_REPO}:data_volume-audio_model-${TARGET_ARCH}-latest"
-    local audio_path="/apollo/modules/audio/data/"
-    docker_restart_volume "${audio_volume}" "${audio_image}" "${audio_path}"
-    volume_conf="${volume_conf} --volume ${audio_volume}:${audio_path}"
-
-    # YOLOV4
-    local yolov4_volume="apollo_yolov4_volume_${USER}"
-    local yolov4_image="${DOCKER_REPO}:yolov4_volume-emergency_detection_model-${TARGET_ARCH}-latest"
-    local yolov4_path="/apollo/modules/perception/camera/lib/obstacle/detector/yolov4/model/"
-    docker_restart_volume "${yolov4_volume}" "${yolov4_image}" "${yolov4_path}"
-    volume_conf="${volume_conf} --volume ${yolov4_volume}:${yolov4_path}"
-
-    # FASTER_RCNN
-    local faster_rcnn_volume="apollo_faster_rcnn_volume_${USER}"
-    local faster_rcnn_image="${DOCKER_REPO}:faster_rcnn_volume-traffic_light_detection_model-${TARGET_ARCH}-latest"
-    local faster_rcnn_path="/apollo/modules/perception/production/data/perception/camera/models/traffic_light_detection/faster_rcnn_model"
-    docker_restart_volume "${faster_rcnn_volume}" "${faster_rcnn_image}" "${faster_rcnn_path}"
-    volume_conf="${volume_conf} --volume ${faster_rcnn_volume}:${faster_rcnn_path}"
-
-    # SMOKE
-    if [[ "${TARGET_ARCH}" == "x86_64" ]]; then
-        local smoke_volume="apollo_smoke_volume_${USER}"
-        local smoke_image="${DOCKER_REPO}:smoke_volume-yolo_obstacle_detection_model-${TARGET_ARCH}-latest"
-        local smoke_path="/apollo/modules/perception/production/data/perception/camera/models/yolo_obstacle_detector/smoke_libtorch_model"
-        docker_restart_volume "${smoke_volume}" "${smoke_image}" "${smoke_path}"
-        volume_conf="${volume_conf} --volume ${smoke_volume}:${smoke_path}"
-    fi
-
-    OTHER_VOLUMES_CONF="${volume_conf}"
-}
-
 function main() {
     check_host_environment
     check_target_arch
 
     parse_arguments "$@"
-
-    if [[ "${USER_AGREED}" != "yes" ]]; then
-        check_agreement
-    fi
-
-    determine_dev_image "${USER_VERSION_OPT}"
-    geo_specific_config "${GEOLOC}"
 
     if [[ "${USE_LOCAL_IMAGE}" -gt 0 ]]; then
         info "Start docker container based on local image : ${DEV_IMAGE}"
@@ -343,18 +257,13 @@ function main() {
         exit 1
     fi
 
-    info "Remove existing Apollo Development container ..."
+    info "Remove existing Ltslam Development container ..."
     remove_container_if_exists ${DEV_CONTAINER}
-
-    info "Determine whether host GPU is available ..."
-    determine_gpu_use_host
-    info "USE_GPU_HOST: ${USE_GPU_HOST}"
 
     local local_volumes=
     setup_devices_and_mount_local_volumes local_volumes
 
     mount_map_volumes
-    mount_other_volumes
 
     info "Starting Docker container \"${DEV_CONTAINER}\" ..."
 
@@ -377,14 +286,10 @@ function main() {
         -e DOCKER_GRP="${group}" \
         -e DOCKER_GRP_ID="${gid}" \
         -e DOCKER_IMG="${DEV_IMAGE}" \
-        -e USE_GPU_HOST="${USE_GPU_HOST}" \
-        -e NVIDIA_VISIBLE_DEVICES=all \
-        -e NVIDIA_DRIVER_CAPABILITIES=compute,video,graphics,utility \
         ${MAP_VOLUMES_CONF} \
-        ${OTHER_VOLUMES_CONF} \
         ${local_volumes} \
         --net host \
-        -w /apollo \
+        -w /ltslam \
         --add-host "${DEV_INSIDE}:127.0.0.1" \
         --add-host "${local_host}:127.0.0.1" \
         --hostname "${DEV_INSIDE}" \
@@ -402,7 +307,7 @@ function main() {
 
     postrun_start_user "${DEV_CONTAINER}"
 
-    ok "Congratulations! You have successfully finished setting up Apollo Dev Environment."
+    ok "Congratulations! You have successfully finished setting up Ltslam Dev Environment."
     ok "To login into the newly created ${DEV_CONTAINER} container, please run the following command:"
     ok "  bash docker/scripts/dev_into.sh"
     ok "Enjoy!"
