@@ -1,9 +1,8 @@
 DOCKERFILE=$1
 
-
 CONTEXT="$(dirname "${BASH_SOURCE[0]}")"
 
-REPO=apolloauto/apollo
+REPO=LTSLAM/ltslam
 ARCH=$(uname -m)
 TIME=$(date +%Y%m%d_%H%M)
 
