@@ -232,3 +232,7 @@ We are now ready to build, test, and begin run the demos.
  make -j6
  
 
+Docker安装
+============
+
+  正在制作中，请耐心等待。。。
