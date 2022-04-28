@@ -86,7 +86,10 @@ Vector
 .. NOTE::
 
     * 性质1： :math:`\mathbf{a}^{\wedge} \mathbf{b} =  -\mathbf{b}^{\wedge} \mathbf{a}`
-    * 性质2： :math:`\mathbf{a}^{\wedge} \mathbf{a} =  -\mathbf{I} + \mathbf{a}\mathbf{a}^T`
+    * 性质2： :math:`\mathbf{a}^{\wedge} \mathbf{a}^{\wedge} =  -\mathbf{I} + \mathbf{a}\mathbf{a}^T`
+    * 性质3： :math:`\mathbf{a}^{\wedge} \mathbf{a}^{\wedge} \mathbf{a}^{\wedge} = \mathbf{a}^{\wedge} (-\mathbf{I} + \mathbf{a}\mathbf{a}^T) = -\mathbf{a}^{\wedge}` 
+
+
 
 
 

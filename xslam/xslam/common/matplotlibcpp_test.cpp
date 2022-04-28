@@ -27,6 +27,8 @@ TEST(matplotlibcpp, contour)
         z.push_back(z_row);
     }
 
+    plt::xlim(-10, 10);
+    plt::ylim(-10, 10);
     matplotlibcpp::contour(x, y, z);
     matplotlibcpp::show();
 }
