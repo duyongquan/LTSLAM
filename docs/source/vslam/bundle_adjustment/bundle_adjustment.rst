@@ -245,6 +245,15 @@ III. Conventional Bundle Adjustment
 
   J^TJ \delta x = -J^Tr \tag{15}
 
+注意，如果 :math:`J^TJ` 是正定的，Gauss-Newton 方法总是可以产生一个减小的方向，
+因为 :math:`(\delta x)^Tg = -(\delta x)^T J^Tr = -(\delta x)^T J^T J\delta x` < 0。
+但是当 :math:`J^TJ` 变得奇异时，则 Gauss-Newton 方法在数值上变得不稳定。 为了克服 Gauss-Newton 的弱点，
+我们可以改用 Levenberg-Marquardt 方法。
+
+.. math::
+
+  (J^TJ + \lambda I) \delta x= -J^Tr \tag{16}
+
 
 A. reduced camera system
 --------------------------------------------
