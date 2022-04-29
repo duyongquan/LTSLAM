@@ -1,12 +1,11 @@
+#!/usr/bin/env bash
+
 DOCKERFILE=$1
 
 CONTEXT="$(dirname "${BASH_SOURCE[0]}")"
 
-REPO=LTSLAM/ltslam
-ARCH=$(uname -m)
-TIME=$(date +%Y%m%d_%H%M)
-
-TAG="${REPO}:dev-18.04-${ARCH}-${TIME}"
+REPO=xslam/ltslam
+TAG="${REPO}"
 
 # Fail on first error.
 set -e
