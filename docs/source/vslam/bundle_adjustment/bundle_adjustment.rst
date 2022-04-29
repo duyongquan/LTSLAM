@@ -258,6 +258,262 @@ III. Conventional Bundle Adjustment
 A. reduced camera system
 --------------------------------------------
 
+似乎不用任思考，我们可以直接用线性代数求解（18）和（19）。 但是，对于大规模问题，即我们有大约 1,000 个相机位姿和 2,000,000 个 3D 点，
+出于内存限制和效率考虑，直接解决它们变得不切实际。
+
+为方便起见，我们使用 (18) 来说明如何解决捆绑调整问题。 设置 :math:`\hat{\mu}_{ij} = \pi(C_j , X_i)` ，
+我们将参数 :math:`x` 排序到相机块 `c` 和结构块 :math:`p` 中：
+
+.. math::
+
+    x = \begin{bmatrix}
+            c & p
+        \end{bmatrix} \tag{20}
+
+很容易得到：
+
+.. math::
+
+    J_{ij} = \frac{\partial{r_{ij}}}{\partial{x_k}} =  \frac{\partial{\hat{\mu}_{ij}}}{\partial{x_k}}, 
+        \frac{\partial{\hat{\mu}_{ij}}}{\partial{c_k}} = 0, 
+        \forall{j} \neq k, 
+        \frac{\partial{\hat{\mu}_{ij}}}{\partial{p_k}} = 0,
+        \forall{i} \neq k \tag{21}
+
+现在考虑，我们有 m = 3 个相机和 n = 4 个 3D 点。 设置 :math:`A_{ij} = \frac{\partial{\hat{\mu}_{ij}}}{\partial{c_j}}, 
+B_{ij} = \frac{\partial{\hat{\mu}_{ij}}}{\partial{p_ij}}` 我们可以得到雅可比矩阵 :math:`J` ：
+
+.. math::
+
+  J =  \frac{\partial{\hat{\mu}}}{\partial{x}} = 
+  \begin{bmatrix}
+    A_{11} & 0      & 0      & B_{11} & 0      & 0       & 0 \\
+    0      & A_{12} & 0      & B_{12} & 0      & 0       & 0 \\
+    0      & 0      & A_{13} & B_{13} & 0      & 0       & 0 \\
+    A_{21} & 0      & 0      & 0      & B_{21} & 0       & 0 \\
+    0      & A_{22} & 0      & 0      & B_{22} & 0       & 0 \\
+    0      & 0      & A_{23} & 0      & B_{23} & 0       & 0 \\
+    A_{31} & 0      & 0      & 0      & 0      & B_{31}  & 0 \\
+    0      & A_{32} & 0      & 0      & 0      & B_{32}  & 0 \\     
+    0      & 0      & A_{33} & 0      & 0      & B_{33}  & 0 \\  
+    A_{41} & 0      & 0      & 0      & 0      & 0       & B_{41} \\
+    0      & A_{42} & 0      & 0      & 0      & 0       & B_{42} \\     
+    0      & 0      & A_{43} & 0      & 0      & 0       & B_{43}   
+  \end{bmatrix}
+
+很明显，:math:`Jacobi` 是一个非常稀疏的矩阵，它是一个非常重要的性质，我们应该好好利用它。 
+让我们更进一步。 将鲁棒性设置为块对角矩阵 :math:`diag\{\Lambda{\mu_{11}} , \Lambda{\mu_{12}}, \cdots , \Lambda{\mu_{nm}}\}` , 并且
+
+.. math::
+
+  \begin{aligned}
+    U_{j} &= \sum_{i = 1}^{4} A_{ij}^{T} \Lambda{\mu_{ij} A_{ij}} \\
+    V_{i} &= \sum_{j = 1}^{3} B_{ij}^{T} \Lambda{\mu_{ij} B_{ij}} \\
+    W_{ij} &= A_{ij}^{T} \Lambda{\mu_{ij} B_{ij}}
+  \end{aligned} 
+
+那么(18)的左边变成：
+
+.. math::
+
+    J^T\Lambda{\mu}J = 
+    \begin{bmatrix}
+      U_1         &  0         & 0    & W_{11}  & W_{21} & W_{31} & W_{41} \\
+      0           &  U_2       & 0    & W_{12}  & W_{22} & W_{32} & W_{42} \\
+      0           &  0         & U_3  & W_{13}  & W_{23} & W_{32} & W_{43} \\
+      W_{11}^{T}  & W_{12}^{T} & W_{13}^{T} & V_1 & 0   & 0   & 0  \\
+      W_{21}^{T}  & W_{22}^{T} & W_{23}^{T} & 0   & V_2 & 0   & 0  \\
+      W_{31}^{T}  & W_{32}^{T} & W_{33}^{T} & 0   & 0   & V_3 & 0  \\
+      W_{41}^{T}  & W_{42}^{T} & W_{43}^{T} & 0   & 0   & 0   & V_4 
+    \end{bmatrix} 
+
+(18)的右边变成:
+
+.. math::
+
+    J^T\Lambda{\mu}r = 
+    \begin{bmatrix}
+        \sum_{i = 1}^{4} A_{i1}^{T} \Lambda{\mu_{i1} r_{i1}} \\
+        \sum_{i = 1}^{4} A_{i2}^{T} \Lambda{\mu_{i2} r_{i2}} \\
+        \sum_{i = 1}^{4} A_{i3}^{T} \Lambda{\mu_{i1} r_{i3}} \\
+        \sum_{j = 1}^{3} B_{ij}^{T} \Lambda{\mu_{1j} r_{1j}} \\
+        \sum_{j = 1}^{3} B_{ij}^{T} \Lambda{\mu_{2j} r_{2j}} \\
+        \sum_{j = 1}^{3} B_{ij}^{T} \Lambda{\mu_{3j} r_{3j}} \\
+        \sum_{j = 1}^{3} B_{ij}^{T} \Lambda{\mu_{4j} r_{4j}} 
+    \end{bmatrix}
+
+令
+
+.. math::
+
+  \begin{aligned}
+    r_{c_j} &= \sum_{i = 1}^{4} (A_{ij}^{T} \Lambda{\mu_{ij} r_{ij}})^{T} \\
+    r_{p_i} &= \sum_{j = 1}^{3} (B_{ij}^{T} \Lambda{\mu_{ij} r_{ij}})^{T} \\
+    r_{ij} &= \mu_{ij} - \hat{\mu}_{ij}
+  \end{aligned} 
+
+并且
+
+.. math::
+
+ \begin{aligned}
+    U &= diag\{U_1, U_2, U_3\} \\
+    V &= diag\{V_1, V_2, V_3, V_4\} \\
+    W &= 
+    \begin{bmatrix}
+      W_{11}  & W_{21} & W_{31} &  W_{41}   \\
+      W_{12}  & W_{22} & W_{32} &  W_{42}   \\
+      W_{13}  & W_{23} & W_{33} &  W_{43}   
+    \end{bmatrix} 
+  \end{aligned} 
+
+将（26）和（27）分别代入（24）和（25），我们可以得到
+
+.. math::
+
+    J^T\Lambda{\mu}r = 
+    \begin{bmatrix}
+      r_{c_1} \\
+      r_{c_2} \\
+      r_{c_3} \\
+      r_{p_1} \\
+      r_{p_2} \\
+      r_{p_3} \\
+      r_{p_4}
+    \end{bmatrix} =
+    \begin{bmatrix}
+      \mathbf{r_c} \\
+      \mathbf{r_p}
+    \end{bmatrix} 
+
+那么
+
+.. math::
+
+    J^T\Lambda{\mu}J = 
+    \begin{bmatrix}
+      U   &  W   \\
+      W^T &  V  
+    \end{bmatrix} 
+
+然后，我们设置
+
+.. math::
+
+    \delta x = 
+    \begin{bmatrix}
+      \delta c  \\
+      \delta p 
+    \end{bmatrix} 
+
+将（30）和（29）代入（18），我们得到
+
+.. math::
+
+    \begin{bmatrix}
+      U   &  W   \\
+      W^T &  V  
+    \end{bmatrix} =
+    \begin{bmatrix}
+      \delta c  \\
+      \delta p 
+    \end{bmatrix} =
+    \begin{bmatrix}
+      \mathbf{r_c} \\
+      \mathbf{r_p}
+    \end{bmatrix} 
+
+如果我们有更多的相机和 3D 点，请意识到 (31) 变成了一个中到大规模的线性方程。 
+那么为了有效地解决它，我们需要更多的技巧。 考虑到摄像机的数量 :math:`m` 远小于3D点的数量 :math:`n` ，
+我们可以消除结构块 :math:`\delta p` ，得到 :math:`\delta c` 的解，然后我们通过反向(back-substitution)代入得到 :math:`\delta p` 的结果。 
+现在在(31)的两边左乘 :math:`[I − WV^{-1}]^T` ，那么我们可以得到
+
+.. math::
+
+    \begin{bmatrix}
+      U - WV^{-1}W^{T} & 0
+    \end{bmatrix}
+    \begin{bmatrix}
+      \delta c  \\
+      \delta p 
+    \end{bmatrix} =
+    \begin{bmatrix}
+      I & − WV^{-1}
+    \end{bmatrix} 
+    \begin{bmatrix}
+      \mathbf{r_c} \\
+      \mathbf{r_p}
+    \end{bmatrix} 
+
+然后，从 (32) 我们进一步得到
+
+.. math::
+
+    (U - WV^{-1}W^{T}) \delta c = \mathbf{r_c} - WV^{-1} \mathbf{r_p} \tag{33}
+
+(33) 称为缩减相机系统(Reduced Camera System)，:math:` S = U - WV^{-1}W^{T}` 称为 (31) 
+左侧的 V 的舒尔码。 可以证明对称正定矩阵的舒尔补是对称正定的，因此(33)式可以通过Cholesky分解求解。 
+有了 (32)，我们有
+
+.. math::
+
+    W^{T} \delta c + V \delta p = r_c  \tag{34}
+
+然后，通过求解（34），我们可以得到
+
+.. math::
+
+     \delta p = V^{-1} (r_c -  W^{T} \delta c) \tag{35}
+
+然后回到小例子，例如 m = 3 和 n = 4，我们可以得到
+
+.. math::
+
+    S = 
+    \begin{bmatrix}
+      U_1 -  \sum_{i = 1}^{4} Y_{i1}W_{i1}^{T}  &  -\sum_{i = 1}^{4} Y_{i1}W_{i1}^{T}      & -\sum_{i = 1}^{4} Y_{i1}W_{i3}^{T}  \\
+      -\sum_{i = 1}^{4} Y_{i2}W_{i1}^{T}        & U_2 -  \sum_{i = 1}^{4} Y_{i2}W_{i2}^{T} & -\sum_{i = 1}^{4} U_{i2}W_{i3}^{T}  \\
+      -\sum_{i = 1}^{4} Y_{i3}W_{i1}^{T}        &  -\sum_{i = 1}^{4} Y_{i3}W_{i2}^{T}      & U_3 -  \sum_{i = 1}^{4} Y_{i3}W_{i3}^{T}
+    \end{bmatrix} 
+
+通过设置 :math:`Y_{ij} = W_{ij} V_I^{-1}` ，我们可以重写 (33) 的右边
+
+.. math::
+
+    r_c - WV^{-1} r_p =
+    \begin{bmatrix}
+        r_{a1} - \sum_{i = 1}^{4} (Y_{i1}r_{b_i})^{T} \\
+        r_{a2} - \sum_{i = 1}^{4} (Y_{i2}r_{b_i})^{T} \\
+        r_{a3} - \sum_{i = 1}^{4} (Y_{i3}r_{b_i})^{T} 
+    \end{bmatrix}
+
+通过将(36)和(37)代入(33)中，我们可以很容易地求解简化的相机系统，得到(35)的解
+
+.. math::
+
+    \delta p = V^{-1}(r_p - WV^{T} \delta c) = 
+    \begin{bmatrix}
+        V_{1}^{-1}(r_{b_1} - \sum_{j = 1}^{3} W_{1j}^{T} \delta c_j) \\
+        V_{2}^{-1}(r_{b_2} - \sum_{j = 1}^{3} W_{2j}^{T} \delta c_j) \\
+        V_{3}^{-1}(r_{b_3} - \sum_{j = 1}^{3} W_{3j}^{T} \delta c_j) \\
+        V_{4}^{-1}(r_{b_4} - \sum_{j = 1}^{3} W_{4j}^{T} \delta c_j) \\
+    \end{bmatrix}
+
+请注意，简化相机系统的推导是基于(normal equation)正规方程（18），这表明我们使用的是
+高斯-牛顿法。 如果我们想使用 Levenber-Marquardt 方法，我们应该在增广正规方程的基础上对
+上面的方程进行一些修改。 由于我们只需要增加 U 和 V 的对角线元素，那么我们只需将 U 和 V 
+分别替换为 :math:`U^{\star}` 和 :math:`V^{\star}` ，其中 :math:`\star` 表示 U 和 V 的对角线元素的增加。
+除此之外，如果3D点 :math:`X_k` 没有被相机 :math:`l` 观测到, 那么 :math:`A_{kl} = \frac{\partial{\hat{\mu}_{k_l}}}{\partial{p_k}} = 0, 
+B_{kl} = \frac{\partial{\hat{\mu}_{k_l}}}{\partial{c_l}} = 0` 。
+
+通过上面的推导，我们可以将其扩展到任何尺度问题，例如 m = M，n = N，并导致下面的算法用于求解（增广）正规方程。
+
+.. figure:: ./images/Normal_Equation_Algorithm.png
+   :align: center
+
+   Algorithm 2 Solving the (Augmented) Normal Equation
+
+
 B. bundle adjustment with conjugate gradient
 --------------------------------------------
 

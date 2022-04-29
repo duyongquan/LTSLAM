@@ -3,7 +3,7 @@
 # Fail on first error.
 set -e
 
-cd /xslam/LTSLAM/3rdparty/eigen-3.3.7
+cd /tmp/3rdparty/eigen-3.3.7
 mkdir build && cd build && cmake ..
 make -j6
 make install
