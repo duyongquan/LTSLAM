@@ -4,6 +4,16 @@
 Kalman Filter
 =============
 
+.. NOTE:: 
+
+  本书翻译于 `Kalman-and-Bayesian-Filters-in-Python <https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python>`_ 
+
+  详细内容请查看kalman代码
+
+校正人员Github贡献者
+
+  * zhangtianhong-1998 
+
 .. toctree::
    :maxdepth: 1
 
@@ -23,4 +33,6 @@ Kalman Filter
    ch13-Smoothing/ch13-Smoothing
    ch14-Adaptive-Filtering/ch14-Adaptive-Filtering
   
+
+
 
