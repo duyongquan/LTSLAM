@@ -36,6 +36,3 @@ private:
 } // namespace xslam
 
 #endif // XSLAM_G2O_PURE_NEWTON_H
-
-
-An Introduction to the Conjugate Gradient Method Without the Agonizing Pain
