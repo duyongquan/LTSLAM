@@ -102,6 +102,7 @@ void DescentGradient::solve()
             is_conv = true;
             break;
         }
+
         /* update */
         a_ += -alpha_ * Gradient_(0);
         b_ += -alpha_ * Gradient_(1);
@@ -124,6 +125,8 @@ void DescentGradient::solve()
 
     const double aa = 4, bb = 3, cc = 2, dd = 1;// 实际方程的参数
     std::cout << std::endl;
+ 
+    LOG(INFO) << "方程: y = ax^3 + bx^2 + cx + d ";
     LOG(INFO) << "实际方程的参数:";
     LOG(INFO) << "a = " << aa;
     LOG(INFO) << "b = " << bb;

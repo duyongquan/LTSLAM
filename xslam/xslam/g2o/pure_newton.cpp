@@ -38,7 +38,7 @@ bool PureNewtonSolver::NewtonMethod(const Eigen::Vector2d& x0)
         d =  hval.inverse() * gval;
 
         double func_value = ComputeFunctionValue(x);
-        if (isinf(func_value)) {
+        if (isnan(func_value)) {
             std::cout << "func_value =  " << func_value << std::endl;
             result = false;
             break;
@@ -68,6 +68,9 @@ void PureNewtonSolver::DrawContour()
         y.push_back(y_row);
         z.push_back(z_row);
     }
+
+    std::map<std::string, std::string> keywords;
+    keywords.insert(std::pair<std::string, std::string>("colors", "gray") );
 
 	matplotlibcpp::contour(x, y, z);
     matplotlibcpp::plot_surface(x, y, z);
