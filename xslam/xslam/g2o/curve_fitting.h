@@ -27,10 +27,14 @@ public:
 
     // 重置
     virtual void setToOriginImpl() override {
-        _estimate << 0, 0, 0;
+        _estimate << 0, 0, 0; // a b c 3  // a b c d e f 6 
+        // _estimate(0) = a
+        // _estimate(1) = b
     }
 
     // 更新
+    //    Ax = b
+    // x = x - H^{-1} g
     virtual void oplusImpl(const double *update) override {
         _estimate += Eigen::Vector3d(update);
     }
@@ -50,6 +54,10 @@ public:
     CurveFittingEdge(double x) : BaseUnaryEdge(), _x(x) {}
 
     // 计算曲线模型误差
+    // std::exp(abc(0, 0) * _x * _x + abc(1, 0) * _x + abc(2, 0))
+    // y = exp(ax^2 + bx + c) 
+    // y - exp(ax^2 + bx + c) = error
+    // 
     virtual void computeError() override
     {
         const CurveFittingVertex *v = static_cast<const CurveFittingVertex *> (_vertices[0]);
@@ -61,7 +69,7 @@ public:
     virtual void linearizeOplus() override
     {
         const CurveFittingVertex *v = static_cast<const CurveFittingVertex *> (_vertices[0]);
-        const Eigen::Vector3d abc = v->estimate();
+        const Eigen::Vector3d abc = v->estimate(); // _estimate
         double y = exp(abc[0] * _x * _x + abc[1] * _x + abc[2]);
         _jacobianOplusXi[0] = -_x * _x * y;
         _jacobianOplusXi[1] = -_x * y;

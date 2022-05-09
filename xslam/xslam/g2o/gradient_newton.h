@@ -10,6 +10,11 @@ class GradientNewtonSolver
 {
 public:
   void RunDemo(bool visualization = false);
+
+private:
+
+
+
 };
 
 } // namespace g2o

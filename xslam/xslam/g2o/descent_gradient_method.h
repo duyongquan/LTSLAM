@@ -46,7 +46,6 @@ private:
     double getCost();
     void solve();
 
-
     /* 要求解的四个参数 */
     double a_;
     double b_;
