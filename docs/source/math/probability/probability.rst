@@ -10,6 +10,10 @@ Probability
    :align: center
 
 
+.. image:: Distributions.jpeg
+   :align: center
+
+
 Probability density
 ===================
 
