@@ -10,7 +10,7 @@ Probability
    :align: center
 
 
-.. image:: Distributions.jpeg
+.. image:: Distributions.png
    :align: center
 
 
