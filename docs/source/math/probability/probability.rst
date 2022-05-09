@@ -6,6 +6,10 @@
 Probability
 ===========
 
+.. image:: Probability_Cheatsheet.jpeg
+   :align: center
+
+
 Probability density
 ===================
 
