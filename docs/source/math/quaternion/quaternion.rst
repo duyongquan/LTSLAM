@@ -6,6 +6,33 @@
 Quaternion
 ===========
 
+`四元数和欧拉角可视化参考 <https://danceswithcode.net/engineeringnotes/index.html>`_
+
+.. image:: ./visual_tools.png
+   :align: center
+
+`Rotating Points in Two-Dimensions <https://danceswithcode.net/engineeringnotes/index.html>`_
+
+.. image:: ./visual_tools_2.png
+   :align: center
+
+
+`Rotation Conversion Tool <https://danceswithcode.net/engineeringnotes/quaternions/conversion_tool.html>`_
+
+.. image:: ./visual_tools_3.png
+   :align: center
+
+`Euler Angle Visualization Tool <https://danceswithcode.net/engineeringnotes/rotations_in_3d/demo3D/rotations_in_3d_tool.html>`_
+
+.. image:: ./visual_tools_1.png
+   :align: center
+
+`Interpolation <https://danceswithcode.net/engineeringnotes/interpolation/interpolation.html>`_
+
+.. image:: ./visual_tools_4.png
+   :align: center
+
+
 **definition**
 ---------------
 
