@@ -10,6 +10,7 @@ XSLAM is an open source C++ demo for learn vision slam and lidar slam. Through o
 * <font color='red'> **C++**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/c%2B%2B/c%2B%2B.html)
 * <font color='red'> **CMake** </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/cmake/cmake.html)
 * <font color='red'> **Eigen**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/eigen/eigen.html)
+* <font color='red'> **Math**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/math/math.html)
 * <font color='red'> **OpenCV**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/opencv/opencv_tutorial.html)
 * <font color='red'> **Quaternions**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/math/math.html)
 * <font color='red'> **G2O**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/g2o/g2o_tutorial.html)
