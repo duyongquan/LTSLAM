@@ -32,6 +32,11 @@ Quaternion
 .. image:: ./visual_tools_4.png
    :align: center
 
+`EulerAnglesViz <https://compsci290-s2016.github.io/CoursePage/Materials/EulerAnglesViz/>`_
+
+.. image:: ./visual_tools_5.png
+   :align: center
+
 
 **definition**
 ---------------
