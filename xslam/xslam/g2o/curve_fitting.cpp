@@ -28,6 +28,7 @@ void CurveFitting::RunDemo()
     }
 
     // 构建图优化，先设定g2o
+    // Ax = b
     typedef ::g2o::BlockSolver<::g2o::BlockSolverTraits<3, 1>> BlockSolverType;  // 每个误差项优化变量维度为3，误差值维度为1
     typedef ::g2o::LinearSolverDense<BlockSolverType::PoseMatrixType> LinearSolverType; // 线性求解器类型
 

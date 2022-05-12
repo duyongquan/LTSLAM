@@ -5,7 +5,7 @@ namespace xslam{
 namespace g2o {
 
 // https://github.com/TiantianUpup/numerical-optimization
-
+// 
 class GradientNewtonSolver
 {
 public:
