@@ -5,12 +5,12 @@ namespace vins_mono {
 
 VinsBuilderBridge::VinsBuilderBridge(
       const NodeOptions& node_options,
-      std::shared_ptr<xslam::vins::VinsBuilderInterface> vins_builder,
+      std::shared_ptr<xslam::vins::VinsBuilder> vins_builder,
       tf2_ros::Buffer* tf_buffer)
       : node_options_(node_options),
-      tf_buffer_(tf_buffer) 
+        vins_builder_(vins_builder),
+        tf_buffer_(tf_buffer) 
 {
-
      sensor_bridges_ = std::make_unique<SensorBridge>(
         node_options_.tracking_frame,
         node_options_.lookup_transform_timeout_sec, tf_buffer_,
@@ -20,6 +20,11 @@ VinsBuilderBridge::VinsBuilderBridge(
 SensorBridge* VinsBuilderBridge::sensor_bridge()
 {
     return sensor_bridges_.get();
+}
+
+xslam::vins::VinsBuilder* VinsBuilderBridge::vins_builder()
+{
+    return vins_builder_.get();
 }
 
 }  // namespace vins_mono

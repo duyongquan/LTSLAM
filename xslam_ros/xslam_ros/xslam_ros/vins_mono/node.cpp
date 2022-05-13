@@ -1,4 +1,5 @@
 #include "xslam_ros/vins_mono/node.h"
+#include "xslam_ros/vins_mono/msg_conversion.h"
 
 namespace xslam_ros {
 namespace vins_mono {
@@ -24,12 +25,11 @@ template <typename MessageType>
 } // namespace
 
 Node::Node(const NodeOptions& node_options,
-        std::shared_ptr<xslam::vins::VinsBuilderInterface> vins_builder,
+        std::shared_ptr<xslam::vins::VinsBuilder> vins_builder,
         tf2_ros::Buffer* tf_buffer)
         : options_(node_options),
           vins_builder_bridge_(node_options, vins_builder, tf_buffer)
 {
-
     // IMU trajectory
     wall_timers_.push_back(node_handle_.createWallTimer(
         ::ros::WallDuration(1),
@@ -39,6 +39,11 @@ Node::Node(const NodeOptions& node_options,
     wall_timers_.push_back(node_handle_.createWallTimer(
         ::ros::WallDuration(1),
         &Node::PublishImageTrajectory, this));
+
+    // Image Feature Points
+    wall_timers_.push_back(node_handle_.createWallTimer(
+        ::ros::WallDuration(0.1),
+        &Node::PublishFeaturePoints, this));
 
     // Ground Truth trajectory
     wall_timers_.push_back(node_handle_.createWallTimer(
@@ -106,6 +111,19 @@ void Node::PublishImageTrajectory(
     const ::ros::WallTimerEvent& unused_timer_event)
 {
 
+}
+
+void Node::PublishFeaturePoints(
+    const ::ros::WallTimerEvent& unused_timer_event)
+{
+    xslam::vins::common::messages::PointCloud point_cloud;
+    bool state = vins_builder_bridge_.vins_builder()->GetNewestFeaturePoints(point_cloud);
+    if (!state) {
+        return;
+    }
+
+    auto ros_point_cloud = ToPointCloud(point_cloud);
+    pub_feature_points_.publish(ros_point_cloud);
 }
 
 void Node::PublishGroundTruthTrajectory(

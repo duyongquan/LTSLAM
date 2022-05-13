@@ -2,7 +2,9 @@
 #define XSLAM_ROS_VINS_MONO_MSG_CONVERSION_H
 
 #include "xslam/vins/transform/rigid_transform.h"
+#include "xslam/vins/common/messages/point_cloud.h"
 
+#include "sensor_msgs/PointCloud.h"
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/Transform.h"
 #include "geometry_msgs/TransformStamped.h"
@@ -23,6 +25,9 @@ namespace vins_mono {
 Eigen::Vector3d ToEigen(const geometry_msgs::Vector3& vector3);
 
 Eigen::Quaterniond ToEigen(const geometry_msgs::Quaternion& quaternion);
+
+sensor_msgs::PointCloud ToPointCloud(const xslam::vins::common::messages::PointCloud& point_cloud);
+
 
 } // namespace vins_mono 
 } // namespace xslam_ros

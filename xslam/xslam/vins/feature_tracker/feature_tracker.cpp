@@ -20,7 +20,6 @@ FeatureTracker::FeatureTracker(
 
 void FeatureTracker::AddImageData(const sensor::ImageData& image)
 {
-
     FeaturePoints feature_points;
     common::messages::ChannelFloat32 id_of_point;
     common::messages::ChannelFloat32 u_of_point;
@@ -36,8 +35,8 @@ void FeatureTracker::AddImageData(const sensor::ImageData& image)
         {
             int p_id = ids[j];
             common::messages::Point32 p;
-            // p.x = un_pts[j].x;
-            // p.y = un_pts[j].y;
+            p.x = cur_un_pts[j].x;
+            p.y = cur_un_pts[j].y;
             p.z = 1;
 
             feature_points.points.push_back(p);
@@ -55,7 +54,6 @@ void FeatureTracker::AddImageData(const sensor::ImageData& image)
     feature_points.channels.push_back(velocity_x_of_point);
     feature_points.channels.push_back(velocity_y_of_point);
     queue_.push_back(feature_points);
-
 
     if (!options_.show_track()) {
       return;
@@ -140,7 +138,7 @@ void FeatureTracker::ShowUndistortion(const std::string &name)
         for (int j = 0; j < options_.image_width(); j++) {
             Eigen::Vector2d a(i, j);
             Eigen::Vector3d b;
-            // camera_->LiftProjective(a, b);
+            camera_->LiftProjective(a, b);
             distortedp.push_back(a);
             undistortedp.push_back(Eigen::Vector2d(b.x() / b.z(), b.y() / b.z()));
         }
@@ -177,12 +175,12 @@ void FeatureTracker::RejectWithF()
     for (unsigned int i = 0; i < cur_pts.size(); i++)
     {
         Eigen::Vector3d tmp_p;
-        // camera_->LiftProjective(Eigen::Vector2d(cur_pts[i].x, cur_pts[i].y), tmp_p);
+        camera_->LiftProjective(Eigen::Vector2d(cur_pts[i].x, cur_pts[i].y), tmp_p);
         tmp_p.x() = options_.focal_length()  * tmp_p.x() / tmp_p.z() + options_.image_height() / 2.0;
         tmp_p.y() = options_.focal_length()  * tmp_p.y() / tmp_p.z() + options_.image_width() / 2.0;
         un_cur_pts[i] = cv::Point2f(tmp_p.x(), tmp_p.y());
 
-        // camera_->LiftProjective(Eigen::Vector2d(forw_pts[i].x, forw_pts[i].y), tmp_p);
+        camera_->LiftProjective(Eigen::Vector2d(forw_pts[i].x, forw_pts[i].y), tmp_p);
         tmp_p.x() = options_.focal_length()  * tmp_p.x() / tmp_p.z() + options_.image_height() / 2.0;
         tmp_p.y() = options_.focal_length()  * tmp_p.y() / tmp_p.z() + options_.image_width() / 2.0;
         un_forw_pts[i] = cv::Point2f(tmp_p.x(), tmp_p.y());
@@ -209,7 +207,7 @@ void FeatureTracker::UndistortedPoints()
     for (unsigned int i = 0; i < cur_pts.size(); i++) {
         Eigen::Vector2d a(cur_pts[i].x, cur_pts[i].y);
         Eigen::Vector3d b;
-        // camera_->LiftProjective(a, b);
+        camera_->LiftProjective(a, b);
         cur_un_pts.push_back(cv::Point2f(b.x() / b.z(), b.y() / b.z()));
         cur_un_pts_map.insert(std::make_pair(ids[i], cv::Point2f(b.x() / b.z(), b.y() / b.z())));
     }

@@ -28,5 +28,14 @@ Eigen::Quaterniond ToEigen(const geometry_msgs::Quaternion& quaternion) {
                             quaternion.z);
 }
 
+sensor_msgs::PointCloud ToPointCloud(const xslam::vins::common::messages::PointCloud& point_cloud)
+{
+  sensor_msgs::PointCloud feature_points;
+  // feature_points->header = img_msg->header;
+  feature_points.header.frame_id = "world";
+  feature_points.channels = point_cloud.point_cloud;
+  return feature_points;
+}
+
 } // namespace vins_mono 
 } // namespace xslam_ros

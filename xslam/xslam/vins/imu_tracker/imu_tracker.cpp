@@ -19,7 +19,7 @@ ImuTracker::~ImuTracker()
 
 void ImuTracker::AddImuData(const sensor::ImuData& msg)
 {
-
+    LOG(INFO) << "ImuTracker::AddImuData";
 }
 
 } // namespace imu_tracker

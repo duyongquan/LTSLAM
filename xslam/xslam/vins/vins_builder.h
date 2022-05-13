@@ -22,20 +22,23 @@ public:
 
     void AddSensorData(const std::string& sensor_id, const sensor::ImageData& image_data) override;
 
+    bool GetNewestFeaturePoints(common::messages::PointCloud& points);
+
+
     estimator::Estimator* estimator() override 
     {
         return estimator_.get();
     }
 
 private:
-    void HandleCollatedSensorData(const std::string& sensor_id, std::unique_ptr<sensor::Data> data);
 
     estimator::proto::EstimatorOptions options_;
     std::unique_ptr<estimator::Estimator> estimator_;
     std::unique_ptr<sensor::CollatorInterface> collator_;
 };
 
-std::shared_ptr<VinsBuilderInterface> CreateVinsBuilder(const estimator::proto::EstimatorOptions& options);
+std::shared_ptr<VinsBuilder> CreateVinsBuilder(
+    const estimator::proto::EstimatorOptions& options);
 
 } // namespace vins
 } // namespace xslam

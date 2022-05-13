@@ -15,6 +15,7 @@ struct NodeOptions
 {
     ::xslam::vins::estimator::proto::EstimatorOptions vins_options;
     std::string map_frame;
+    std::string imu_topic;
     std::string tracking_frame;
     std::string published_frame;
     double lookup_transform_timeout_sec;

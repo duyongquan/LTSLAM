@@ -17,7 +17,6 @@ class PinholeCamera : public CameraInterface
 {
 public: 
     explicit PinholeCamera(const feature_tracker::proto::FeatureTrackerOptions& options);
-    PinholeCamera() {}
     virtual ~PinholeCamera() {};
 
     PinholeCamera(const PinholeCamera& other) = delete;

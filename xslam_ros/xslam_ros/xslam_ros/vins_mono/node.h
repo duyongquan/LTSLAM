@@ -28,7 +28,7 @@ class Node
 {
 public:
     Node(const NodeOptions& node_options,
-        std::shared_ptr<xslam::vins::VinsBuilderInterface> vins_builder,
+        std::shared_ptr<xslam::vins::VinsBuilder> vins_builder,
         tf2_ros::Buffer* tf_buffer);
     ~Node();
 
@@ -48,6 +48,7 @@ public:
 
     void PublishIMUTrajectory(const ::ros::WallTimerEvent& unused_timer_event);
     void PublishImageTrajectory(const ::ros::WallTimerEvent& unused_timer_event);
+    void PublishFeaturePoints(const ::ros::WallTimerEvent& unused_timer_event);
     void PublishGroundTruthTrajectory(const ::ros::WallTimerEvent& unused_timer_event);
 
 private:
@@ -67,6 +68,7 @@ private:
     VinsBuilderBridge vins_builder_bridge_;
 
     ::ros::NodeHandle node_handle_;
+    ros::Publisher pub_feature_points_;
     std::vector<Subscriber> subscribers_;
 
     // We have to keep the timer handles of ::ros::WallTimers around, otherwise

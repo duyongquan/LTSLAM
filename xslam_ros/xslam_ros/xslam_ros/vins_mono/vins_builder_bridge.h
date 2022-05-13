@@ -22,7 +22,7 @@ class VinsBuilderBridge
 public:
      VinsBuilderBridge(
         const NodeOptions& node_options,
-        std::shared_ptr<xslam::vins::VinsBuilderInterface> vins_builder,
+        std::shared_ptr<xslam::vins::VinsBuilder> vins_builder,
         tf2_ros::Buffer* tf_buffer);
 
 
@@ -30,6 +30,7 @@ public:
     VinsBuilderBridge& operator=(const VinsBuilderBridge&) = delete;
 
     SensorBridge* sensor_bridge();
+    xslam::vins::VinsBuilder* vins_builder();
 
 private:
     std::mutex mutex_;
@@ -37,6 +38,7 @@ private:
     tf2_ros::Buffer* const tf_buffer_;
 
     std::unique_ptr<SensorBridge> sensor_bridges_;
+    std::shared_ptr<xslam::vins::VinsBuilder> vins_builder_;
 };
 
 }  // namespace vins_mono
