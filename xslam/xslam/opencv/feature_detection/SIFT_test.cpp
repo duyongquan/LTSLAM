@@ -9,7 +9,6 @@ namespace opencv {
     
 TEST(SIFT, demo)
 {
-    
     // 0008_roofs1.jpg
     std::string filename = GetOpenCVDatasetDirectory() + "/0002_chessboard.jpeg"; 
     SIFTFeature demo;

@@ -56,7 +56,8 @@ Feature Detection
         I_{x}I_{y} & I_{y}I_{y} 
     \end{bmatrix}
 
-在此，:math:`Ix` 和 :math:`Iy`分别是在x和y方向上的图像导数。（可以使用 **cv::Sobel()** 轻松找到）。
+在此，:math:`Ix` 和 :math:`Iy`分别是在x和y方向上的图像导数。可以使用 **cv::Sobel()** 轻松找到.
+
 
 然后是主要部分。之后，他们创建了一个分数，基本上是一个等式，
 它将确定一个窗口是否可以包含一个角。
@@ -80,7 +81,7 @@ Feature Detection
 因此，Harris Corner Detection的结果是具有这些分数的灰度图像。
 合适的阈值可为您提供图像的各个角落。我们将以一个简单的图像来完成它。
 
-Opencv API :
+Opencv C++ API:
 
 .. code-block:: c++
 
@@ -168,8 +169,19 @@ demo调用, 源码
 .. figure:: ./images/harris_result.png
    :align: center
 
+参考源码：
+
+.. NOTE::
+
+    * corner_harris_test.h
+    * corner_harris.cpp
+    * corner_harris.h
+
+
 3 Fast ORB角点检测
 ==================
+
+Opencv C++ API:
 
 .. code-block:: c++
 
@@ -227,60 +239,228 @@ demo调用, 源码
 
 .. code-block:: bash
 
-    [bin] ./xslam.opencv.feature_detection.corner_harris_test
+    [bin] ./xslam.opencv.feature_detection.fast_feature_detector_test
 
 
 .. figure:: ./images/fast_orb_result.png
    :align: center
 
+参考源码：
+
+.. NOTE::
+
+    * fast_feature_detector_test.h
+    * fast_feature_detector.cpp
+    * fast_feature_detector.h
+
 4 SIFT角点检测
 ==================
-
-.. code-block:: c++
-
 
 demo调用, 源码
 
 .. code-block:: c++
 
+    TEST(SIFT, demo)
+    {
+        // 0008_roofs1.jpg
+        std::string filename = GetOpenCVDatasetDirectory() + "/0002_chessboard.jpeg"; 
+        SIFTFeature demo;
+        demo.RunDemo(filename);
+    }
 
 函数使用：
 
 .. code-block:: c++
 
+    void SIFTFeature::RunDemo(const std::string& filename)
+    {
+        cv::Mat image = cv::imread(filename, cv::IMREAD_GRAYSCALE);
+        cv::Mat color_img = cv::imread(filename);
+
+        if (image.data == nullptr || color_img.data == nullptr) {
+            std::cout << "Load image error." << filename << std::endl;
+            exit(-1);
+        }
+
+
+        cv::Mat float_img;
+        image.convertTo(float_img,CV_32F);
+
+        int rows = image.rows;
+        int cols = image.cols;
+        vl_sift_ =  vl_sift_new(cols, rows, 4, 3, 0);
+        vl_sift_set_peak_thresh(vl_sift_, 0.04);
+        vl_sift_set_edge_thresh(vl_sift_, 10);
+
+        vl_sift_pix *data = (vl_sift_pix*)(float_img.data);
+
+
+        std::vector<VlSiftKeypoint> vlfeat_keypoints;
+        std::vector<cv::KeyPoint>   opencv_keypoints;
+
+        std::vector<float*> descriptors;
+
+        ExtractFeature(vl_sift_,data, vlfeat_keypoints, descriptors);
+        ConvertToOpencvKeypoint(vlfeat_keypoints, opencv_keypoints);
+
+        drawKeypoints(image, opencv_keypoints, image);
+
+
+        imshow("SIFT Feature", image);
+        cv::waitKey(0);
+        cv::destroyAllWindows();
+        vl_sift_delete(vl_sift_);
+    }
+
+    void SIFTFeature::ExtractFeature(VlSiftFilt* sift_ptr, vl_sift_pix* data, 
+        std::vector<VlSiftKeypoint>& keypoints, std::vector<float*>& descriptors)
+    {
+        // Detect keypoint and compute descriptor in each octave
+        if(vl_sift_process_first_octave(vl_sift_, data) != VL_ERR_EOF)
+        {
+            while(true)
+            {
+                vl_sift_detect(vl_sift_);
+
+                VlSiftKeypoint* pKpts = vl_sift_->keys;
+                for(int i = 0; i < vl_sift_->nkeys; i ++) 
+                {
+
+                    double angles[4];
+                    // 计算特征点的方向，包括主方向和辅方向，最多4个
+                    int angleCount = vl_sift_calc_keypoint_orientations(vl_sift_, angles, pKpts);
+
+                    // 对于方向多于一个的特征点，每个方向分别计算特征描述符
+                    // 并且将特征点复制多个
+                    for(int i = 0 ; i < angleCount; i ++)
+                    {
+                        float *des = new float[128];
+                        vl_sift_calc_keypoint_descriptor(vl_sift_, des, pKpts, angles[0]);
+                        descriptors.push_back(des);
+                        keypoints.push_back(*pKpts);
+                    }
+
+                    pKpts ++;
+                }    
+                // Process next octave
+                if(vl_sift_process_next_octave(vl_sift_) == VL_ERR_EOF) 
+                {
+                    break ;
+                }
+            }
+        }
+    }
+
+    void SIFTFeature::ConvertToOpencvKeypoint(
+        std::vector<VlSiftKeypoint>& vlfeat_keypoints,
+        std::vector<cv::KeyPoint>& opencv_keypoints)
+    {
+        for (auto keypoint : vlfeat_keypoints) {
+
+            opencv_keypoints.push_back({keypoint.x, keypoint.y, keypoint.sigma});
+        }
+    }
+
 运行结果
+
+.. code-block:: bash
+
+    [bin] ./xslam.opencv.feature_detection.SIFT_test 
+
+.. figure:: ./images/sift_result.png
+   :align: center
+
+参考源码：
+
+.. NOTE::
+
+    * SIFT_test.h
+    * SIFT.cpp
+    * SIFT.h
 
 5 shi tomasi角点检测
 =====================
 
+Opencv C++ API:
+
 .. code-block:: c++
 
+    void cv::goodFeaturesToTrack(InputArray _image, OutputArray _corners,
+                              int maxCorners, double qualityLevel, double minDistance,
+                              InputArray _mask, int blockSize,
+                              bool useHarrisDetector, double harrisK)
+    
+                
+
+.. NOTE:: 
+
+    * _image：8位或32位浮点型输入图像，单通道
+    * _corners：保存检测出的角点
+    * maxCorners：角点数目最大值，如果实际检测的角点超过此值，则只返回前maxCorners个强角点
+    * qualityLevel：角点的品质因子
+    * minDistance：对于初选出的角点而言，如果在其周围minDistance范围内存在其他更强角点，则将此角点删除
+    * _mask：指定感兴趣区，如不需在整幅图上寻找角点，则用此参数指定ROI
+    * blockSize：计算协方差矩阵时的窗口大小
+    * useHarrisDetector：指示是否使用Harris角点检测，如不指定，则计算shi-tomasi角点
+    * harrisK：Harris角点检测需要的k值
 
 demo调用, 源码
 
 .. code-block:: c++
 
+    TEST(ShiTomasi, GoodFeaturesToTrack)
+    {
+        std::string filename = GetOpenCVDatasetDirectory() + "/0002_chessboard.jpeg";
+        ShiTomasi demo;
+        demo.CornerDetect(filename);
+    }
 
 函数使用：
 
 .. code-block:: c++
 
+    void ShiTomasi::CornerDetect(const std::string& filename)
+    {
+        cv::Mat image = cv::imread(filename);
+        if (image.data == nullptr) {
+            std::cout << "Load image error." << filename << std::endl;
+            exit(-1);
+        }
+
+        cv::Mat gray;
+        cv::cvtColor(image, gray,cv::COLOR_BGR2GRAY);
+
+        std::vector<cv::Point2f> corners;
+        goodFeaturesToTrack(gray, corners, 100, 0.01,50, cv::Mat());
+        for(int i = 0; i < corners.size(); i++) {
+            // image，背景图
+            // center，圆心
+            // radius，半径
+            // color，颜色
+            // thickness，线粗细
+            circle(image, corners[i],5,cv::Scalar(0,0,255),2);
+        }
+
+        imshow("Shi-Tomasi Corner Detected",image);
+        cv::waitKey(0);
+        cv::destroyAllWindows();
+    }
+
 运行结果
 
+.. code-block:: bash
 
-6 BRIEF 角点检测
-==================
+    [bin] ./xslam.opencv.feature_detection.shi_tomasi_test 
 
-.. code-block:: c++
-
-
-demo调用, 源码
-
-.. code-block:: c++
+.. figure:: ./images/shi_tomasi.png
+   :align: center
 
 
-函数使用：
+参考源码：
 
-.. code-block:: c++
+.. NOTE::
 
-运行结果
+    * shi_tomasi_test.h
+    * shi_tomasi.cpp
+    * shi_tomasi.h
+
