@@ -8,6 +8,7 @@ FEATURE_TRACKER = {
     image_width = 752,
     image_height = 480,
 
+    focal_length = 460.0;
     k1 = -2.917e-01,
     k2 = 8.228e-02,
     p1 = 5.333e-05,

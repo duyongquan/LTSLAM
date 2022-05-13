@@ -12,6 +12,7 @@ message FeatureTrackerOptions
     int32 image_height = 4;
 
     // distortion
+    double focal_length = 25;
     double k1 = 5;
     double k2 = 6;
     double p1 = 7;

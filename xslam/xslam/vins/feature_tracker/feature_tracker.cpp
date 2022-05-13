@@ -1,4 +1,5 @@
 #include "xslam/vins/feature_tracker/feature_tracker.h"
+#include "glog/logging.h"
 
 #include <chrono>
 #include <vector>
@@ -14,9 +15,9 @@ FeatureTracker::FeatureTracker(
     : options_(options),
       thread_pool_(pool)
 {
+    camera_ = std::make_unique<camera::PinholeCamera>(options);
 }
 
-/*
 void FeatureTracker::AddImageData(const sensor::ImageData& image)
 {
 
@@ -56,7 +57,7 @@ void FeatureTracker::AddImageData(const sensor::ImageData& image)
     queue_.push_back(feature_points);
 
 
-    if (!options_.feature().show_track()) {
+    if (!options_.show_track()) {
       return;
     }
 }
@@ -74,11 +75,13 @@ bool FeatureTracker::GetNewestFeaturePoints(FeaturePoints& points)
 
 void FeatureTracker::SetMask()
 {
-    if(options_.feature().fisheye()) {
+    if(options_.fisheye()) {
         mask_ = fisheye_mask_.clone();
     } 
 
-    mask_ = cv::Mat(options_.row(), options_.col(), CV_8UC1, cv::Scalar(255));
+    // ROW = fsSettings["image_height"];
+    // COL = fsSettings["image_width"];
+    mask_ = cv::Mat(options_.image_height(), options_.image_width(), CV_8UC1, cv::Scalar(255));
 
     // prefer to keep features that are tracked for long time
     std::vector<std::pair<int, std::pair<cv::Point2f, int>>> cnt_pts_id;
@@ -131,13 +134,13 @@ bool FeatureTracker::UpdateID(uint8 id)
 
 void FeatureTracker::ShowUndistortion(const std::string &name)
 {
-    cv::Mat undistortedImg(options_.row() + 600, options_.col() + 600, CV_8UC1, cv::Scalar(0));
+    cv::Mat undistortedImg(options_.image_height() + 600, options_.image_width() + 600, CV_8UC1, cv::Scalar(0));
     std::vector<Eigen::Vector2d> distortedp, undistortedp;
-    for (int i = 0; i < options_.col(); i++) {
-        for (int j = 0; j < options_.row(); j++) {
+    for (int i = 0; i < options_.image_height(); i++) {
+        for (int j = 0; j < options_.image_width(); j++) {
             Eigen::Vector2d a(i, j);
             Eigen::Vector3d b;
-            // m_camera->liftProjective(a, b);
+            // camera_->LiftProjective(a, b);
             distortedp.push_back(a);
             undistortedp.push_back(Eigen::Vector2d(b.x() / b.z(), b.y() / b.z()));
         }
@@ -146,14 +149,14 @@ void FeatureTracker::ShowUndistortion(const std::string &name)
     for (int i = 0; i < undistortedp.size(); i++)
     {
         cv::Mat pp(3, 1, CV_32FC1);
-        pp.at<float>(0, 0) = undistortedp[i].x() * options_.focal_length() + options_.col() / 2;
-        pp.at<float>(1, 0) = undistortedp[i].y() * options_.focal_length() + options_.row() / 2;
+        pp.at<float>(0, 0) = undistortedp[i].x() * options_.focal_length() + options_.image_height() / 2;
+        pp.at<float>(1, 0) = undistortedp[i].y() * options_.focal_length() + options_.image_width() / 2;
         pp.at<float>(2, 0) = 1.0;
 
         if (pp.at<float>(1, 0) + 300 >= 0 && 
-            pp.at<float>(1, 0) + 300 < options_.row() + 600 && 
+            pp.at<float>(1, 0) + 300 < options_.image_height() + 600 && 
             pp.at<float>(0, 0) + 300 >= 0 && 
-            pp.at<float>(0, 0) + 300 < options_.col() + 600) {
+            pp.at<float>(0, 0) + 300 < options_.image_width() + 600) {
             undistortedImg.at<uchar>(pp.at<float>(1, 0) + 300, pp.at<float>(0, 0) + 300) = 
                 cur_img.at<uchar>(distortedp[i].y(), distortedp[i].x());
         }
@@ -174,19 +177,19 @@ void FeatureTracker::RejectWithF()
     for (unsigned int i = 0; i < cur_pts.size(); i++)
     {
         Eigen::Vector3d tmp_p;
-        // m_camera->liftProjective(Eigen::Vector2d(cur_pts[i].x, cur_pts[i].y), tmp_p);
-        tmp_p.x() = options_.focal_length()  * tmp_p.x() / tmp_p.z() + options_.col() / 2.0;
-        tmp_p.y() = options_.focal_length()  * tmp_p.y() / tmp_p.z() + options_.row() / 2.0;
+        // camera_->LiftProjective(Eigen::Vector2d(cur_pts[i].x, cur_pts[i].y), tmp_p);
+        tmp_p.x() = options_.focal_length()  * tmp_p.x() / tmp_p.z() + options_.image_height() / 2.0;
+        tmp_p.y() = options_.focal_length()  * tmp_p.y() / tmp_p.z() + options_.image_width() / 2.0;
         un_cur_pts[i] = cv::Point2f(tmp_p.x(), tmp_p.y());
 
-        // m_camera->liftProjective(Eigen::Vector2d(forw_pts[i].x, forw_pts[i].y), tmp_p);
-        tmp_p.x() = options_.focal_length()  * tmp_p.x() / tmp_p.z() + options_.col() / 2.0;
-        tmp_p.y() = options_.focal_length()  * tmp_p.y() / tmp_p.z() + options_.row() / 2.0;
+        // camera_->LiftProjective(Eigen::Vector2d(forw_pts[i].x, forw_pts[i].y), tmp_p);
+        tmp_p.x() = options_.focal_length()  * tmp_p.x() / tmp_p.z() + options_.image_height() / 2.0;
+        tmp_p.y() = options_.focal_length()  * tmp_p.y() / tmp_p.z() + options_.image_width() / 2.0;
         un_forw_pts[i] = cv::Point2f(tmp_p.x(), tmp_p.y());
     }
 
     std::vector<uchar> status;
-    cv::findFundamentalMat(un_cur_pts, un_forw_pts, cv::FM_RANSAC, options_.fundamental_threshold(), 0.99, status);
+    cv::findFundamentalMat(un_cur_pts, un_forw_pts, cv::FM_RANSAC, options_.f_threshold(), 0.99, status);
     int size_a = cur_pts.size();
     ReduceVector(prev_pts, status);
     ReduceVector(cur_pts, status);
@@ -206,7 +209,7 @@ void FeatureTracker::UndistortedPoints()
     for (unsigned int i = 0; i < cur_pts.size(); i++) {
         Eigen::Vector2d a(cur_pts[i].x, cur_pts[i].y);
         Eigen::Vector3d b;
-        // m_camera->liftProjective(a, b);
+        // camera_->LiftProjective(a, b);
         cur_un_pts.push_back(cv::Point2f(b.x() / b.z(), b.y() / b.z()));
         cur_un_pts_map.insert(std::make_pair(ids[i], cv::Point2f(b.x() / b.z(), b.y() / b.z())));
     }
@@ -250,22 +253,16 @@ void FeatureTracker::RunTask()
     }
 }
 
-void FeatureTracker::AddWorkItem(const common::Task::WorkItem& work_item)
-{
-    
-}
-
 bool FeatureTracker::CheckInBorder(const cv::Point2f& point)
 {
   const int kBorderSize = 1;
   int img_x = cvRound(point.x);
   int img_y = cvRound(point.y);
 
-  return kBorderSize <= img_x && img_x < options_.col() - kBorderSize && 
-         kBorderSize <= img_y && img_y < options_.row() - kBorderSize;
+  return kBorderSize <= img_x && img_x < options_.image_height() - kBorderSize && 
+         kBorderSize <= img_y && img_y < options_.image_width() - kBorderSize;
 }
 
-*/
 void FeatureTracker::ReduceVector(std::vector<cv::Point2f>& v, const std::vector<uchar> status)
 {
     int j = 0;

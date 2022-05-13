@@ -1,8 +1,6 @@
 #ifndef XSLAM_VINS_CAMERA_CAMERA_INTERFACE_H
 #define XSLAM_VINS_CAMERA_CAMERA_INTERFACE_H
 
-#include "xslam/vins/camera/camera_options.h"
-
 #include <vector>
 #include <string>
 #include <memory>
@@ -61,7 +59,7 @@ public:
     //                    std::vector<cv::Point2f>& image_points) const;
 
     // options 
-    virtual ModelType model_type(void) const = 0;
+    virtual std::string model_type(void) const = 0;
     virtual const std::string& camera_name(void) const = 0;
     virtual int image_width(void) const = 0;
     virtual int image_height(void) const = 0;

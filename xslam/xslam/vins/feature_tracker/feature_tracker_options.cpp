@@ -19,6 +19,7 @@ proto::FeatureTrackerOptions CreateFeatureTrackerOptions(
     options.set_k2(lua_parameter_dictionary->GetDouble("k2"));
     options.set_p1(lua_parameter_dictionary->GetDouble("p1"));
     options.set_p2(lua_parameter_dictionary->GetDouble("p2"));
+    options.set_focal_length(lua_parameter_dictionary->GetDouble("focal_length"));
 
     // projection
     options.set_fx(lua_parameter_dictionary->GetDouble("fx"));
@@ -63,11 +64,12 @@ void VinsOptionsDebugToString(const proto::FeatureTrackerOptions& options)
     LOG(INFO) << "     image_height: " << options.image_height();
 
     // distortion
-    LOG(INFO) << "  distortion :";
+    LOG(INFO) << "  distortion :"; 
     LOG(INFO) << "     k1: " << options.k1();
     LOG(INFO) << "     k2: " << options.k2();
     LOG(INFO) << "     p1: " << options.p1();
     LOG(INFO) << "     p2: " << options.p2();
+    LOG(INFO) << "     focal_length: " << options.focal_length();
 
 
     // projection

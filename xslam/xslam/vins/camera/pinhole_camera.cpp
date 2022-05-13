@@ -14,10 +14,9 @@ namespace xslam {
 namespace vins {
 namespace camera {
 
-PinholeCamera::PinholeCamera(proto::PinholeCameraOptions& options)
+PinholeCamera::PinholeCamera(const feature_tracker::proto::FeatureTrackerOptions& options)
     : options_(options)
 {
-
 }
 
 void PinholeCamera::LiftSphere(const Eigen::Vector2d& pixel, Eigen::Vector3d& Pose) const
@@ -45,10 +44,10 @@ void PinholeCamera::LiftProjective(const Eigen::Vector2d& pixel, Eigen::Vector3d
     {
         if (0)
         {
-            double k1 = options_.paramters().k1();
-            double k2 = options_.paramters().k2();
-            double p1 = options_.paramters().p1();
-            double p2 = options_.paramters().p2();
+            double k1 = options_.k1();
+            double k2 = options_.k2();
+            double p1 = options_.p1();
+            double p2 = options_.p2();
 
             // Apply inverse distortion model
             // proposed by Heikkila
@@ -108,8 +107,8 @@ void PinholeCamera::SpaceToPlane(const Eigen::Vector3d& Pose, Eigen::Vector2d& p
     }
 
     // Apply generalised projection matrix
-    pixel << options_.paramters().fx() * p_d(0) + options_.paramters().cx(),
-             options_.paramters().fy() * p_d(1) + options_.paramters().cy();
+    pixel << options_.fx() * p_d(0) + options_.cx(),
+             options_.fy() * p_d(1) + options_.cy();
 }
 
 void PinholeCamera::UndistToPlane(const Eigen::Vector2d& pixel_undistoriton, Eigen::Vector2d& pixel) const
@@ -129,34 +128,36 @@ void PinholeCamera::UndistToPlane(const Eigen::Vector2d& pixel_undistoriton, Eig
     }
 
     // Apply generalised projection matrix
-    pixel << options_.paramters().fx() * pixel_distoriton(0) + options_.paramters().cx(),
-             options_.paramters().fy() * pixel_distoriton(1) + options_.paramters().cy();
+    pixel << options_.fx() * pixel_distoriton(0) + options_.cx(),
+             options_.fy() * pixel_distoriton(1) + options_.cy();
 }
 
 void PinholeCamera::DebugString() const
 {
     LOG(INFO) << "Camera Parameters:";
-    LOG(INFO) << "   model_type " << "PINHOLE";;
-    LOG(INFO) << "   camera_name " << camera_name();
-    LOG(INFO) << "   image_width " << image_width();
-    LOG(INFO) << "   image_height " << image_height();
+    LOG(INFO) << "    model_type: " << "PINHOLE";;
+    LOG(INFO) << "    camera_name: " << camera_name();
+    LOG(INFO) << "    image_width: " << image_width();
+    LOG(INFO) << "    image_height: " << image_height();
 
     // radial distortion: k1, k2
     // tangential distortion: p1, p2
     LOG(INFO) << "Distortion Parameters";
-    LOG(INFO) << "            k1 " << options_.paramters().k1();
-    LOG(INFO) << "            k2 " << options_.paramters().k2();
-    LOG(INFO) << "            p1 " << options_.paramters().p1();
-    LOG(INFO) << "            p2 " << options_.paramters().p2();
+    LOG(INFO) << "    k1: " << options_.k1();
+    LOG(INFO) << "    k2: " << options_.k2();
+    LOG(INFO) << "    p1: " << options_.p1();
+    LOG(INFO) << "    p2: " << options_.p2();
 
     // projection: fx, fy, cx, cy
     LOG(INFO) << "Projection Parameters";
-    LOG(INFO) << "            fx " << options_.paramters().fx();
-    LOG(INFO) << "            fy " << options_.paramters().fy();
-    LOG(INFO) << "            cx " << options_.paramters().cx();
-    LOG(INFO) << "            cy " << options_.paramters().cy();
+    LOG(INFO) << "    fx: " << options_.fx();
+    LOG(INFO) << "    fy: " << options_.fy();
+    LOG(INFO) << "    cx: " << options_.cx();
+    LOG(INFO) << "    cy: " << options_.cy();
+    LOG(INFO) << "    focal_length: " << options_.focal_length();
 }
 
+/*
 void PinholeCamera::EstimateIntrinsics(
     const cv::Size& board_size,
     const std::vector< std::vector<cv::Point3f> >& object_points,
@@ -237,36 +238,37 @@ void PinholeCamera::EstimateIntrinsics(
     params.fy = sqrt(fabs(1.0 / f.at<double>(1)));
     ToProto(params);
 }
+*/
 
-ModelType PinholeCamera::model_type(void) const
+std::string PinholeCamera::model_type(void) const
 {
-    if (options_.info().model_type() == "PINHOLE") {
-        return ModelType::kPinhole;
+    if (options_.model_type() == "PINHOLE") {
+        return "PINHOLE";
     }
-    return ModelType::kUnknown;
+    return "Unknown";
 }
 
 const std::string& PinholeCamera::camera_name(void) const
 {
-    return options_.info().camera_name();
+    return options_.camera_name();
 }
 
 int PinholeCamera::image_width(void) const
 {
-    return options_.info().image_width();
+    return options_.image_width();
 }
 
 int PinholeCamera::image_height(void) const
 {
-    return options_.info().image_height();
+    return options_.image_height();
 }
 
 void PinholeCamera::Distortion(const Eigen::Vector2d& p_u, Eigen::Vector2d& d_u) const
 {
-    double k1 = options_.paramters().k1();
-    double k2 = options_.paramters().k2();
-    double p1 = options_.paramters().p1();
-    double p2 = options_.paramters().p2();
+    double k1 = options_.k1();
+    double k2 = options_.k2();
+    double p1 = options_.p1();
+    double p2 = options_.p2();
 
     double mx2_u, my2_u, mxy_u, rho2_u, rad_dist_u;
 
@@ -281,10 +283,10 @@ void PinholeCamera::Distortion(const Eigen::Vector2d& p_u, Eigen::Vector2d& d_u)
 
 void PinholeCamera::Distortion(const Eigen::Vector2d& p_u, Eigen::Vector2d& d_u, Eigen::Matrix2d& J) const
 {
-    double k1 = options_.paramters().k1();
-    double k2 = options_.paramters().k2();
-    double p1 = options_.paramters().p1();
-    double p2 = options_.paramters().p2();
+    double k1 = options_.k1();
+    double k2 = options_.k2();
+    double p1 = options_.p1();
+    double p2 = options_.p2();
 
     double mx2_u, my2_u, mxy_u, rho2_u, rad_dist_u;
 
@@ -366,8 +368,8 @@ cv::Mat PinholeCamera::InitializeUndistortRectifyMap(
 
     if (fx == -1.0f || fy == -1.0f)
     {
-        K_rect(0,0) = options_.paramters().fx();
-        K_rect(1,1) = options_.paramters().fy();
+        K_rect(0,0) = options_.fx();
+        K_rect(1,1) = options_.fy();
     }
 
     Eigen::Matrix3f K_rect_inv = K_rect.inverse();

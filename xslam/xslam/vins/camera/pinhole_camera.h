@@ -2,8 +2,7 @@
 #define XSLAM_VINS_CAMERA_PINHOLE_CAMERA_H
 
 #include "xslam/vins/camera/camera_interface.h"
-#include "xslam/vins/camera/camera_options.h"
-#include "xslam/vins/camera/proto/pinhole_camera_options.pb.h"
+#include "xslam/vins/feature_tracker/proto/feature_tracker_options.pb.h"
 #include <string>
 
 #include "opencv2/core/core.hpp"
@@ -17,11 +16,12 @@ namespace camera {
 class PinholeCamera : public CameraInterface
 {
 public: 
-    PinholeCamera(proto::PinholeCameraOptions& options);
-    virtual ~PinholeCamera();
+    explicit PinholeCamera(const feature_tracker::proto::FeatureTrackerOptions& options);
+    PinholeCamera() {}
+    virtual ~PinholeCamera() {};
 
     PinholeCamera(const PinholeCamera& other) = delete;
-    PinholeCamera& operator=(const PinholeCamera& ohter) = delete;
+    PinholeCamera& operator=(const PinholeCamera& other) = delete;
 
     // Lift points from the image plane to the sphere
     // `pixel` image coordinates
@@ -53,12 +53,11 @@ public:
                             const std::vector< std::vector<cv::Point3f> >& object_points,
                             const std::vector< std::vector<cv::Point2f> >& image_points);
 
-    virtual ModelType model_type(void) const override;
+    virtual std::string model_type(void) const override;
     virtual const std::string& camera_name(void) const override;
     virtual int image_width(void) const override;
     virtual int image_height(void) const override;
 
-    
     template <typename T>
     static void SpaceToPlane(const T* const params,
                              const T* const q, const T* const t,
@@ -81,9 +80,8 @@ public:
                                           cv::Size image_size = cv::Size(0, 0),
                                           float cx = -1.0f, float cy = -1.0f,
                                           cv::Mat rmat = cv::Mat::eye(3, 3, CV_32F)) const;
-
 private:
-    proto::PinholeCameraOptions options_;
+    feature_tracker::proto::FeatureTrackerOptions options_;
     double inverse_k11_;
     double inverse_k13_;
     double inverse_k22_;
