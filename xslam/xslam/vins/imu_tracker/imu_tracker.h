@@ -23,8 +23,6 @@ public:
     void AddImuData(const sensor::ImuData& msg);
 
 private:
-    void DebugOptionsString();
-
     common::ThreadPool *thread_pool_;
     const proto::ImuTrackerOptions options_;
 };

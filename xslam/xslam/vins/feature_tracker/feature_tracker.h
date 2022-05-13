@@ -2,7 +2,6 @@
 #define XSLAM_VINS_FEATURE_TRACKER_H
 
 #include "xslam/vins/common/port.h"
-#include "xslam/vins/common/task.h"
 #include "xslam/vins/common/thread_pool.h"
 #include "xslam/vins/sensor/image_data.h"
 #include "xslam/vins/feature_tracker/proto/feature_tracker_options.pb.h"
@@ -55,7 +54,7 @@ private:
     void RunTask();
 
     // Handles a new work item.
-    void AddWorkItem(const common::Task::WorkItem& work_item);
+    // void AddWorkItem(const common::Task::WorkItem& work_item);
 
     bool CheckInBorder(const cv::Point2f& point);
 

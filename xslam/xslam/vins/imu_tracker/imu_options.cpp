@@ -23,10 +23,12 @@ proto::ImuTrackerOptions CreateImuTrackerOptions(
 
 void OptionsDebugToString(const proto::ImuTrackerOptions& options)
 {
-    LOG(INFO) << "acc_n: " << options.acceleration_n();
-    LOG(INFO) << "acc_w: " << options.acceleration_w();
-    LOG(INFO) << "gyro_n: " << options.gyro_n();
-    LOG(INFO) << "gyro_w: " << options.gyro_w();
+    LOG(INFO) << "[ImuTrackerOptions:]";
+    LOG(INFO) << "    acc_n: " << options.acceleration_n();
+    LOG(INFO) << "    acc_w: " << options.acceleration_w();
+    LOG(INFO) << "    gyro_n: " << options.gyro_n();
+    LOG(INFO) << "    gyro_w: " << options.gyro_w();
+    LOG(INFO) << "    g_norm: " << options.constant_gravity();
 }
 
 } // namespace imu_tracker

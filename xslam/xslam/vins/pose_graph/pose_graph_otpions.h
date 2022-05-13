@@ -14,7 +14,7 @@ namespace pose_graph {
 proto::PoseGraphOptions CreatePoseGraphOptions(
     common::LuaParameterDictionary* const lua_parameter_dictionary);
 
-void VinsOptionsDebugToString(const proto::PoseGraphOptions& options);
+void OptionsDebugToString(const proto::PoseGraphOptions& options);
 
 } // namespace pose_graph
 } // namespace vins

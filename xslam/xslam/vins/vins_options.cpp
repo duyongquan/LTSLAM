@@ -16,14 +16,13 @@ namespace vins {
 estimator::proto::EstimatorOptions CreateVinsOptions(common::LuaParameterDictionary* const lua_parameter_dictionary) 
 {
     estimator::proto::EstimatorOptions options;
-
+    options.set_thread_nums(lua_parameter_dictionary->GetNonNegativeInt("thread_nums"));
     *options.mutable_imu_tracker_options() = imu_tracker::CreateImuTrackerOptions(
         lua_parameter_dictionary->GetDictionary("imu_tracker").get());
-    // *options.mutable_feature_tracker_options() = feature_tracker::CreateFeatureTrackerOptions(
-    //     lua_parameter_dictionary->GetDictionary("feature_tracker").get());
-    // *options.mutable_pose_graph_options() = pose_graph::CreatePoseGraphOptions(
-    //     lua_parameter_dictionary->GetDictionary("pose_graph").get());
-    // options.set_thread_nums(lua_parameter_dictionary->GetInt("thread_nums"));
+    *options.mutable_feature_tracker_options() = feature_tracker::CreateFeatureTrackerOptions(
+        lua_parameter_dictionary->GetDictionary("feature_tracker").get());
+    *options.mutable_pose_graph_options() = pose_graph::CreatePoseGraphOptions(
+        lua_parameter_dictionary->GetDictionary("pose_graph").get());
     return options;
 }
 

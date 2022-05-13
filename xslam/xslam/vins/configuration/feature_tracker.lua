@@ -38,7 +38,7 @@ FEATURE_TRACKER = {
     min_dist = 30,                      -- min distance between two features 
     freq = 10,                          -- frequence (Hz) of publish tracking result. At least 10Hz for good estimation. If set 0, the frequence will be same as raw image 
     F_threshold = 1.0,                  -- ransac threshold (pixel)
-    show_track = 1,                     -- publish tracking image as topic
-    equalize = 1,                       -- if image is too dark or light, trun on equalize to find enough features
-    fisheye = 0,                        -- if using fisheye, trun on it. A circle mask will be loaded to remove edge noisy points
+    show_track = true,                     -- publish tracking image as topic
+    equalize = true,                       -- if image is too dark or light, trun on equalize to find enough features
+    fisheye = false,                        -- if using fisheye, trun on it. A circle mask will be loaded to remove edge noisy points
 }

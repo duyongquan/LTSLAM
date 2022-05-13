@@ -36,7 +36,7 @@ message FeatureTrackerOptions
 
     // rolling shutter parameters
     int32 rolling_shutter = 16;      // 0: global shutter camera, 1: rolling shutter camera
-    int32 vrolling_shutter_tr = 17; 
+    int32 rolling_shutter_tr = 17; 
 
 
     // feature traker paprameters
