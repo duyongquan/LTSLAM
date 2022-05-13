@@ -33,7 +33,20 @@ sensor_msgs::PointCloud ToPointCloud(const xslam::vins::common::messages::PointC
   sensor_msgs::PointCloud feature_points;
   // feature_points->header = img_msg->header;
   feature_points.header.frame_id = "world";
-  feature_points.channels = point_cloud.point_cloud;
+  // feature_points.channels = point_cloud.channels;
+
+  for (const auto& point : point_cloud.points) {
+    // feature_points.points.push_back({
+    //   point.x,
+    //   point.y,
+    //   point.z
+    // });
+  }
+
+  // for (const auto& channel: point_cloud.channels) {
+  //   feature_points.channels.push_back(channel);
+  // }
+
   return feature_points;
 }
 
