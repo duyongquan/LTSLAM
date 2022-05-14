@@ -20,15 +20,65 @@ FeatureTracker::FeatureTracker(
 
 void FeatureTracker::AddImageData(const sensor::ImageData& image)
 {
+    if(first_image_)
+    {
+        first_image_ = false;
+        first_image_time_ = image.time;
+        last_image_time_ = image.time;
+        return;
+    }
+
+    // detect unstable camera stream
+    const double delta_t = common::ToSeconds(image.time - last_image_time_);
+    if (delta_t > 1.0 || image.time < last_image_time_)
+    {
+        LOG(WARNING) << "image discontinue! reset the feature tracker!";
+        first_image_ = true; 
+        last_image_time_ = common::Time::min();
+        pub_count = 1;
+        restart_ = true;
+        return;
+    }
+
+    last_image_time_ = image.time;
+    const int frequency = round(1.0 * pub_count / common::ToSeconds(image.time - first_image_time_));
+    // frequency control
+    if (frequency <= options_.freq())
+    {
+        pub_this_frame_ = true;
+        // reset the frequency control
+        if (abs(1.0 * pub_count / (common::ToSeconds(image.time - first_image_time_) - options_.freq()) < 0.01 * options_.freq()))
+        {
+            first_image_time_ = image.time;
+            pub_count = 0;
+        }
+    }
+    else
+        pub_this_frame_ = false;
+
+    HandleImageMessages(image.image);
+
+    for (unsigned int i = 0;; i++)
+    {
+        bool completed = UpdateID(i);
+        if (!completed)
+            break;
+    }
+
+    if (!pub_this_frame_)
+    {   
+        LOG(INFO) << "Not publish this image frame.";
+        return;
+    }
+
+    pub_count++;
     FeaturePoints feature_points;
     common::messages::ChannelFloat32 id_of_point;
     common::messages::ChannelFloat32 u_of_point;
     common::messages::ChannelFloat32 v_of_point;
     common::messages::ChannelFloat32 velocity_x_of_point;
     common::messages::ChannelFloat32 velocity_y_of_point;
-
-    // feature_points_.header = img_msg->header;
-    feature_points.header.frame_id = "world";
+    
     for (unsigned int j = 0; j < ids.size(); j++)
     {
         if (track_cnt[j] > 1)
@@ -60,6 +110,95 @@ void FeatureTracker::AddImageData(const sensor::ImageData& image)
     }
 }
 
+bool FeatureTracker::CheckRestart()
+{
+    common::MutexLocker locker(&mutex_);
+    return restart_;
+}
+
+void FeatureTracker::HandleImageMessages(const cv::Mat& current_image)
+{
+    cur_img = current_image;
+    cv::Mat img;
+
+    if (options_.equalize())
+    {
+        cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(3.0, cv::Size(8, 8));
+        clahe->apply(current_image, img);
+    }
+    else
+        img = current_image;
+
+    if (forw_img.empty())
+    {
+        prev_img = cur_img = forw_img = img;
+    }
+    else
+    {
+        forw_img = img;
+    }
+
+    forw_pts.clear();
+    if (cur_pts.size() > 0)
+    {
+        std::vector<uchar> status;
+        std::vector<float> err;
+        cv::calcOpticalFlowPyrLK(cur_img, forw_img, cur_pts, forw_pts, status, err, cv::Size(21, 21), 3);
+
+        for (int i = 0; i < int(forw_pts.size()); i++) {
+            if (status[i] && !CheckInBorder(forw_pts[i])) {
+                status[i] = 0;
+            }
+        }
+        
+        ReduceVector(prev_pts, status);
+        ReduceVector(cur_pts, status);
+        ReduceVector(forw_pts, status);
+        ReduceVector(ids, status);
+        ReduceVector(cur_un_pts, status);
+        ReduceVector(track_cnt, status);
+    }
+
+    for (auto &n : track_cnt) {
+        n++;
+    }
+
+    if (pub_this_frame_) 
+    {
+        RejectWithF();
+        LOG(INFO) << "Set mask begins";
+        SetMask();
+      
+        LOG(INFO) << "detect feature begins";
+  
+        int n_max_cnt = options_.max_cnt() - static_cast<int>(forw_pts.size());
+        if (n_max_cnt > 0)
+        {
+            if(mask_.empty())
+                LOG(INFO) << "mask is empty ";
+            if (mask_.type() != CV_8UC1)
+                LOG(INFO) << "mask type wrong ";
+            if (mask_.size() != forw_img.size())
+                LOG(INFO) << "wrong size ";
+            cv::goodFeaturesToTrack(forw_img, n_pts, options_.max_cnt() - forw_pts.size(), 
+                0.01, options_.min_distance(), mask_);
+        }
+        else
+            n_pts.clear();
+       
+        LOG(INFO) << "Add feature begins";
+        AddPoints();
+    } 
+
+    prev_img = cur_img;
+    prev_pts = cur_pts;
+    prev_un_pts = cur_un_pts;
+    cur_img = forw_img;
+    cur_pts = forw_pts;
+    UndistortedPoints();
+    prev_time = cur_time;
+}
+
 bool FeatureTracker::GetNewestFeaturePoints(FeaturePoints& points)
 {
     if (queue_.empty()) {
@@ -76,9 +215,6 @@ void FeatureTracker::SetMask()
     if(options_.fisheye()) {
         mask_ = fisheye_mask_.clone();
     } 
-
-    // ROW = fsSettings["image_height"];
-    // COL = fsSettings["image_width"];
     mask_ = cv::Mat(options_.image_height(), options_.image_width(), CV_8UC1, cv::Scalar(255));
 
     // prefer to keep features that are tracked for long time

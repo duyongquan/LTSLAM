@@ -2,6 +2,7 @@
 #define XSLAM_VINS_FEATURE_TRACKER_H
 
 #include "xslam/vins/common/port.h"
+#include "xslam/vins/common/mutex.h"
 #include "xslam/vins/common/thread_pool.h"
 #include "xslam/vins/sensor/image_data.h"
 #include "xslam/vins/feature_tracker/proto/feature_tracker_options.pb.h"
@@ -35,9 +36,12 @@ public:
 
     void AddImageData(const sensor::ImageData& image);
 
-    bool GetNewestFeaturePoints(FeaturePoints& points);
+    bool CheckRestart();
 
+    bool GetNewestFeaturePoints(FeaturePoints& points);
+    
 private:
+    void HandleImageMessages(const cv::Mat& current_image);
 
     void SetMask();
 
@@ -85,6 +89,15 @@ private:
 
     inline static int n_id = 0;
     std::deque<FeaturePoints> queue_;
+
+    common::Mutex mutex_;
+    bool restart_ = false;
+
+    bool first_image_ = true;
+    bool pub_this_frame_ = false;
+    int pub_count = 1;
+    common::Time first_image_time_;
+    common::Time last_image_time_ = common::Time::min();
 };
 
 std::unique_ptr<FeatureTracker> CreateFeatureTracker(

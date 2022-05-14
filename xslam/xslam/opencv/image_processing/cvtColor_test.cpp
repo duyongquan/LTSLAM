@@ -1,4 +1,5 @@
-#include "xslam/opencv/image_processing/image_gradient.h"
+#include "xslam/opencv/image_processing/cvtColor.h"
+
 #include "xslam/opencv/utils.h"
 
 #include "gtest/gtest.h"
@@ -9,10 +10,10 @@ namespace xslam {
 namespace opencv {
 namespace image_processing {
 
-TEST(Gradient, Sobel)
+TEST(CvtColor, demo)
 {
-    std::string filename = GetOpenCVDatasetDirectory() + "/0013_parthenon_temple.jpg";
-    Gradient demo;
+    std::string filename = GetOpenCVDatasetDirectory() + "/0015_gudian.jpg";
+    CvtColor demo;
     demo.RunDemo(filename);
 }
 
