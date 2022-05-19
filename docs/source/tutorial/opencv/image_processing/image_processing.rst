@@ -482,6 +482,188 @@ demo调用, 源码
 5 形态学转换
 ==================
 
+**理论**
+
+形态变换是一些基于图像形状的简单操作。通常在二进制图像上执行。它需要两个输入，一个是我们的原始图像，
+第二个是决定 `操作性质的结构元素` 或 `内核` 。两种基本的形态学算子是侵蚀和膨胀。然后，它的变体形式
+（如“打开”，“关闭”，“渐变”等）也开始起作用。
+
+**侵蚀**
+
+侵蚀的基本思想就像土壤侵蚀一样，它侵蚀前景物体的边界(尽量使前景保持白色)。它是做什么的呢?内核滑动通过图像(在2D卷积中)。
+原始图像中的一个像素(无论是1还是0)只有当内核下的所有像素都是1时才被认为是1, 否则它就会被侵蚀(变成0)。
+
+结果是，根据内核的大小，边界附近的所有像素都会被丢弃。因此，前景物体的厚度或大小减小，或只是图像中的白色区域减小。
+它有助于去除小的白色噪声(正如我们在颜色空间章节中看到的)，分离两个连接的对象等.
+
+Opencv C++ API:
+
+.. code-block:: c++
+
+    void erode( InputArray src, OutputArray dst, InputArray kernel,
+                Point anchor = Point(-1,-1), int iterations = 1,
+                int borderType = BORDER_CONSTANT,
+                const Scalar& borderValue = morphologyDefaultBorderValue() );
+
+.. NOTE::
+
+    * 参数 src: 输入图像;通道的数量可以是任意的，但是深度值应该是以下之一： CV_8U, CV_16U, CV_16S, CV_32F or CV_64F.
+    * 参数 dst: 和源图像同样大小和类型的输出图像。
+    * 参数 kernel: 用于腐蚀的结构元素;如果element=Mat(),是一个3 x 3的矩形结构元素. Kernel 可以通过使用getStructuringElement来创建。
+    * 参数 anchor: 素中的锚点的位置，默认是值(-1,-1),也就是说锚点在元素的中心位置。
+    * 参数 iterations: 腐蚀的迭代次数。
+    * 参数 borderType: 像素外推方法。参见#BorderTypes， BORDER_WRAP不支持。
+    * 参数 borderValue: 固定边缘的情况下的边缘值。
+    * 参考 dilate, morphologyEx, getStructuringElement
+
+**扩张**
+
+它与侵蚀正好相反。如果内核下的至少一个像素为“ 1”，则像素元素为“ 1”。
+因此，它会增加图像中的白色区域或增加前景对象的大小。通常，在消除噪音的情况下，腐蚀后会膨胀。
+因为腐蚀会消除白噪声，但也会缩小物体。因此，我们对其进行了扩展。由于噪音消失了，它们不会回来，
+但是我们的目标区域增加了。在连接对象的损坏部分时也很有用。
+
+Opencv C++ API:
+
+.. code-block:: c++
+
+    void dilate( InputArray src, OutputArray dst, InputArray kernel,
+                Point anchor = Point(-1,-1), int iterations = 1,
+                int borderType = BORDER_CONSTANT,
+                const Scalar& borderValue = morphologyDefaultBorderValue() );
+.. NOTE::
+
+    * InputArray类型的src，输入图像，如Mat类型。
+    * OutputArray类型的dst，输出图像。
+    * InputArray类型的kernel，膨胀操作的内核也就是上面所说的蒙版。为NULL时，默认表示以参考点为中心3*3的核。一般配合函数getStructuringElement使用，该函数可以构造一个指定形状和尺寸的蒙版。
+    * Point类型的anchor，锚点。默认值（-1，-1），表示位于单位中心，一般不用。
+    * nt类型的iterations，迭代使用的次数，默认值为1。
+    * int类型的borderType，推断图像外部像素的边界模式，我OpenCV版本的默认值为BORDER_CONSTANT。如果图像边界需要扩展，则不同的模式下所扩展的像素，其生成原则不同。
+    * const Scalar&类型的borderValue，当边界为常数时的边界值，默认值为morphologyDefaultBorderValue()。
+
+
+
+**开运算**
+
+开放只是 `侵蚀然后扩张` 的另一个名称。如上文所述，它对于消除噪音很有用。在这里，我们使用函数 `cv::morphologyEx()` 
+
+Opencv C++ API:
+
+.. code-block:: c++
+
+    void morphologyEx(InputArray src, OutputArray dst, int op, InputArray kernel, 
+                      Point anchor=Point(-1,-1), int iterations=1, int borderType=BORDER_CONSTANT, 
+                      const Scalar& borderValue=morphologyDefaultBorderValue())
+
+.. NOTE::
+
+    * src：源图像
+    * dst：目标图像。
+    * op：表示形态学运算的类型，可以是如下之一的标识符：
+    * MORPH_OPEN – 开运算（Opening operation）
+    * MORPH_CLOSE – 闭运算（Closing operation）
+    * MORPH_GRADIENT -形态学梯度（Morphological gradient）
+    * MORPH_TOPHAT - “顶帽”（“Top hat”）
+    * MORPH_BLACKHAT - “黑帽”（“Black hat“）
+    * kernel：形态学运算的内核
+    * anchor：锚的位置，其有默认值（-1，-1），表示锚位于中心。
+    * iterations：迭代使用函数的次数，默认值为1。
+    * borderType：用于推断图像外部像素的某种边界模式。注意它有默认值BORDER_CONSTANT。
+    * borderValue：当边界为常数时的边界值，有默认值morphologyDefaultBorderValue()，一般我们不用去管他。
+
+
+**闭运算**
+
+闭运算与开运算相反，先扩张然后再侵蚀。在关闭前景对象内部的小孔或对象上的小黑点时很有用。
+
+**形态学梯度**
+
+这是图像扩张和侵蚀之间的区别。
+结果将看起来像对象的轮廓。
+
+**顶帽**
+
+输入图像和图像开运算之差
+
+**黑帽**
+
+输入图像和图像闭运算之差
+
+demo调用, 源码 
+
+.. code-block:: c++
+
+    TEST(Morphology, demo)
+    {
+        std::string filename = GetOpenCVDatasetDirectory() + "/0014_roma.jpg";
+        Morphology demo;
+        demo.RunDemo(filename);
+    }
+
+
+函数使用：
+
+.. code-block:: c++
+
+    void Morphology::RunDemo(const std::string& filename)
+    {
+        // 0. 读取图像
+        cv::Mat image = cv::imread(filename);
+        if (image.data == nullptr) {
+            std::cout << "Load image error." << std::endl;
+            exit(-1);
+        }
+
+        // erode
+        cv::Mat erode;
+        //自定义核
+        cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(8, 8));
+        cv::imshow("原图", image);
+        cv::erode(image, erode, element);
+        cv::imshow("腐蚀", erode);
+
+        // dilate
+        cv::Mat dilate_element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
+        cv::Mat dilate;
+        cv::dilate(image, dilate, dilate_element);
+        imshow("dilate", dilate);
+
+        // morphologyEx
+        cv::Mat morphologyEx;
+        //定义核
+        cv::Mat morphologyEx_element(7, 7, CV_8U, cv::Scalar(1));
+        //进行形态学开运算操作
+        cv::morphologyEx(image, morphologyEx, cv::MORPH_OPEN, morphologyEx_element);
+        imshow("形态学开运算", morphologyEx);
+
+        while (true) 
+        {
+            if (27 == cv::waitKey()) {
+                break;
+            } 
+
+            sleep(1);
+        }
+        
+        cv::destroyAllWindows();
+    }
+
+运行结果
+
+.. code-block:: bash
+
+    [bin] ./xslam.opencv.image_processing.morphology_test
+
+.. figure:: ./images/morphology.png
+   :align: center
+
+参考源码：
+
+.. NOTE::
+
+    * morphology_test.h
+    * morphology.cpp
+    * morphology.h
 
 6 图像梯度
 ==================

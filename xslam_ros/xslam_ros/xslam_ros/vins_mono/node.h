@@ -12,6 +12,7 @@
 #include "xslam_ros/vins_mono/node_constants.h"
 #include "xslam_ros/vins_mono/node_options.h"
 #include "xslam_ros/vins_mono/vins_builder_bridge.h"
+#include "xslam_ros/vins_mono/benchmark/benchmark_publisher.h"
 
 #include "ros/ros.h"
 #include "sensor_msgs/Imu.h"
@@ -75,6 +76,8 @@ private:
     // they do not fire.
     std::vector<::ros::WallTimer> wall_timers_;
 
+    // benchmark(GT)
+    std::shared_ptr<benchmark::Benchmark> benchmark_ptr_;
 };
 
 } // namespace vins_mono 

@@ -28,3 +28,4 @@ endif()
 # add catkin packages
 add_subdirectory(xslam_ros/xslam_ros)
 
+

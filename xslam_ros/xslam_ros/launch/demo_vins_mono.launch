@@ -1,16 +1,22 @@
 <launch>
     <param name="/use_sim_time" value="true" />
-
+    <arg name="sequence_name" default = "MH_01_easy" />
+    
     <node name="vins_mono_node" pkg="xslam_ros" 
         type="vins_mono_node" args="
           -configuration_directory $(find xslam_ros)/configuration_files
           -configuration_basename vins_mono.lua"
         output="screen">
+        
+        <!-- benchmark_publisher -->
+        <!-- <param name="data_name" type="string" value="$(find xslam_ros)/xslam_ros/configuration_files/benchmark/$(arg sequence_name)/data.csv" /> --> 
+
     </node>
 
-
     <!-- <node pkg="rosbag" type="play" name="rosbag"
-            args="-d 5 /home/quan/workspace/slam/tutorial/LTSLAM/dataset/b2-2015-05-26-13-15-25.bag" />
+            args="-d 5 /home/quan/workspace/slam/tutorial/LTSLAM/dataset/b2-2015-05-26-13-15-25.bag" /> -->
 
-    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find xslam_ros)/rviz/slam2d.rviz"/> -->
+    <!-- rviz -->
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find xslam_ros)/rviz/vins_mono.rviz"/>
 </launch>
+

@@ -30,6 +30,9 @@ Node::Node(const NodeOptions& node_options,
         : options_(node_options),
           vins_builder_bridge_(node_options, vins_builder, tf_buffer)
 {
+
+    benchmark_ptr_ = std::make_shared<benchmark::Benchmark>(node_handle_);
+
     // IMU trajectory
     wall_timers_.push_back(node_handle_.createWallTimer(
         ::ros::WallDuration(1),
@@ -47,7 +50,7 @@ Node::Node(const NodeOptions& node_options,
 
     // Ground Truth trajectory
     wall_timers_.push_back(node_handle_.createWallTimer(
-        ::ros::WallDuration(1),
+        ::ros::WallDuration(0.1),
         &Node::PublishGroundTruthTrajectory, this));
 }
 
@@ -129,7 +132,8 @@ void Node::PublishFeaturePoints(
 void Node::PublishGroundTruthTrajectory(
     const ::ros::WallTimerEvent& unused_timer_event)
 {
-
+    ROS_INFO("Ground Truth ... ");
+    benchmark_ptr_->PushlishGroundTruthPath();
 }
 
 } // namespace vins_mono 

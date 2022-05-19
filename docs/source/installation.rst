@@ -57,8 +57,8 @@ LTSLAM工程依赖一系列c++开源库。
 
 - `sophus <https://github.com/strasdat/Sophus.git>`_. You will be build examples and tests or not.
 
-ROS
-===
+ROS1
+====
 
 ubuntu18.04安装ROS Melodic最详细配置
 
@@ -117,6 +117,45 @@ ubuntu18.04安装ROS Melodic最详细配置
 
 
 .. _section-linux:
+
+ROS2(Galactic)
+==============
+
+**Set locale**
+
+.. code-block:: bash
+
+      locale  # check for UTF-8
+
+      sudo apt update && sudo apt install locales
+      sudo locale-gen en_US en_US.UTF-8
+      sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+      export LANG=en_US.UTF-8
+
+      locale  # verify settings
+
+
+**Setup Sources**
+
+You will need to add the ROS 2 apt repositories to your system. To do so, first authorize our GPG key with apt like this:
+
+.. code-block:: bash
+
+      sudo apt update && sudo apt install curl gnupg2 lsb-release
+      sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
+
+.. code-block:: bash
+
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(source /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+**Install ROS 2 packages**
+
+.. code-block:: bash
+
+      sudo apt update
+      sudo apt install ros-galactic-desktop
+
+
 
 Linux
 =====

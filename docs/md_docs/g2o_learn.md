@@ -1154,6 +1154,48 @@ void SimpleBA::RunDemo(const std::string& image1, const std::string& image2)
 
 ### 9.12 line_slam
 
+#### PlueckerLine(普吕克坐标 Plücker coordinates 表示直线)
+
+![查看源图像](https://www.kindpng.com/picc/m/168-1689442_plcker-line-coordinate-geometry-coordinate-geometry-class-10.png)
+
+
+
+在三维空间中，取直线上的两个点$p_1$和$p_2$, 令$d = p_2 - p_1, m = p_1 \times p_2$这些信息就足以确定空间中的一个直线。
+
+
+
+Line3D
+
+```perl
+ 
+typedef Eigen::Matrix<number_t, 6, 1> Vector6;
+  
+class Line3D : public Vector6 
+{
+	G2O_TYPES_SLAM3D_ADDONS_API Line3D() {
+      *this << 0.0, 0.0, 0.0, 1.0, 0.0, 0.0;
+    }
+
+    G2O_TYPES_SLAM3D_ADDONS_API Line3D(const Vector6& v) {
+      (Vector6&)*this = v;
+    }
+
+    G2O_TYPES_SLAM3D_ADDONS_API Vector6 toCartesian() const;
+
+    G2O_TYPES_SLAM3D_ADDONS_API inline Vector3 w() const {
+      return head<3>();
+    }
+
+    G2O_TYPES_SLAM3D_ADDONS_API inline Vector3 d() const {
+      return tail<3>();
+    }
+    
+	...
+}
+```
+
+
+
 
 
 ### 9.13 plane_slam
