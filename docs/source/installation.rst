@@ -21,7 +21,7 @@
 依赖
 ====
 
-LTSLAM工程依赖一系列c++开源库。
+X-SLAM工程依赖一系列c++开源库。
 
 - `Eigen <http://eigen.tuxfamily.org/index.php?title=Main_Page>`_
   3.3.7 or later **strongly** recommended, 3.3.7 or later **required**.

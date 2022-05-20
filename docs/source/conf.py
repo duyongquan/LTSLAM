@@ -43,7 +43,7 @@ source_suffix = ['.rst']
 master_doc = 'index'
 
 # General information about the project.
-project = u'LTSLAM'
+project = u'X-SLAM'
 copyright = u'Du Yongquan'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -107,7 +107,7 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = "LTSLAM"
+html_title = "X-SLAM"
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
@@ -168,7 +168,7 @@ html_show_copyright = True
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'LTSLAMdoc'
+htmlhelp_basename = 'X-SLAMdoc'
 
 # -- Options for LaTeX output --------------------------------------------------
 
@@ -186,7 +186,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'LTSLAM.tex', u'LTSLAM',
+  ('index', 'X-SLAM.tex', u'X-SLAM',
    u'Du Yongquan', 'manual'),
 ]
 
@@ -216,7 +216,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'LTSLAM', u'LTSLAM',
+    ('index', 'X-SLAM', u'X-SLAM',
      [u'Du Yongquan'], 1)
 ]
 
@@ -231,8 +231,8 @@ man_pages = [
 #  dir menu entry, description, category)
 
 texinfo_documents = [
-  ('index', 'LTSLAM', u'LTSLAM',
-   u'Du Yongquan', 'LTSLAM', 'One line description of project.',
+  ('index', 'X-SLAM', u'LTSLAM',
+   u'Du Yongquan', 'X-SLAM', 'One line description of project.',
    'Miscellaneous'),
 ]
 

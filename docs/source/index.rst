@@ -1,8 +1,8 @@
-=====
-XSLAM 
-=====
+======
+X-SLAM 
+======
 
-XSLAM is an open source C++ demo for learn vision slam and lidar slam.
+X-SLAM is an open source C++ demo for learn vision slam and lidar slam.
 Through open source engineering, we can learn the following knowledge content.
 
   * **C++** learning tutorial
