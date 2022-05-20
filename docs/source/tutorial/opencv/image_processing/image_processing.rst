@@ -1342,33 +1342,98 @@ Opencv C++ API:
 
 .. code-block:: c++
 
+    void matchTemplate(InputArray image, InputArray temp1,OutputArray result,int method)
 
 .. NOTE::
+
+    * 第一个参数，InputArray类型的image，待搜索的图像，且需位8位或32位浮点型图像。
+    * 第二个参数，InputArray类型的temp1，搜索模板，需和源图片有一样的数据类型，且尺寸不能大于源图像。
+    * 第三个参数，OutputArray类型的result，比较结果的映射图像。其必须为单通道、32位浮点型图像。如果图像尺寸是WxH而temp1尺寸是wxh，则 此参数result一定是(W-w+1)x(H-h+1)。
+    * 第四个参数，int类型的method，指定的匹配方法，OpenCV为我们提供了6种匹配方法。
+        * 平方差匹配法 method=TM_SQDIFF
+        * 归一化平方差匹配法 method=TM_SQDIFF_NORMED
+        * 相关匹配法 method=TM_CCORR
+        * 归一化相关匹配法 method=TM_CCORR_NORMED
+        * 系数匹配法 method=TM_CCOEFF
+        * 归一化相关系数匹配法 method=TM_CCOEFF_NORMED
+
 
 demo调用, 源码 
 
 .. code-block:: c++
 
+    TEST(MatchTemplate, demo)
+    {
+        std::string filename = GetOpenCVDatasetDirectory() + "/0018_monkey.jpg";
+        std::string template_image = GetOpenCVDatasetDirectory() + "/0018_monkey_template.png";
+        MatchTemplate demo;
+        demo.RunDemo(filename, template_image);
+    }
+
+
 函数使用：
 
 .. code-block:: c++
+
+    void MatchTemplate::RunDemo(const std::string& filename, const std::string& template_file)
+    {
+        // 加载源图像和模板图像
+        cv::Mat image = cv::imread(filename);
+        if (image.data == nullptr) {
+            std::cout << "Load image error." << std::endl;
+            exit(-1);
+        }
+        
+        cv::Mat template_image = cv::imread(template_file);
+        if (template_image.data == nullptr) {
+            std::cout << "Load template_image error." << std::endl;
+            exit(-1);
+        }
+
+        cv::Mat ftmp;
+        cv::matchTemplate(image, template_image, ftmp, 5); //模板匹配
+        std::cerr << cv::TM_CCOEFF_NORMED << std::endl;
+
+        cv::normalize(ftmp, ftmp, 1, 0, cv::NORM_MINMAX); // 可以不归一化
+        double minVal; double maxVal;
+        cv::Point minLoc; 
+        cv::Point maxLoc;
+        cv::minMaxLoc(ftmp, &minVal, &maxVal, &minLoc, &maxLoc); // 找到最佳匹配点
+
+        // 从匹配结果图像中找出最佳匹配点
+        cv::rectangle(image, cv::Rect(maxLoc.x, maxLoc.y, template_image.cols, 
+            template_image.rows), cv::Scalar(0, 0, 255), 2, 8); // 画出匹配到的矩形框
+
+        cv::imshow("image", image);
+
+        while (true) 
+        {
+            if (27 == cv::waitKey()) {
+                break;
+            } 
+
+            sleep(1);
+        }
+        
+        cv::destroyAllWindows();
+    }
 
 运行结果
 
 .. code-block:: bash
 
-    [bin] ./xslam.opencv.image_processing.image_gradient_test
+    [bin] ./xslam.opencv.image_processing.matchTemplate_test
 
-.. figure:: ./images/grdient.png
+.. figure:: ./images/matchTemplate.png
    :align: center
 
 参考源码：
 
 .. NOTE::
 
-    * image_gradient_test.cpp
-    * image_gradient.cpp
-    * image_gradient.h
+    * matchTemplate_test.cpp
+    * matchTemplate.cpp
+    * matchTemplate.h
 
 
 13 霍夫线变换
