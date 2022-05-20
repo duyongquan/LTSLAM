@@ -81,7 +81,7 @@ demo调用, 源码
 
 .. NOTE::
 
-    * cvtColor_test.h
+    * cvtColor_test.cpp
     * cvtColor.cpp
     * cvtColor.h
 
@@ -343,7 +343,7 @@ demo调用, 源码
 
 .. NOTE::
 
-    * geometry_transform_test.h
+    * geometry_transform_test.cpp
     * geometry_transform.cpp
     * geometry_transform.h
 
@@ -351,37 +351,89 @@ demo调用, 源码
 3 图像阈值
 ==================
 
+阈值化操作的基本思想是，给定一个输入数组和一个阈值，数组中的每个元素将根据其与阈值之间的大小发生相应的改变。
+
 Opencv C++ API:
 
 .. code-block:: c++
 
+    double cv::threshold(
+        cv::InputArray src, // 输入图像
+        cv::OutputArray dst, // 输出图像
+        double thresh, // 阈值
+        double maxValue, // 向上最大值
+        int thresholdType // 阈值化操作的类型 
+    );
 
 .. NOTE::
+
+    * src：原图。可以是多通道，8位深度或者32位深度
+    * dst：结果图像。大小和类型与原图一致
+    * thresh：阈值
+    * maxval：最大阈值。当阈值类型为THRESH_BINARY或THRESH_BINARY_INV时使用
+    * type：阈值类型
+
 
 demo调用, 源码 
 
 .. code-block:: c++
 
+    TEST(Threshold, demo)
+    {
+        std::string filename = GetOpenCVDatasetDirectory() + "/0014_roma.jpg";
+        Threshold demo;
+        demo.RunDemo(filename);
+    }
+
 函数使用：
 
 .. code-block:: c++
+
+    void Threshold::RunDemo(const std::string& filename)
+    {
+        // 0. 读取图像
+        cv::Mat image = cv::imread(filename, cv::IMREAD_GRAYSCALE);
+        if (image.data == nullptr) {
+            std::cout << "Load image error." << std::endl;
+            exit(-1);
+        }
+
+        cv::imshow("原图", image);
+        cv::Mat dst;
+    
+        double thresh = 100;
+        int maxVal = 255;
+        cv::threshold(image, dst, thresh, maxVal, cv::THRESH_BINARY);
+        cv::imshow("threshold", dst);
+
+        while (true) 
+        {
+            if (27 == cv::waitKey()) {
+                break;
+            } 
+
+            sleep(1);
+        }
+        
+        cv::destroyAllWindows();
+    }
 
 运行结果
 
 .. code-block:: bash
 
-    [bin] ./xslam.opencv.image_processing.image_gradient_test
+    [bin] ./xslam.opencv.image_processing.threshold_test
 
-.. figure:: ./images/grdient.png
+.. figure:: ./images/threshold.png
    :align: center
 
 参考源码：
 
 .. NOTE::
 
-    * image_gradient_test.h
-    * image_gradient.cpp
-    * image_gradient.h
+    * threshold_test.cpp
+    * threshold.cpp
+    * threshold.h
 
 
 4 图像平滑
@@ -473,7 +525,7 @@ demo调用, 源码
 
 .. NOTE::
 
-    * filter2D_test.h
+    * filter2D_test.cpp
     * filter2D.cpp
     * filter2D.h
 
@@ -661,7 +713,7 @@ demo调用, 源码
 
 .. NOTE::
 
-    * morphology_test.h
+    * morphology_test.cpp
     * morphology.cpp
     * morphology.h
 
@@ -849,7 +901,7 @@ demo调用, 源码
 
 .. NOTE::
 
-    * image_gradient_test.h
+    * image_gradient_test.cpp
     * image_gradient.cpp
     * image_gradient.h
 
@@ -944,7 +996,7 @@ demo调用, 源码
 
 .. NOTE::
 
-    * canny_test.h
+    * canny_test.cpp
     * canny.cpp
     * canny.h
 
@@ -955,33 +1007,78 @@ Opencv C++ API:
 
 .. code-block:: c++
 
+    void pyrDown(InputArray src, OutputArray dst, const Size& dstsize=Size());
+    void pyrUp(InputArray src, OutputArray dst, const Size& dstsize=Size());
+
 
 .. NOTE::
+
+    * 先对图像进行高斯平滑，然后再进行降采样（将图像尺寸行和列方向缩减一半）
+    * 先对图像进行升采样（将图像尺寸行和列方向增大一倍），然后再进行高斯平滑；
+
 
 demo调用, 源码 
 
 .. code-block:: c++
 
+    TEST(Threshold, demo)
+    {
+        std::string filename = GetOpenCVDatasetDirectory() + "/0017_pyr.jpg";
+        PyrDownUp demo;
+        demo.RunDemo(filename);
+    }
+
 函数使用：
 
 .. code-block:: c++
+
+    void PyrDownUp::RunDemo(const std::string& filename)
+    {
+        // 0. 读取图像
+        cv::Mat image = cv::imread(filename);
+        if (image.data == nullptr) {
+            std::cout << "Load image error." << std::endl;
+            exit(-1);
+        }
+
+        cv::imshow("原图", image);
+        
+        cv::Mat out;
+        cv::pyrDown(image, out);
+        cv::imshow("降采样", out);
+        cv::pyrUp(out, out);
+        cv::imshow("上采样", out);
+        cv::subtract(image, out, out);
+        cv::imshow("拉普拉斯金字塔", out);
+
+        while (true) 
+        {
+            if (27 == cv::waitKey()) {
+                break;
+            } 
+
+            sleep(1);
+        }
+        
+        cv::destroyAllWindows();
+    }
 
 运行结果
 
 .. code-block:: bash
 
-    [bin] ./xslam.opencv.image_processing.image_gradient_test
+    [bin] ./xslam.opencv.image_processing.pyr_down_up_test
 
-.. figure:: ./images/grdient.png
+.. figure:: ./images/pyr_down_up.png
    :align: center
 
 参考源码：
 
 .. NOTE::
 
-    * image_gradient_test.h
-    * image_gradient.cpp
-    * image_gradient.h
+    * pyr_down_up_test.cpp
+    * pyr_down_up.cpp
+    * pyr_down_up.h
 
 
 9 轮廓
@@ -1015,7 +1112,7 @@ demo调用, 源码
 
 .. NOTE::
 
-    * image_gradient_test.h
+    * image_gradient_test.cpp
     * image_gradient.cpp
     * image_gradient.h
 
@@ -1027,33 +1124,179 @@ Opencv C++ API:
 
 .. code-block:: c++
 
+    void cv::calcHist(const Mat *images,
+            int     nimages,
+            const int *channels,
+            InputArray     mask,
+            OutputArray    hist,
+            int     dims,
+            const int *histSize,
+            const float **ranges,
+            bool    uniform = true,
+            bool    accumulate = false 
+        )   
 
 .. NOTE::
+
+    * images: 输入的图像或数组，它们的深度必须为CV_8U, CV_16U或CV_32F中的一类，尺寸必须相同。
+    * nimages: 输入数组个数，也就是第一个参数中存放了几张图像，有几个原数组。
+    * channels: 需要统计的通道dim，第一个数组通道从0到image[0].channels()-1，第二个数组从image[0].channels()到images[0].channels()+images[1].channels()-1，以后的数组以此类推
+    * mask: 可选的操作掩码。如果此掩码不为空，那么它必须为8位并且尺寸要和输入图像images[i]一致。非零掩码用于标记出统计直方图的数组元素数据。
+    * hist: 输出的目标直方图，一个二维数组
+    * dims: 需要计算直方图的维度，必须是正数且并不大于CV_MAX_DIMS(在opencv中等于32)
+    * histSize: 每个维度的直方图尺寸的数组
+    * ranges: 每个维度中bin的取值范围
+    * uniform: 直方图是否均匀的标识符，有默认值true
+    * accumulate: 累积标识符，有默认值false,若为true，直方图再分配阶段不会清零。此功能主要是允许从多个阵列中计算单个直方图或者用于再特定的时间更新直方图.
+
+
+在计算图像直方图的时候一般配合minMaxLoc()和normalize()函数,minMaxLoc()函数是用于寻找最值的函数
+
+.. code-block:: c++
+
+    void cv::minMaxLoc(InputArray src,
+        double *    minVal,
+        double *    maxVal = 0,
+        Point *     minLoc = 0,
+        Point *     maxLoc = 0,
+        InputArray  mask = noArray() 
+    )   
+
+.. NOTE::
+
+    * src: 输入的单通道数组
+    * minVal: double类型指针，用于返回最小值的指针，如果不需要返回则设置为NULL
+    * maxVal: double类型的指针，用于返回最大值指针，如果不需要返回则设置为NULL
+    * minLoc: 返回最小值位置指针(2D的情况下)，如果不需要则设置为NULL
+    * maxLoc: 返回最大位置指针(2D情况下)，如果不需要则设置为NULL
+    * mask: 可选掩模板。
+
+normalize()函数的作用是将一个数组的值归一化到指定的范围
+
+.. code-block:: c++
+
+    void cv::normalize(InputArray src,
+        InputOutputArray dst,
+        double  alpha = 1,
+        double  beta = 0,
+        int     norm_type = NORM_L2,
+        int     dtype = -1,
+        InputArray  mask = noArray() 
+    )   
+
+.. NOTE::
+
+    * src: 输入数组
+    * dst: 输出数组，与src有相同的尺寸
+    * alpha: 将数组归一化范围的最大值，有默认值1
+    * beta: 归一化的最小值，有默认值0
+    * norm_type: 归一化方式，可以查看NormTypes()函数查看详细信息，有默认值NORM_L2
+    * dtype: 当该值取负数时，输出数组与src有相同类型，否则，与src有相同的通道并且深度为CV_MAT_DEPTH(dtype)
+    * mask: 可选的掩膜版
+
 
 demo调用, 源码 
 
 .. code-block:: c++
 
+    TEST(CalcHist, demo)
+    {
+        std::string filename = GetOpenCVDatasetDirectory() + "/0017_pyr.jpg";
+        CalcHist demo;
+        demo.RunDemo(filename);
+    }
+
 函数使用：
 
 .. code-block:: c++
+
+    void CalcHist::RunDemo(const std::string& filename)
+    {
+        // 0. 读取图像
+        cv::Mat image = cv::imread(filename);
+        if (image.data == nullptr) {
+            std::cout << "Load image error." << std::endl;
+            exit(-1);
+        }
+
+        cv::imshow("原图", image);
+
+        //分割成三通道图像
+        std::vector<cv::Mat> channels;
+        cv::split(image, channels);
+
+        //设定bin数目
+        int histBinNum = 255;
+
+        //设定取值范围
+        float range[] = {0, 255};
+        const float* histRange = {range};
+
+        bool uniform = true;
+        bool accumulate = false;
+
+        //声明三个通道的hist数组
+        cv::Mat red_hist, green_hist, blue_hist;
+
+        //计算直方图
+        cv::calcHist(&channels[0], 1, 0, Mat(), red_hist, 1, &histBinNum, &histRange, uniform, accumulate);
+        cv::calcHist(&channels[1], 1, 0, Mat(), green_hist, 1, &histBinNum, &histRange, uniform, accumulate);
+        cv::calcHist(&channels[2], 1, 0, Mat(), blue_hist, 1, &histBinNum, &histRange, uniform, accumulate);
+
+        //创建直方图窗口
+        int hist_w = 400;
+        int hist_h = 400;
+        int bin_w = cvRound((double)image.cols/histBinNum);
+
+        cv::Mat histImage(image.cols, image.rows, CV_8UC3, Scalar(0, 0, 0));
+
+        //将直方图归一化到范围[0, histImage.rows]
+        cv::normalize(red_hist, red_hist, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+        cv::normalize(green_hist, green_hist, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+        cv::normalize(blue_hist, blue_hist, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+
+        //循环绘制直方图
+        for(int i = 1; i < histBinNum; i++)
+        {
+            cv::line(histImage, Point(bin_w*(i-1), image.rows - cvRound(red_hist.at<float>(i-1))),
+                Point(bin_w*(i), image.rows - cvRound(red_hist.at<float>(i))), Scalar(0, 0, 255), 2, 8, 0);
+            cv::line(histImage, Point(bin_w*(i-1), image.rows - cvRound(green_hist.at<float>(i-1))),
+                Point(bin_w*(i), image.rows - cvRound(green_hist.at<float>(i))), Scalar(0, 255, 0), 2, 8, 0);
+            cv::line(histImage, Point(bin_w*(i-1), image.rows - cvRound(blue_hist.at<float>(i-1))),
+                Point(bin_w*(i), image.rows - cvRound(blue_hist.at<float>(i))), Scalar(255, 0, 0), 2, 8, 0);
+        }
+
+        cv::namedWindow("图像直方图", cv::WINDOW_AUTOSIZE);
+        cv::imshow("图像直方图", histImage);
+
+        while (true) 
+        {
+            if (27 == cv::waitKey()) {
+                break;
+            } 
+
+            sleep(1);
+        }
+        
+        cv::destroyAllWindows();
+    }
 
 运行结果
 
 .. code-block:: bash
 
-    [bin] ./xslam.opencv.image_processing.image_gradient_test
+    [bin] ./xslam.opencv.image_processing.calcHist_test
 
-.. figure:: ./images/grdient.png
+.. figure:: ./images/calcHist.png
    :align: center
 
 参考源码：
 
 .. NOTE::
 
-    * image_gradient_test.h
-    * image_gradient.cpp
-    * image_gradient.h
+    * calcHist_test.cpp
+    * calcHist.cpp
+    * calcHist.h
 
 
 11 傅里叶变换
@@ -1087,7 +1330,7 @@ demo调用, 源码
 
 .. NOTE::
 
-    * image_gradient_test.h
+    * image_gradient_test.cpp
     * image_gradient.cpp
     * image_gradient.h
 
@@ -1123,7 +1366,7 @@ demo调用, 源码
 
 .. NOTE::
 
-    * image_gradient_test.h
+    * image_gradient_test.cpp
     * image_gradient.cpp
     * image_gradient.h
 
@@ -1159,7 +1402,7 @@ demo调用, 源码
 
 .. NOTE::
 
-    * image_gradient_test.h
+    * image_gradient_test.cpp
     * image_gradient.cpp
     * image_gradient.h
 
@@ -1195,7 +1438,7 @@ demo调用, 源码
 
 .. NOTE::
 
-    * image_gradient_test.h
+    * image_gradient_test.cpp
     * image_gradient.cpp
     * image_gradient.h
 
@@ -1231,7 +1474,7 @@ demo调用, 源码
 
 .. NOTE::
 
-    * image_gradient_test.h
+    * image_gradient_test.cpp
     * image_gradient.cpp
     * image_gradient.h
 
@@ -1267,7 +1510,7 @@ demo调用, 源码
 
 .. NOTE::
 
-    * image_gradient_test.h
+    * image_gradient_test.cpp
     * image_gradient.cpp
     * image_gradient.h
 
