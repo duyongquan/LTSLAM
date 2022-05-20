@@ -18,11 +18,9 @@ Through open source engineering, we can learn the following knowledge content.
 开源公告
 ==========
 
-既授人以鱼，亦授人以渔
-
-鱼渔皆俱，实则授业解惑也
-
-愿众薪拾火，成大业之道不久矣
+   * 既授人以鱼，亦授人以渔
+   * 鱼渔皆俱，实则授业解惑也
+   * 愿众薪拾火，成大业之道不久矣
 
 .. image:: ./images/wei_chat.jpg
    :height: 300px
