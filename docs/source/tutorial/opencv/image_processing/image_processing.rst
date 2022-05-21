@@ -1088,33 +1088,101 @@ Opencv C++ API:
 
 .. code-block:: c++
 
+    void convexHull(InputArray points, OutputArray hull, bool clockwise=false, bool returnPoints=true);
 
 .. NOTE::
+
+    * 第一个参数：输入的点集，可以是Mat型矩阵，也可以是std::vector<point>的点容器
+    * 第二个参数：可以为vector<int>，此时返回的是每个凸包点在原轮廓点容器中的索引，也可以为vector<Point>，此时存放的是凸包点的位置,即点（x,y）坐标。
+    * 第三个参数：bool变量，表示输出的凸包是顺时针方向还是逆时针方向，true是顺时针方向,false为逆时针方向，默认值是true，即顺时针方向输出凸包。
+    * 第四个参数：bool型变量returnPoints，表示第二个参数的输出类型，默认为true，即返回凸包的各个点，设置为false时，表示返回凸包各个点的索引。当第二个参数类型为std::vector,则该标志位被忽略，就是以第二个参数为准，即为vector<int>，此时返回的是每个凸包点在原轮廓点容器中的索引，为vector<Point>时，此时存放的是凸包点的位置,即点（x,y）坐标。
 
 demo调用, 源码 
 
 .. code-block:: c++
 
+    TEST(ConvexHull, demo)
+    {
+        std::string filename = GetOpenCVDatasetDirectory() + "/0022_convex_hull.jpeg";
+        ConvexHull demo;
+        demo.RunDemo(filename);
+    }
+
 函数使用：
 
 .. code-block:: c++
+
+    cv::RNG rng(12345);
+    cv::Mat src_gray;
+    int thresh = 100;
+
+    void ConvexHull::RunDemo(const std::string& filename)
+    {
+        // 0. 读取图像
+        cv::Mat image = cv::imread(filename, 0);
+        if (image.data == nullptr) {
+            std::cout << "Load image error." << std::endl;
+            exit(-1);
+        }
+
+        cv::imshow("原图", image);
+        
+        cvtColor( image, src_gray, cv::COLOR_BGR2GRAY );
+        cv::blur( src_gray, src_gray, cv::Size(3,3) );
+        const char* source_window = "Source";
+
+        const int max_thresh = 255;
+        // cv::createTrackbar( "Canny thresh:", source_window, &thresh, max_thresh, 
+        //     std::bind(&ConvexHull::ThreshCallback, std::placeholders::_1, std::placeholders::_2));
+
+        cv::createTrackbar( "Canny thresh:", source_window, &thresh, max_thresh, ThreshCallback);
+
+        ThreshCallback( 0, 0 );
+
+        while (true) {
+            if (27 == cv::waitKey()) {
+                break;
+            } 
+            sleep(1);
+        }
+        cv::destroyAllWindows();
+    }
+
+    void ThreshCallback(int, void*)
+    {
+        cv::Mat canny_output;
+        cv::Canny( src_gray, canny_output, thresh, thresh*2 );
+        std::vector<std::vector<cv::Point>> contours;
+        cv::findContours( canny_output, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE );
+        std::vector<std::vector<cv::Point> >hull( contours.size() );
+        for( size_t i = 0; i < contours.size(); i++ )
+        {
+            cv::convexHull( contours[i], hull[i] );
+        }
+        cv::Mat drawing =cv:: Mat::zeros( canny_output.size(), CV_8UC3 );
+        for( size_t i = 0; i< contours.size(); i++ )
+        {
+            cv::Scalar color = cv::Scalar( rng.uniform(0, 256), rng.uniform(0,256), rng.uniform(0,256) );
+            cv::drawContours( drawing, contours, (int)i, color );
+            cv::drawContours( drawing, hull, (int)i, color );
+        }
+        cv::imshow( "Hull demo", drawing );
+    }
+
 
 运行结果
 
 .. code-block:: bash
 
-    [bin] ./xslam.opencv.image_processing.image_gradient_test
-
-.. figure:: ./images/grdient.png
-   :align: center
+    [bin] ./xslam.opencv.image_processing.convexHull_test
 
 参考源码：
 
 .. NOTE::
 
-    * image_gradient_test.cpp
-    * image_gradient.cpp
-    * image_gradient.h
+    * convexHull_test.cpp
+    * convexHull.cpp
+    * convexHull.h
 
 
 10 直方图
@@ -1304,35 +1372,152 @@ demo调用, 源码
 
 Opencv C++ API:
 
+dft函数的作用是对一维或二维浮点数数组进行正向或反向离散傅里叶变换
+
 .. code-block:: c++
 
+    void dft(InputArray src, OutputArray dst, int flags=0, int nonzeroRows=0);
 
 .. NOTE::
+
+    * 第一个参数，InputArray类型的src。输入矩阵，可以是实数或虚数。
+    * 第二个参数，OutputArray类型的dst，函数调用后的运算结果在这里，其尺寸和类型取决于标识符，也就是第三个参数flags
+    * 第三个参数，int类型的flags，转换的标识符，有默认值0，取值可以为下表。
+    * 第四个参数，int类型的nonzeroRows，默认值是0。
+
+返回给定向量尺寸经过DFT变换后结果的最优尺寸大小。
+
+.. code-block:: c++
+
+    int getOptimalDFTSize(int vecsize);
+
+.. NOTE::
+
+    * int vecsize: 输入向量尺寸大小(vector size)
+
+这个函数不能直接用于DCT（离散余弦变换）最优尺寸的估计，可以通过getOptimalDFTSize((vecsize+1)/2)*2得到
+
+.. code-block:: c++
+
+    void magnitude(InputArray x, InputArray y, OutputArray magnitude)；
+
+.. NOTE::
+
+    * InputArray x: 浮点型数组的x坐标矢量，也就是实部
+    * InputArray y: 浮点型数组的y坐标矢量，必须和x尺寸相同
+    * OutputArray magnitude: 与x类型和尺寸相同的输出数组
 
 demo调用, 源码 
 
 .. code-block:: c++
 
+    TEST(FFT, demo)
+    {
+        std::string filename = GetOpenCVDatasetDirectory() + "/0021_fft.jpg";
+        FFT demo;
+        demo.RunDemo(filename);
+    }
+
 函数使用：
 
 .. code-block:: c++
+
+    void FFT::RunDemo(const std::string& filename)
+    {
+        // 0. 读取图像
+        cv::Mat image = cv::imread(filename);
+        if (image.data == nullptr) {
+            std::cout << "Load image error." << std::endl;
+            exit(-1);
+        }
+
+        cv::imshow("原图", image);
+        // 将输入图像扩展到最佳尺寸，边界用0填充
+        // 离散傅里叶变换的运行速度与图像的大小有很大的关系，当图像的尺寸使2，3，5的整数倍时，计算速度最快
+        // 为了达到快速计算的目的，经常通过添加新的边缘像素的方法获取最佳图像尺寸
+        // 函数getOptimalDFTSize()用于返回最佳尺寸，copyMakeBorder()用于填充边缘像素
+        int m = cv::getOptimalDFTSize(image.rows);
+        int n = cv::getOptimalDFTSize(image.cols);
+    
+        cv::Mat padded;
+        cv::copyMakeBorder(image, padded, 0, m - image.rows, 0, n - image.cols, cv::BORDER_CONSTANT, cv::Scalar::all(0));
+    
+        // 为傅立叶变换的结果分配存储空间
+        // 将plannes数组组合成一个多通道的数组，两个同搭配，分别保存实部和虚部
+        // 傅里叶变换的结果使复数，这就是说对于每个图像原像素值，会有两个图像值
+        // 此外，频域值范围远远超过图象值范围，因此至少将频域储存在float中
+        // 所以我们将输入图像转换成浮点型，并且多加一个额外通道来存储复数部分
+        cv::Mat planes[] = {cv::Mat_<float>(padded), cv::Mat::zeros(padded.size(), CV_32F)};
+    
+        cv::Mat complexI;
+        cv::merge(planes, 2, complexI);
+
+        // 进行离散傅立叶变换
+        cv::dft(complexI, complexI);
+    
+        // 将复数转化为幅值，保存在planes[0]
+        cv::split(complexI, planes);   // 将多通道分为几个单通道
+        cv::magnitude(planes[0], planes[1], planes[0]);
+        cv::Mat magnitudeImage = planes[0];
+    
+        // 傅里叶变换的幅值达到不适合在屏幕上显示，因此我们用对数尺度来替换线性尺度
+        // 进行对数尺度logarithmic scale缩放
+        magnitudeImage += cv::Scalar::all(1);     // 所有的像素都加1
+        log(magnitudeImage, magnitudeImage);      // 求自然对数
+    
+        // 剪切和重分布幅度图像限
+        // 如果有奇数行或奇数列，进行频谱裁剪
+        magnitudeImage = magnitudeImage(cv::Rect(0, 0, magnitudeImage.cols & -2, magnitudeImage.rows & -2));
+    
+        // ---- -------- 下面的是为了显示结果 ---------------
+        // 一分为四，左上与右下交换，右上与左下交换
+        // 重新排列傅里叶图像中的象限，使原点位于图像中心
+        int cx = magnitudeImage.cols / 2;
+        int cy = magnitudeImage.rows / 2;
+        cv::Mat q0(magnitudeImage, cv::Rect(0, 0, cx, cy));   // ROI区域的左上
+        cv::Mat q1(magnitudeImage, cv::Rect(cx, 0, cx, cy));  // ROI区域的右上
+        cv::Mat q2(magnitudeImage, cv::Rect(0, cy, cx, cy));  // ROI区域的左下
+        cv::Mat q3(magnitudeImage, cv::Rect(cx, cy, cx, cy)); // ROI区域的右下
+    
+        // 交换象限（左上与右下进行交换）
+        cv::Mat tmp;
+        q0.copyTo(tmp);
+        q3.copyTo(q0);
+        tmp.copyTo(q3);
+        // 交换象限（右上与左下进行交换）
+        q1.copyTo(tmp);
+        q2.copyTo(q1);
+        tmp.copyTo(q2);
+    
+        // 归一化
+        cv::normalize(magnitudeImage, magnitudeImage, 0, 1, cv::NORM_MINMAX);
+        // 显示效果图
+        cv::imshow("频谱幅值", magnitudeImage);
+        while (true) {
+            if (27 == cv::waitKey()) {
+                break;
+            } 
+            sleep(1);
+        }
+        cv::destroyAllWindows();
+    }
 
 运行结果
 
 .. code-block:: bash
 
-    [bin] ./xslam.opencv.image_processing.image_gradient_test
+    [bin] ./xslam.opencv.image_processing.fft_test
 
-.. figure:: ./images/grdient.png
+.. figure:: ./images/fft.png
    :align: center
 
 参考源码：
 
 .. NOTE::
 
-    * image_gradient_test.cpp
-    * image_gradient.cpp
-    * image_gradient.h
+    * fft_test.cpp
+    * fft.cpp
+    * fft.h
 
 
 12 模板匹配
@@ -1443,33 +1628,98 @@ Opencv C++ API:
 
 .. code-block:: c++
 
+    void HoughLines( InputArray image, OutputArray lines,
+                 double rho, double theta, int threshold,
+                 double srn = 0, double stn = 0,
+                 double min_theta = 0, double max_theta = CV_PI );
 
 .. NOTE::
+
+    * InputArray类型的image，输入图像，需为8位的单通道二进制图像。
+    * InputArray类型的lines，调用HoughLines函数后存储了霍夫线变换检测到线条的输出矢量。每一条线由具有两个元素的矢量（r,t）表示。r为离坐标原点的距离，t为弧度线条旋转角度。
+    * double类型的rho，以像素为单位的距离精度。
+    * double类型的theta，以弧度为单位的角度精度。
+    * int类型的threshold，累加平面的阈值参数，即识别某部分为图中一直线时它在累加平面中必须达到的值。大于阈值的线段才可以被检测通过并返回到结果中。
+    * double类型的srn，默认值0。对于多尺度的霍夫变换，这是第三个参数rho的除数距离。粗略的累加器进步尺寸是rho，而精确的累加器进步尺寸为rho/srn。
+    * double类型的stn，默认值0。对于多尺度的霍夫变换，这是第四个参数theta的除数距离。粗略的累加器进步尺寸是theta，而精确的累加器进步尺寸为theta/srn。
+    * double类型的min_theta，对于标准和多尺度霍夫变换，检查线的最小角度。必须介于 0 和 max_theta 之间。
+    * double类型的max_theta，对于标准和多尺度霍夫变换，检查线的最大角度。必须介于 min_theta 和 CV_PI 之间。
+
+
 
 demo调用, 源码 
 
 .. code-block:: c++
 
+    TEST(HoughLines, demo)
+    {
+        std::string filename = GetOpenCVDatasetDirectory() + "/0019_hough_line_2.png";
+        HoughLines demo;
+        demo.RunDemo(filename);
+    }
+
+
 函数使用：
 
 .. code-block:: c++
+
+    void HoughLines::RunDemo(const std::string& filename)
+    {
+        // 0. 读取图像
+        cv::Mat image = cv::imread(filename);
+        if (image.data == nullptr) {
+            std::cout << "Load image error." << std::endl;
+            exit(-1);
+        }
+
+        cv::imshow("原图", image);
+        cv::Mat mid, dst;
+        cv::Canny(image, mid, 100, 200, 3);
+        cv::cvtColor(mid, dst, cv::COLOR_GRAY2BGR);
+
+        // 标准霍夫变换，直线检测
+        std::vector<cv::Vec2f> lines;
+        cv::HoughLines(mid, lines, 1, CV_PI / 180.0, 200, 0, 0);
+        for (size_t i = 0; i < lines.size(); ++i)
+        {
+            float rho = lines[i][0], theta = lines[i][1];
+            cv::Point pt1, pt2;
+            double a = cos(theta), b = sin(theta);
+            double x0 = a * rho, y0 = b * rho;
+            pt1.x = cvRound(x0 + 1000 * (-b));
+            pt1.y = cvRound(y0 + 1000 * (a));
+            pt2.x = cvRound(x0 - 1000 * (-b));
+            pt2.y = cvRound(y0 - 1000 * (a));
+            cv::line(dst, pt1, pt2, cv::Scalar(255, 0, 0), 1, cv::LINE_AA);
+        }
+
+        cv::imshow("mid", mid);
+        cv::imshow("result", dst);
+        while (true) {
+            if (27 == cv::waitKey()) {
+                break;
+            } 
+            sleep(1);
+        }
+        cv::destroyAllWindows();
+    }
 
 运行结果
 
 .. code-block:: bash
 
-    [bin] ./xslam.opencv.image_processing.image_gradient_test
+    [bin] ./xslam.opencv.image_processing.hough_lines_test
 
-.. figure:: ./images/grdient.png
+.. figure:: ./images/hough_lines.png
    :align: center
 
 参考源码：
 
 .. NOTE::
 
-    * image_gradient_test.cpp
-    * image_gradient.cpp
-    * image_gradient.h
+    * hough_lines_test.cpp
+    * hough_lines.cpp
+    * hough_lines.h
 
 
 14 霍夫圆变换
@@ -1479,33 +1729,90 @@ Opencv C++ API:
 
 .. code-block:: c++
 
+    void HoughCircles( InputArray image, OutputArray circles,
+                       int method, double dp, double minDist,
+                       double param1 = 100, double param2 = 100,
+                       int minRadius = 0, int maxRadius = 0 )
+
 
 .. NOTE::
+
+    * image：输入图像：8-bit，灰度图
+    * circles：输出圆的结果。
+    * method：定义检测图像中圆的方法。目前唯一实现的方法是HOUGH_GRADIENT。
+    * dp：寻找圆弧圆心的累计分辨率，这个参数允许创建一个比输入图像分辨率低的累加器。（这样做是因为有理由认为图像中存在的圆会自然降低到与图像宽高相同数量的范畴）。如果dp设置为1，则分辨率是相同的；如果设置为更大的值（比如2），累加器的分辨率受此影响会变小（此情况下为一半）。dp的值不能比1小。
+    * minDist：该参数是让算法能明显区分的两个不同圆之间的最小距离。
+    * param1 ：用于Canny的边缘阀值上限，下限被置为上限的一半。
+    * param2：HOUGH_GRADIENT方法的累加器阈值。阈值越小，检测到的圈子越多。
+    * minRadius ：最小圆半径。
+    * maxRadius：最大圆半径。
 
 demo调用, 源码 
 
 .. code-block:: c++
 
+    TEST(HoughCircles, demo)
+    {
+        std::string filename = GetOpenCVDatasetDirectory() + "/0020_hough_circle_1.jpeg";
+        HoughCircles demo;
+        demo.RunDemo(filename);
+    }
+
+
 函数使用：
 
 .. code-block:: c++
+
+    void HoughCircles::RunDemo(const std::string& filename)
+    {
+        // 0. 读取图像
+        cv::Mat image = cv::imread(filename);
+        if (image.data == nullptr) {
+            std::cout << "Load image error." << std::endl;
+            exit(-1);
+        }
+
+        cv::imshow("原图", image);
+        cv::Mat mout;
+        cv::medianBlur(image, mout, 7);            // 中值滤波降噪
+        cv::cvtColor(mout, mout, cv::COLOR_BGR2GRAY);   // 转换为灰度图像
+        std::vector<cv::Vec3f> circles;                 // 存储圆的容器
+        cv::HoughCircles(mout, circles, cv::HOUGH_GRADIENT, 1, 10, 100, 30, 5, 100); // 进行霍夫圆检测
+        cv::Scalar circleColor = cv::Scalar(255, 0, 0);   // 圆形的边缘颜色
+        cv::Scalar centerColor = cv::Scalar(0, 0, 255); // 圆心的颜色
+
+        for (int i = 0; i < circles.size(); i++) {
+            cv::Vec3f c = circles[i];
+            cv::circle(image, cv::Point(c[0], c[1]),c[2], circleColor, 2, cv::LINE_AA);  // 画边缘
+            cv::circle(image, cv::Point(c[0], c[1]), 2, centerColor, 2, cv::LINE_AA);    // 画圆心
+        }
+        cv::imshow("dst", image); // 显示处理后的图像
+
+        while (true) {
+            if (27 == cv::waitKey()) { // ESC key
+                break;
+            } 
+            sleep(1);
+        }
+        cv::destroyAllWindows();
+    }
 
 运行结果
 
 .. code-block:: bash
 
-    [bin] ./xslam.opencv.image_processing.image_gradient_test
+    [bin] ./xslam.opencv.image_processing.hough_circles_test
 
-.. figure:: ./images/grdient.png
+.. figure:: ./images/hough_circles.png
    :align: center
 
 参考源码：
 
 .. NOTE::
 
-    * image_gradient_test.cpp
-    * image_gradient.cpp
-    * image_gradient.h
+    * hough_circles_test.cpp
+    * hough_circles.cpp
+    * hough_circles.h
 
 
 15 图像分割与Watershed算法
