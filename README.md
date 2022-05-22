@@ -1,11 +1,11 @@
-# LTSLAM
+# X-SLAM
 ## 1 Introduction
 
-I hope you can learn slam step by step, you will can learn online  [LTSLAM documents tutorial](https://ltslam-doc.readthedocs.io/en/latest/index.html). What you choose today determines your tomorrow's life path. Diligence will not make up for your indecision.
+I hope you can learn slam step by step, you will can learn online  [X-SLAM documents tutorial](https://ltslam-doc.readthedocs.io/en/latest/index.html). What you choose today determines your tomorrow's life path. Diligence will not make up for your indecision.
 
 You can learn slam knowledge by [哔哩哔哩 bilibili ](https://space.bilibili.com/478832908). This video website has a detailed explanation of the code and the corresponding SLAM technology principle. Let's start a happy journey. enjoy....
 
-XSLAM is an open source C++ demo for learn vision slam and lidar slam. Through open source engineering, we can learn the following knowledge content:
+X-SLAM is an open source C++ demo for learn vision slam and lidar slam. Through open source engineering, we can learn the following knowledge content:
 
 * <font color='red'> **C++**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/c%2B%2B/c%2B%2B.html)
 * <font color='red'> **CMake** </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/cmake/cmake.html)

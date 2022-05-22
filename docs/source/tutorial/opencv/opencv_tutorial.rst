@@ -11,6 +11,7 @@ Opencv Tutorial
   geometry/geometry
   image_processing/image_processing
   feature_detection/feature_detection
+  video_analysis/video_analysis
   3d_reconstruction/3d_reconstruction
 
 **Reference**
