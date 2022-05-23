@@ -23,8 +23,6 @@ QQ开源社区
 ===========
 
 .. image:: ./images/aibot_beginer_qq.png
-   :height: 500px
-   :width:  500px
    :alt: QQ
    :align: center
 
