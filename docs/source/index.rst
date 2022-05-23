@@ -57,7 +57,7 @@ SLAM Research
 1.1 Geometric SLAM
 -----------------------
 
-   1. PTAM 
+1. PTAM 
 
    + **论文**：Klein G, Murray D. [**Parallel tracking and mapping for small AR workspaces**](http://www.robots.ox.ac.uk/ActiveVision/Publications/klein_murray_ismar2007/klein_murray_ismar2007.pdf)[C]//Mixed and Augmented Reality, 2007. ISMAR 2007. 6th IEEE and ACM International Symposium on. IEEE, **2007**: 225-234.
    + **代码**：https://github.com/Oxford-PTAM/PTAM-GPL
