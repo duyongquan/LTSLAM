@@ -334,7 +334,8 @@ Opencv C++ API:
 
 **solvePnP里有三种解法**
 
-P3P、 EPnP、迭代法（默认）；opencv2里对应的参数分别为：CV_P3P、CV_EPNP、CV_ITERATIVE（opencv3里多了DLS和UPnP解法）。
+* P3P、 EPnP、迭代法(默认);
+* opencv2里对应的参数分别为: CV_P3P、CV_EPNP、CV_ITERATIVE(opencv3里多了DLS和UPnP解法)
 
 demo调用
 
