@@ -9,28 +9,27 @@ Measurement Processing
 前端视觉处理
 ==============
 
-Simple feature processing pipeline
+.. figure:: ../images/feature_tracker.png
+   :align: center
 
-自适应直方图均衡化（cv::CLAHE） 
-
-掩模处理，特征点均匀分布（setMask）
-
-提取图像 Harris 角点（cv::goodFeaturesToTrack）
-
-KLT 金字塔光流跟踪（cv::calcOpticalFlowPyrLK）
-
-连续帧跟踪 
-
-基础矩阵 (RANSAC) 去除外点（rejectWithF） 
-
-发布去畸变的点 feature_points(id_of_point, un_pts, cur_pts, pts_velocity)
-
-Keyframe selection
+* 自适应直方图均衡化（cv::CLAHE） 
+* 掩模处理，特征点均匀分布（setMask）
+* 提取图像 Harris 角点（cv::goodFeaturesToTrack）
+* KLT 金字塔光流跟踪（cv::calcOpticalFlowPyrLK）
+* 连续帧跟踪 
+* 基础矩阵 (RANSAC) 去除外点（rejectWithF） 
+* 发布去畸变的点 feature_points(id_of_point, un_pts, cur_pts, pts_velocity)
 
 .. NOTE::
 
-    Case 1: Rotation-compensated average feature parallax is larger than a threshold
-    Case 2: Number of tracked features in the current frame is less than a threshold
+    * Case 1: Rotation-compensated average feature parallax is larger than a threshold
+    * Case 2: Number of tracked features in the current frame is less than a threshold
+
+**关键帧提取feature point**
+
+**光流跟踪**
+
+**特征点管理**
 
 IMU测量方程
 ============
