@@ -287,16 +287,16 @@ Docker安装
 
       sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
 
-添加GPG密匙及存储库地址,**官方或者国内镜像（更快）任选其一**
+添加GPG密匙及存储库地址,官方或者国内镜像（更快）任选其一
 
-Docker官方GPG密钥及**stable**存储库：
+Docker官方GPG密钥及stable存储库：
 
 .. code-block:: bash
 
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
       sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
-阿里镜像站Docker的GPG密钥及**stable**存储库：
+阿里镜像站Docker的GPG密钥及stable存储库：
 
 .. code-block:: bash
 
