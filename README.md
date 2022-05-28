@@ -23,8 +23,38 @@ X-SLAM is an open source C++ demo for learn vision slam and lidar slam. Through 
 ### 1.1 <font color='green'>Project directory:</font>
 
 * xlsam
+
+> ceres : 优化学习的demos
+> common： 通用基础工具
+> dbow3： 词袋模型学习的demos
+> eigen： 线性代数学习的demos
+> examples： 一些学习的demos
+> g2o： g2o优化学习的demos
+> kalman_filter: 卡尔曼滤波
+> opencv：特征点检测和图像处理
+> scipts
+> sophus： 李代数
+> vins： vins-mono VIO单目工程
+
 * xlsam_ros
   * slam2d (2D lidar SLAM)
+  
+    ```perl
+  # step 1 下载 rosbag 数据集
+  # https://github.com/cartographer-project/cartographer_ros/blob/master/docs/source/data.rst
+  wget https://storage.googleapis.com/cartographer-public-data/bags/backpack_2d/b2-2015-05-26-13-15-25.bag
+  
+  # step 2 run
+  roslaunch xslam_ros demo_slam2d.launch
+  
+  # step 3 rosbag play
+  rosbag play b2-2015-05-26-13-15-25.bag
+    ```
+  
+  ![xslam_ros_2d](./image/xslam_ros_2d.png)
+  
+  
+  
   * vins-mono (VSLAM)
 
 ### 1.2  <font color='green'>Download LTSLAM source:</font>
@@ -160,7 +190,7 @@ git clone https://github.com/quanduyong/LTSLAM.git
 ## Docker
 
  ....
- 
+
 
 ## 3  工程编译
 

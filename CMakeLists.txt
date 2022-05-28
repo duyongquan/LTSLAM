@@ -25,6 +25,9 @@ if(SPHINX_FOUND)
     add_subdirectory(docs)
 endif()
 
+# tutorial
+add_subdirectory(tutorial)
+
 # add catkin packages
 add_subdirectory(xslam_ros/xslam_ros)
 
