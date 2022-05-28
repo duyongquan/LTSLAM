@@ -265,11 +265,11 @@ We are now ready to build, test, and begin run the demos.
 
 .. code-block:: bash
  
- mkdir build
- cd build
- cmake ..
- make -j6
- 
+      mkdir build
+      cd build
+      cmake ..
+      make -j6
+
 
 Docker安装
 ============
@@ -277,72 +277,64 @@ Docker安装
 如果电脑已有老版docker,则需先卸载已存在的旧版本:
 
 .. code-block:: bash
+
       docker version
       sudo apt-get remove docker docker-engine docker-ce docker.io containerd runc
-
-
-
 
 安装以下包以使apt可以通过HTTPS使用存储库(repository)
 
 .. code-block:: bash
+
       sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
-
-
-
 
 添加GPG密匙及存储库地址,**官方或者国内镜像（更快）任选其一**
 
 Docker官方GPG密钥及**stable**存储库：
 
 .. code-block:: bash
+
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
       sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-
-
-
 
 阿里镜像站Docker的GPG密钥及**stable**存储库：
 
 .. code-block:: bash
+
       curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
       sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
-
-
-
 
 更新apt包索引并安装最新版本的Docker CE(社区版):
 
 .. code-block:: bash
+
       sudo apt-get -y update
       sudo apt-get -y install docker-ce
-
-
-
 
 验证docker,查看版本及运行状态
 
 .. code-block:: bash
-      sudo systemctl status docker
 
+      sudo systemctl status docker
 
 若未启动,则启动docker服务
 
 .. code-block:: bash
+
+
       sudo systemctl start docker
-
-
 
 
 默认已有docker用户组,如果没有则需要添加
 
 .. code-block:: bash
+
       sudo groupadd docker
 
 
 将当前用户加入 docker 组内并重新登录：
 
 .. code-block:: bash
+
       sudo usermod -aG docker $USER
       newgrp docker
 
@@ -352,18 +344,14 @@ Docker官方GPG密钥及**stable**存储库：
 验证用户组生效
 
 .. code-block:: bash
+
       docker run hello-world
 
 
-
-
-**附常用的国内镜像源**
-
-阿里镜像源：
-=====
+**阿里镜像源**
 
 .. code-block:: bash
-#阿里源
+
       deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
       deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
       deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
@@ -376,11 +364,11 @@ Docker官方GPG密钥及**stable**存储库：
       deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
 
 
-清华镜像源
-=====
+**清华镜像源**
 
 .. code-block:: bash
-#清华源
+
+
       deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
       deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
       deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
@@ -393,11 +381,10 @@ Docker官方GPG密钥及**stable**存储库：
       deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
 
 
-中科大镜像源
-=====
+**中科大镜像源**
 
 .. code-block:: bash
-#中科大源
+
       deb https://mirrors.ustc.edu.cn/ubuntu/ bionic main restricted universe multiverse
       deb-src https://mirrors.ustc.edu.cn/ubuntu/ bionic main restricted universe multiverse
       deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
