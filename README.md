@@ -41,7 +41,7 @@ X-SLAM is an open source C++ demo for learn vision slam and lidar slam. Through 
   
     
   
-    ```perl
+    ```bash
   # step 1 下载 rosbag 数据集
   # https://github.com/cartographer-project/cartographer_ros/blob/master/docs/source/data.rst
   wget https://storage.googleapis.com/cartographer-public-data/bags/backpack_2d/b2-2015-05-26-13-15-25.bag
