@@ -26,17 +26,17 @@ bool tests_linear_velocities() {
     foo_Ts_baz.push_back(foo_T_bar * bar_T_baz);
   }
 
-  auto gen_linear_vels = [](
-      std::vector<SE3<Scalar>, Eigen::aligned_allocator<SE3<Scalar>>> const&
-          a_Ts_b) {
-    std::vector<Vector3<Scalar>, Eigen::aligned_allocator<Vector3<Scalar>>>
-        linearVels_a;
-    for (size_t i = 0; i < a_Ts_b.size() - 1; ++i) {
-      linearVels_a.push_back(a_Ts_b[i + 1].translation() -
-                             a_Ts_b[i].translation());
-    }
-    return linearVels_a;
-  };
+  auto gen_linear_vels =
+      [](std::vector<SE3<Scalar>, Eigen::aligned_allocator<SE3<Scalar>>> const&
+             a_Ts_b) {
+        std::vector<Vector3<Scalar>, Eigen::aligned_allocator<Vector3<Scalar>>>
+            linearVels_a;
+        for (size_t i = 0; i < a_Ts_b.size() - 1; ++i) {
+          linearVels_a.push_back(a_Ts_b[i + 1].translation() -
+                                 a_Ts_b[i].translation());
+        }
+        return linearVels_a;
+      };
 
   // linear velocities in frame bar
   std::vector<Vector3<Scalar>, Eigen::aligned_allocator<Vector3<Scalar>>>
@@ -48,7 +48,7 @@ bool tests_linear_velocities() {
   for (size_t i = 0; i < linearVels_bar.size(); ++i) {
     SOPHUS_TEST_APPROX(passed, linearVels_foo[i],
                        transformVelocity(foo_T_bar, linearVels_bar[i]),
-                       sqrt(Constants<Scalar>::epsilon()));
+                       sqrt(Constants<Scalar>::epsilon()), "");
   }
   return passed;
 }
@@ -88,12 +88,12 @@ bool tests_rotational_velocities() {
     SOPHUS_TEST_APPROX(
         passed, rotVel_in_frame_bar, rotVel_in_frame_bar2,
         // not too tight threshold, because of finit difference approximation
-        std::sqrt(Constants<Scalar>::epsilon()));
+        std::sqrt(Constants<Scalar>::epsilon()), "");
 
     // The rotational velocities rotVel_in_frame_foo and rotVel_in_frame_bar
     // should not be equal since they are in different frames (foo != bar).
     SOPHUS_TEST_NOT_APPROX(passed, rotVel_in_frame_foo, rotVel_in_frame_bar,
-                           Scalar(1e-3));
+                           Scalar(1e-3), "");
 
     // Expect same result when using adjoint instead since:
     //  vee(bar_R_foo * hat(vel_foo) * bar_R_foo^T = bar_R_foo 8 vel_foo.
@@ -102,7 +102,7 @@ bool tests_rotational_velocities() {
         SO3<Scalar>::vee(foo_T_bar.so3().inverse().matrix() *
                          SO3<Scalar>::hat(rotVel_in_frame_foo) *
                          foo_T_bar.so3().matrix()),
-        Constants<Scalar>::epsilon());
+        Constants<Scalar>::epsilon(), "");
   }
   return passed;
 }
