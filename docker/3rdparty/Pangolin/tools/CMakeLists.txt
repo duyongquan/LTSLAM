@@ -1,8 +1,0 @@
-if(BUILD_PANGOLIN_GUI AND BUILD_PANGOLIN_VARS )
-  if(BUILD_PANGOLIN_VIDEO)
-      add_subdirectory(VideoViewer)
-      add_subdirectory(VideoConvert)
-      add_subdirectory(VideoJson)
-      add_subdirectory(Plotter)
-  endif()
-endif()

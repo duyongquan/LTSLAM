@@ -15,7 +15,6 @@ set(PACKAGE_DEPENDENCIES
   tf2
   tf2_eigen
   tf2_ros
-  urdf
   visualization_msgs
 )
 
@@ -37,13 +36,6 @@ find_package(absl REQUIRED)
 find_package(LuaGoogle REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(OpenCV REQUIRED)
-
-find_package(urdfdom_headers REQUIRED)
-if(DEFINED urdfdom_headers_VERSION)
-  if(${urdfdom_headers_VERSION} GREATER 0.4.1)
-    add_definitions(-DURDFDOM_HEADERS_HAS_SHARED_PTR_DEFS)
-  endif()
-endif()
 
 include_directories(
   ${urdfdom_headers_INCLUDE_DIRS}

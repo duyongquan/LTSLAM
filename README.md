@@ -1,5 +1,5 @@
 # X-SLAM
-## 1 Introduction
+# 1 Introduction
 
 I hope you can learn slam step by step, you will can learn online  [X-SLAM documents tutorial](https://ltslam-doc.readthedocs.io/en/latest/index.html). What you choose today determines your tomorrow's life path. Diligence will not make up for your indecision.
 
@@ -20,9 +20,17 @@ X-SLAM is an open source C++ demo for learn vision slam and lidar slam. Through 
 * <font color='red'> **VINS Mono( VINS Project)**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/vins/vins.html)
 * <font color='red'> **MSCKF-VIO( MSCKF Project)**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/msckf/msckf.html)
 
-### 1.1 <font color='green'>Project directory:</font>
 
-#### xlsam_ros  (2D lidar SLAM)
+
+## 1.1 <font color='green'>Download LTSLAM source:</font>
+
+```bash
+git clone https://github.com/quanduyong/LTSLAM.git
+```
+
+## 1.2 <font color='green'>Project directory:</font>
+
+### xlsam_ros  (2D lidar SLAM)
 
 ```bash
 # step 1 下载 rosbag 数据集
@@ -39,15 +47,69 @@ rosbag play b2-2015-05-26-13-15-25.bag
 
 ![xslam_ros_2d](./image/xslam_ros_2d.png)
 
-### 1.2  <font color='green'>Download LTSLAM source:</font>
 
-```shell
-git clone https://github.com/quanduyong/LTSLAM.git
+
+# 2 安装x-slam
+
+## 2.1 推荐：docker方式安装
+
+### 2.1.1  docker安装
+
+```bash
+cd docker
+./scripts/install_docker.sh
 ```
 
-## 2 Install dependency
+### 2.1.2 X-SLAM环境部署和安装
 
-### 2.1 Generate study documents
+```bash
+cd docker
+./build_dev.sh standalone.x86_64.dockerfile
+```
+
+### 2.1.3 运行X-SLAM的demos案例
+
+X-SLAM的demo有很多，一下简单运行几个demo
+
+```bash
+docker run -it xslam/ltslam
+```
+
+运行每个模块的demo
+
+* run ceres 
+
+  ```
+  ./xslam.ceres.helloworld_numeric_diff_test
+  ```
+
+* run g2o 
+
+  ```bash
+  ./xslam.g2o.curve_fitting_test
+  ```
+
+* run dbow3 
+
+  ```
+   ./xslam.dbow3.loop_closure_detect_test
+  ```
+
+* run opencv
+
+  ```
+  ./xslam.opencv.feature_detection.orb_feature_detector_test
+  ```
+
+* run Sophus
+
+  ```
+  ./xslam.sophus.basic_test
+  ```
+
+## 2.2 源码安装（不推荐）
+
+### 2.2.1 Generate study documents
 主要目的实现本地帮助文档doc下，以html网页的格式方便查看
 
 * 安装Sphinx
@@ -70,7 +132,7 @@ git clone https://github.com/quanduyong/LTSLAM.git
   pip install sphinx_markdown_tables
   ```
 
-### 2.2 Third party library
+### 2.2.2 Third party library
 
 <font  color='green'>(推荐)</font>我已经提供了第三方库源码文件3rdparty目录下，执行以下命令安装，<font  color='red'>不然会出现版本不匹配问题</font>：
 
@@ -168,13 +230,7 @@ git clone https://github.com/quanduyong/LTSLAM.git
   sudo make install
   ```
 
-
-## Docker
-
- ....
-
-
-## 3  工程编译
+# 3  工程编译
 
 ```shell
 cd LTSLAM
@@ -184,7 +240,7 @@ cmake ..
 make -j6
 ```
 
-## 4 如何运行工程demo
+# 4 如何运行工程demo
 
 在工程的build/bin目录中，你可以看到对应的每个可执行二进制文件
 
@@ -197,7 +253,7 @@ Let ‘s run xslam.opencv.KLT_test shell command
 ./xslam.opencv.KLT_test
 ```
 
-## 5 Contact Me
+# 5 Contact Me
 
 我们有微信群和QQ群：<font color='green'> 710288823 </font>，你可以加入我们一起成长，所有代码和教学视频免费。
 
@@ -209,9 +265,7 @@ email ： quandy2020@126.com
 
 加入我们吧！！！
 
-
-
-## 6 Github贡献者
+# 6 Github贡献者
 
 * 123mrchen
 * Ze
