@@ -3,7 +3,10 @@
 # Fail on first error.
 set -e
 
-cd /tmp/3rdparty/Sophus
+# Clean up.
+rm -rf build
+
+cd /x-slam/3rdparty/Sophus
 
 mkdir build && cd build && cmake .. 
 make -j6

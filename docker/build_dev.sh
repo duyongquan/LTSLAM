@@ -4,7 +4,11 @@ DOCKERFILE=$1
 
 CONTEXT="$(dirname "${BASH_SOURCE[0]}")"
 
-# copy 3rdpary docker
+# copy ltslam docker
+if [ -d LTSLAM ]; then
+    rm -rf ./LTSLAM
+fi
+mkdir LTSLAM
 cp -r ${CONTEXT}/../* ./LTSLAM
 
 REPO=xslam/ltslam
@@ -14,4 +18,4 @@ TAG="${REPO}"
 set -e
 docker build -t ${TAG} -f ${DOCKERFILE} ${CONTEXT}
 echo "Built new image ${TAG}"
-rm -rf LTSLAM
+rm -rf ./LTSLAM

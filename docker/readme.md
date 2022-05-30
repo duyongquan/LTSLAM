@@ -1,7 +1,3 @@
-
-
-
-
 <center> <font color="green" size=10> X-SLAM Docker 部署</font></center>
 
 # 1 docker安装
@@ -25,6 +21,12 @@ cd docker
 # 3 运行X-SLAM的demos案例
 
 X-SLAM的demo有很多，一下简单运行几个demo
+
+```bash
+docker run -it xslam/ltslam
+```
+
+
 
 ## 3.1 ceres
 

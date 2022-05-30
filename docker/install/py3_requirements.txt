@@ -1,0 +1,15 @@
+
+## Ref:
+## 1) https://www.python.org/dev/peps/pep-0508/#environment-markers
+
+# 安装Sphinx
+sphinx
+
+# 安装主题
+sphinx_rtd_theme
+
+# 安装markdown插件
+recommonmark
+myst-parser
+sphinx_markdown_tables
+

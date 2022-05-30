@@ -23,7 +23,7 @@ function ok() {
     (>&2 echo -e "[${GREEN}${BOLD} OK ${NO_COLOR}] $*")
 }
 
-export DOWNLOAD_LOG="/opt/xslam/build.log"
+export DOWNLOAD_LOG="/x-slam/build.log"
 
 function py3_version() {
     local version

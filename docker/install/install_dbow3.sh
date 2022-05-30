@@ -3,12 +3,13 @@
 # Fail on first error.
 set -e
 
-cd "$(dirname "${BASH_SOURCE[0]}")"
+# Clean up.
+rm -rf build
 
-cd eigen-3.3.7 
+cd /x-slam/3rdparty/DBoW3
 mkdir build && cd build && cmake ..
-make -j4
+make -j6
 make install
 
 # Clean up.
-rm -fr build
+rm -rf build
