@@ -12,6 +12,8 @@ Tutorial
    eigen/eigen
    ceres/ceres_solver_tutorial
    g2o/g2o_tutorial
+   pangolin/pangolin
+   libQGLViewer/libQGLViewer
    opencv/opencv_tutorial
 
 
