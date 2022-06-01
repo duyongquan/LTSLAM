@@ -362,3 +362,81 @@ demo调用, 源码
     * simple_multi_display_test.cpp
     * simple_multi_display.cpp
     * simple_multi_display.h
+
+5 SimplePlot
+===================
+
+demo调用, 源码 
+
+.. code-block:: c++
+
+    TEST(SimplePlot, hello)
+    {
+        SimplePlot demo;
+        demo.RunDemo();
+    }
+
+函数使用：
+
+.. code-block:: c++
+
+    void SimplePlot::RunDemo()
+    {
+        // Create OpenGL window in single line
+        ::pangolin::CreateWindowAndBind("Main",640,480);
+
+        // Data logger object
+        ::pangolin::DataLog log;
+
+        // Optionally add named labels
+        std::vector<std::string> labels;
+        labels.push_back(std::string("sin(t)"));
+        labels.push_back(std::string("cos(t)"));
+        labels.push_back(std::string("sin(t)+cos(t)"));
+        log.SetLabels(labels);
+
+        const float tinc = 0.01f;
+
+        // OpenGL 'view' of data. We might have many views of the same data.
+        ::pangolin::Plotter plotter(&log,0.0f,4.0f*(float)M_PI/tinc,-2.0f,2.0f,(float)M_PI/(4.0f*tinc),0.5f);
+        plotter.SetBounds(0.0, 1.0, 0.0, 1.0);
+        plotter.Track("$i");
+
+        // Add some sample annotations to the plot
+        plotter.AddMarker(::pangolin::Marker::Vertical,   -1000, ::pangolin::Marker::LessThan, ::pangolin::Colour::Blue().WithAlpha(0.2f) );
+        plotter.AddMarker(::pangolin::Marker::Horizontal,   100, ::pangolin::Marker::GreaterThan, ::pangolin::Colour::Red().WithAlpha(0.2f) );
+        plotter.AddMarker(::pangolin::Marker::Horizontal,    10, ::pangolin::Marker::Equal, ::pangolin::Colour::Green().WithAlpha(0.2f) );
+
+        ::pangolin::DisplayBase().AddDisplay(plotter);
+
+        float t = 0;
+
+        // Default hooks for exiting (Esc) and fullscreen (tab).
+        while( !::pangolin::ShouldQuit() )
+        {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            log.Log(sin(t),cos(t),sin(t)+cos(t));
+            t += tinc;
+
+            // Render graph, Swap frames and Process Events
+            ::pangolin::FinishFrame();
+        }
+    }
+
+运行结果
+
+.. code-block:: bash
+
+    [bin] ./xslam.pangolin.simple_plot_test
+
+.. figure:: ./images/simple_plot.png
+   :align: center
+
+参考源码：
+
+.. NOTE::
+
+    * simple_plot_test.cpp
+    * simple_plot.cpp
+    * simple_plot.h
