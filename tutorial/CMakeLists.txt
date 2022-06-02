@@ -5,7 +5,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
+file(GLOB_RECURSE COMMON_HDRS "common/*.h" "common/*.hpp")
+file(GLOB_RECURSE COMMON_SRCS "common/*.cpp")
+
 # add cpp packages
 add_subdirectory(cpp)
-
-
