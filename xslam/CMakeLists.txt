@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.2)
 project(xslam)
 
 set(CMAKE_CXX_STANDARD 14)
+add_compile_options(-fPIC)
 
 # set version
 set(SLAM_MAJOR_VERSION 0)
@@ -61,7 +62,16 @@ else(CSPARSE_FOUND)
   endif()
 endif(CSPARSE_FOUND)
 
+set(OpenGL_GL_PREFERENCE "GLVND")
+find_package(OpenGL)
 
+find_package(QGLViewer)
+include_directories(SYSTEM ${QGLVIEWER_INCLUDE_DIR})
+
+if(Qt5_FOUND)
+  include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Xml_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS})
+  set(XSLAM_QT_LIBRARIES ${Qt5Widgets_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5Xml_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
+endif()
 
 set(G2OLIBS
         g2o_core
@@ -145,9 +155,12 @@ if (BUILD_TEST)
         string(REPLACE "/" "." TEST_TARGET_NAME "${DIR}/${FIL_WE}")
         project_test("${TEST_TARGET_NAME}" ${ABS_FIL})
         target_include_directories(${TEST_TARGET_NAME} SYSTEM PRIVATE "${GMOCK_INCLUDE_DIRS}")
-        target_link_libraries("${TEST_TARGET_NAME}" PUBLIC ${GTEST_LIBRARIES})
+        target_link_libraries("${TEST_TARGET_NAME}" PUBLIC ${GTEST_LIBRARIES} ${QGLVIEWER_LIBRARY} ${XSLAM_QT_LIBRARIES})
     endforeach()
 endif()
+
+
+# target_link_libraries(simpleViewer ${QGLVIEWER_LIBRARY} ${MY_QT_LIBRARIES} ${OPENGL_LIBRARY})
 
 
 target_include_directories(${PROJECT_NAME} PUBLIC

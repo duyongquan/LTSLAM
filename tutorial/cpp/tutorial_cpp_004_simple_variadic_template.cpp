@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstdarg>
+#include <utility>
 
 #include "glog/logging.h"
 
@@ -33,6 +34,31 @@ void RunCase2_Print(const char* fmt, ...)
     std::cout << buf << std::endl;
 }
 
+template <typename... Ts>
+void f(Ts&&... ts) {}
+
+// C++11 引入了可变参数模板，一个模板参数包可以匹配任意数量的模板参数
+void RunCase3()
+{
+    f(3.14, 42, std::string{"hello"}, "world");
+}
+
+// 为了对参数包中每个参数做操作，需要展开参数包，一般的写法是，把参数包改成一个参数与一个参数包，
+// 用只接受一个参数的函数来处理单参数，用这个函数本身处理剩余参数的参数包
+
+template <typename T>
+void RunCase4_Print(const T& t)
+{
+    std::cout << t << std::endl;
+}
+
+template <typename T, typename... Ts>
+void RunCase4_Print_1(const T& t, Ts&&... ts) 
+{
+  RunCase4_Print(t);
+  RunCase4_Print(std::forward<Ts>(ts)...);
+}
+
 void Run()
 {
     LOG(INFO) << "Run RunCase1_Print() :";
@@ -40,6 +66,10 @@ void Run()
 
     LOG(INFO) << "Run RunCase2_Print() :";
     RunCase2_Print("%.2f %d %s %s", 3.14, 42, std::string{"hello"}.c_str(), "world");
+
+    LOG(INFO) << "Run RunCase4_Print_1() :";
+    // RunCase4_Print_1(3.14, 42, std::string{"hello"}, "world");
+
 }
 
 } // namespace
