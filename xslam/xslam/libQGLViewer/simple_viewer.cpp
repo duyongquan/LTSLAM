@@ -77,7 +77,7 @@ QString Viewer::helpString() const
 
 void SimpleViewer::RunDemo()
 {
-    // // Read command lines arguments.
+    // Read command lines arguments.
     int argc = 1;
     char **argv = NULL;
     QApplication application(argc, argv);

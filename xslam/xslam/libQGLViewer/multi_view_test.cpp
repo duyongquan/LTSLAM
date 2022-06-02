@@ -1,4 +1,4 @@
-#include "xslam/libQGLViewer/simple_viewer.h"
+#include "xslam/libQGLViewer/multi_view.h"
 
 #include "gtest/gtest.h"
 #include "glog/logging.h"
@@ -6,9 +6,9 @@
 namespace xslam {
 namespace libQGLViewer {
 
-TEST(SimpleViewer, demo)
+TEST(MultiViewer, demo)
 {
-    SimpleViewer demo;
+    MultiViewer demo;
     demo.RunDemo();
 }
 

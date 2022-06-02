@@ -24,5 +24,5 @@ public:
 } // namespace libQGLViewer
 } // namespace xslam
 
-#endif //XSLAM_LIBQGLVIEWER_SIMPLE_VIEWER_H
+#endif // XSLAM_LIBQGLVIEWER_SIMPLE_VIEWER_H
 

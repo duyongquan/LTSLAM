@@ -1,4 +1,4 @@
-#include "xslam/libQGLViewer/simple_viewer.h"
+#include "xslam/libQGLViewer/key_frames.h"
 
 #include "gtest/gtest.h"
 #include "glog/logging.h"
@@ -6,9 +6,9 @@
 namespace xslam {
 namespace libQGLViewer {
 
-TEST(SimpleViewer, demo)
+TEST(KeyFrames, demo)
 {
-    SimpleViewer demo;
+    KeyFrames demo;
     demo.RunDemo();
 }
 
