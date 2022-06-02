@@ -5,7 +5,7 @@ Tutorial
 ========
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    c++/c++
    cmake/cmake
@@ -15,5 +15,8 @@ Tutorial
    pangolin/pangolin
    libQGLViewer/libQGLViewer
    opencv/opencv_tutorial
+   ros/ros
+   ros2/ros2
+
 
 
