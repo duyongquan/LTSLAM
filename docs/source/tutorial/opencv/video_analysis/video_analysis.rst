@@ -342,8 +342,8 @@ demo调用, 源码
     * optical_flow.cpp
     * optical_flow.h
 
-4 OpticalFlow
-==================
+4 buildOpticalFlowPyramid
+==========================
 
 Opencv C++ API:
 
