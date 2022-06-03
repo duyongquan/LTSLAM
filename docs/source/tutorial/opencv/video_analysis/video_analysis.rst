@@ -341,3 +341,120 @@ demo调用, 源码
     * optical_flow_test.cpp
     * optical_flow.cpp
     * optical_flow.h
+
+4 OpticalFlow
+==================
+
+Opencv C++ API:
+
+.. code-block:: c++
+
+    int cv::buildOpticalFlowPyramid (
+        InputArray img, 
+        OutputArrayOfArrays pyramid,
+        Size winSize, 
+        int maxLevel,
+        bool withDerivatives = true,
+        int pyrBorder = BORDER_REFLECT_101,
+        int derivBorder = BORDER_CONSTANT,
+        bool tryReuseInputImage = true)
+
+.. NOTE::
+
+    * img	    8位输入图像
+    * pyramid	输出金字塔
+    * winSize	光流算法的窗口大小。 必须不少于calcOpticalFlowPyrLK的winSize参数。 需要计算金字塔级别所需的填充。
+    * maxLevel	从0开始的最大金字塔等级编号。
+    * withDerivatives	设置为每个金字塔等级预计算梯度。 如果金字塔是在没有梯度的情况下构建的，那么calcOpticalFlowPyrLK将在内部对其进行计算。
+    * pyrBorder	        金字塔图层的边框模式。
+    * derivBorder	    梯度边框模式。
+    * tryReuseInputImage 如果可能，将输入图像的ROI放入金字塔中。 您可以传递false来强制复制数据。
+
+demo调用, 源码
+
+.. code-block:: c++
+
+    TEST(BuildOpticalFlowPyramid, demo)
+    {
+        std::string filename = GetOpenCVDatasetDirectory() + "/0002_dota2.avi";
+        BuildOpticalFlowPyramid demo;
+        demo.RunDemo(filename);
+    }
+
+函数使用：
+
+.. code-block:: c++
+
+    void BuildOpticalFlowPyramid::RunDemo(const std::string& filename)
+    {
+        cv::VideoCapture cap(filename);
+        if(!cap.isOpened()){
+            std::cerr << "cannot open camera\n";
+        }
+
+        cv::Mat frame,gray,grayPre,framePre,status,err;
+        const int maxLevel = 3;
+        std::vector<cv::Point2f> prevPts, nextPts;
+        std::vector<cv::Mat> pyramid1,pyramid2;
+
+        cap >> frame;
+        if(frame.empty()){
+            std::cerr << "grab first frame error.\n";
+        }
+
+        cv::cvtColor(frame,grayPre,cv::COLOR_BGR2GRAY);
+        cv::Size subPixWinSize(10,10);
+        cv::TermCriteria termcrit(cv::TermCriteria::COUNT|cv::TermCriteria::EPS,20,0.03);
+        while(cap.isOpened())
+        {
+            cap >> frame;
+            if(frame.empty()){
+                std::cerr << "cannot grab frame from camera.\n";
+                break;
+            }
+
+            cv::cvtColor(frame,gray,cv::COLOR_BGR2GRAY);
+
+            // 检测触点
+            goodFeaturesToTrack(gray, nextPts, 100, 0.01, 2.0);
+            cornerSubPix(gray, nextPts, subPixWinSize, cv::Size(-1,-1), termcrit);
+            goodFeaturesToTrack(grayPre, prevPts, 100, 0.01, 2.0);
+            cornerSubPix(gray, prevPts, subPixWinSize, cv::Size(-1,-1), termcrit);
+
+            // 构造流光金字塔
+            cv::buildOpticalFlowPyramid(gray, pyramid1, cv::Size(21,21), maxLevel);
+            cv::buildOpticalFlowPyramid(grayPre, pyramid2, cv::Size(21,21), maxLevel);
+
+            // 使用LK流光算法检测
+            cv::calcOpticalFlowPyrLK(pyramid1,pyramid2,prevPts,nextPts,status,err);
+            gray.copyTo(grayPre);
+
+            size_t i, k;
+            for( i = k = 0; i < nextPts.size(); i++ ){
+                cv::circle( frame, nextPts[i], 3, cv::Scalar(0,0,255), -1, 8);
+            }
+
+            // 显示图像
+            cv::imshow("frame",frame);
+            if(cv::waitKey(10) == 27){
+                break;
+            }
+        }
+    }
+
+运行结果
+
+.. code-block:: bash
+
+    [bin] ./xslam.opencv.video_analysis.build_optical_flow_pyramid_test
+
+.. figure:: ./images/build_optical_flow_pyramid.gif
+   :align: center
+
+参考源码：
+
+.. NOTE::
+
+    * build_optical_flow_pyramid_test.cpp
+    * build_optical_flow_pyramid.cpp
+    * build_optical_flow_pyramid.h
