@@ -200,7 +200,7 @@ $$
 $$
 泰勒公式
 $$
-f(x) = f(a) + f(a)(x- a)
+f(x) = \frac{f(x_0)}{0!} + \frac{f^{\prime}(x_0)}{1!}(x- x_0) + \frac{f^{\prime{\prime}}(x_0)}{2!}(x- x_0)^2 + \cdots + \frac{f^{(n)}(x_0)}{n!}(x- x_0)^n + R_n(x)
 $$
 
 
@@ -210,15 +210,503 @@ $$
 
 # 4 IMU
 
+## 4.1 Accelerometers(加速计)
+
+$$
+^B \mathbf{a}_m = \mathbf{T}_a {_G^B}\mathbf{R}(^G\mathbf{a} - ^G\mathbf{g}) + \mathbf{n}_a + \mathbf{b}_a
+$$
+
+其中：
+
+* $\mathbf{T}_a$: 加速度计测量中导致未对准和比例误差的矩阵系数
+* $^G\mathbf{a}$: 全局坐标系中 IMU 的真实加速度，{ B } 表示惯性体（IMU）坐标系。
+* $^G\mathbf{g}: \quad \mathbf{g} = (0, 0, -1)^T$  
+
+* $\mathbf{n}_a \sim N(0, N_a)$
+* $\mathbf{b}_a：$ 随时间变化，建模为随机游走过程噪声$n_{wa} \sim N(0,N_{wa} )$
+
+## 4.2 Gyroscope(陀螺仪)
+
+![](./images/msckf/gyroscope.png)
+$$
+^B \mathbf{\omega}_m = \mathbf{T}_g \omega +\mathbf{T}_s ^B\mathbf{a} + \mathbf{n}_g + \mathbf{b}_g
+$$
+其中：
+
+* $\mathbf{n}_g \sim N(0, N_g)$
+
+* $\mathbf{b}_g：$ 随时间变化，建模为随机游走过程噪声$n_{wg} \sim N(0,N_{wg} )$
 
 
-# 5 Camera
+
+## 4.3 Noise and Bias Characteristics(噪声和零偏特性)
+
+$$
+\sigma_{a_c} = \sigma_{a_d} \sqrt{\Delta t}
+$$
+
+同样，随机游走偏差标准差也必须转换为连续值。
+$$
+\sigma_{wa_c} = \frac{\sigma_{wa_d}}{\sqrt{\Delta t}}
+$$
+
+
+# 5 Computer Vision
+
+## 5.1 Pinhole Camera Model(针孔模型)
+
+![](./images/msckf/pinhole_camera_model.png)
+$$
+\begin{aligned}
+	x = f_x \frac{X}{Z}  \\
+	y = f_y \frac{Y}{Z}
+\end{aligned}
+$$
+**相机投影**
+
+
+
+![](./images/msckf/camera_projection.png)
+$$
+\begin{aligned}
+	x = f_x \frac{X}{Z} + c_x \\
+	y = f_y \frac{Y}{Z} + c_y
+\end{aligned}
+$$
+
+
+![](./images/msckf/camera_and_pixel_coordinate_frames.png)
+$$
+\mathbf{h}
+\begin{pmatrix}
+	X \\
+	Y \\
+	Z
+\end{pmatrix} =
+\begin{bmatrix}
+	f_x &   0 \\
+	0   & f_y 
+\end{bmatrix}
+\begin{bmatrix}
+	\frac{X}{Z} \\
+	\frac{Y}{Z}
+\end{bmatrix} +
+\begin{bmatrix}
+	c_x \\
+	c_y 
+\end{bmatrix}
+$$
+**图像畸变失真**
+$$
+\begin{aligned}
+	\mathbf{h}
+    \begin{pmatrix}
+        X \\
+        Y \\
+        Z
+    \end{pmatrix} &=
+    \begin{bmatrix}
+        f_x &   0 \\
+        0   & f_y 
+    \end{bmatrix}
+    \begin{pmatrix}
+    	d_r
+    	\begin{bmatrix}
+    		u \\
+    		v
+    	\end{bmatrix}
+    	+ d_t
+    \end{pmatrix} +
+    \begin{bmatrix}
+        c_x \\
+        c_y 
+    \end{bmatrix}
+    \\
+    d_r &= (1 + k_1r + k_2r^2 + k_3r^3) \\
+    d_t &= 
+    \begin{bmatrix}
+        2uvt_1 + (r+2u^2)t_2 \\
+        2uvt_2 + (r+2v^2)t_1 
+    \end{bmatrix}
+    \\
+    
+    with \quad u &= \frac{X}{Z}, v = \frac{Y}{Z}, r = u^2 + v^2
+    
+\end{aligned}
+$$
+**Frame Transformation**
+$$
+\begin{bmatrix}
+    u \\
+    v
+\end{bmatrix}
+=
+\mathbf{h}(_G^C\mathbf{R}(^G\mathbf{x} - ^G\mathbf{p}_C))
+$$
+**Triangulation（三角化）**
+
+![](./images/msckf/triangulation.png)
+
+$C_0$帧是第一次观察到该点的相机帧，该点在第$i$个相机$C_i$帧中的位置如下。
+$$
+\begin{aligned}
+	^{C_i}\mathbf{p}_f &= _{C_0}^{C_i}\mathbf{R}(^{C_0}\mathbf{p}_f - ^{C_0}\mathbf{p}_{C_{i}}) \\
+	^{C_i}\mathbf{p}_f &= _{C_0}^{C_i}\mathbf{R} ^{C_0}\mathbf{p}_f + ^{C_i}\mathbf{p}_{C_{0}}
+\end{aligned}
+$$
+这可以用逆深度参数化重写，以提高数值稳定性并帮助避免局部最小值
+$$
+\begin{aligned}
+	^{C_i}\mathbf{p}_f &= _{C_0}^{C_i}\mathbf{R} ^{C_0}\mathbf{p}_f + ^{C_i}\mathbf{p}_{C_{0}} \\
+	& = _{C_0}^{C_i}\mathbf{R} ^{C_0}
+	\begin{bmatrix} 
+		c_n X \\
+		c_n Y \\
+		c_n Z
+	\end{bmatrix}
+	+ ^{C_i}\mathbf{p}_{C_{0}} \\
+	&= ^{C_0} Z
+	\begin{pmatrix} 
+		_{C_0}^{C_i}\mathbf{R} 
+		\begin{bmatrix}
+			\frac{^{C_0}X}{^{C_0}Z} \\
+			\frac{^{C_0}Y}{^{C_0}Z} \\
+			1
+		\end{bmatrix} +
+		\frac{1}{^{C_0}Z} ^{C_i} \mathbf{p}_{C_{0}}
+	\end{pmatrix} \\
+	&= ^{C_0} Z
+	\begin{pmatrix} 
+		_{C_0}^{C_i}\mathbf{R}
+		\begin{bmatrix}
+			\alpha \\
+			\beta \\
+			1
+		\end{bmatrix} +
+		\rho ^{C_i}\mathbf{p}_{C_{0}}
+	\end{pmatrix} \\
+	&= ^{C_0} Z \mathbf{g}_i
+	\begin{pmatrix} 
+		\alpha \\
+		\beta \\
+		\rho 
+	\end{pmatrix}
+\end{aligned}
+$$
+其中：
+
+* $\alpha = \frac{^{C_0}X}{^{C_0}Z}$
+* $\beta = \frac{^{C_0}Y}{^{C_0}Z}$ 
+* $ \rho = \frac{1}{^{C_0}Z}$
+
+**Gauss-Newton Minimization**
+$$
+\mathbf{f}_i(\mathbf{\theta}) = \mathbf{Z}_i - \mathbf{h}(\mathbf{g}_i(\mathbf{\theta})) \quad with: \quad 
+\mathbf{\theta} =
+	\begin{pmatrix} 
+		\alpha \\
+		\beta \\
+		\rho 
+	\end{pmatrix}
+$$
+
+$$
+S(\mathbf{\theta}) = \sum_{i=1}^{n} \mathbf{f}_i(\mathbf{\theta})^2
+$$
+
+Jacobian
+$$
+\mathbf{J}_{\mathbf{f}} = \frac{\partial{\mathbf{f}}}{\partial{\mathbf{\theta}}} = \frac{\partial{\mathbf{\mathbf{h}}}}{\partial{\mathbf{\mathbf{g}}}} 
+\frac{\partial{\mathbf{\mathbf{g}}}}{\partial{\mathbf{\mathbf{\theta}}}}
+$$
+其中：
+$$
+\frac{\partial{\mathbf{\mathbf{h}}}}{\partial{\mathbf{\mathbf{g}}}} =
+\begin{bmatrix}
+    f_x & 0 \\
+    0 & f_y 
+\end{bmatrix}
+\begin{bmatrix}
+    \frac{d_r}{z} + \frac{\partial{d_r}}{\partial{x}}u  + \frac{\partial{d_t}}{\partial{x}} &   \frac{\partial{d_r}}{\partial{y}}u + \frac{\partial{d_t}}{\partial{y}} &  -\frac{d_r}{z}u +  \frac{\partial{d_r}}{\partial{z}}u  + \frac{\partial{d_t}}{\partial{z}} \\
+    \frac{\partial{d_r}}{\partial{x}}v + \frac{\partial{d_t}}{\partial{y}} & \frac{d_r}{z} +  \frac{\partial{d_r}}{\partial{y}}v + \frac{\partial{d_t}}{\partial{y}} &   -\frac{d_r}{z}v +  \frac{\partial{d_r}}{\partial{z}}v  + \frac{\partial{d_t}}{\partial{z}} 
+\end{bmatrix}
+$$
+
+$$
+\begin{aligned}
+    \mathbf{g}_i(\mathbf{\theta}) 
+        &= _{C_0}^{C_i}  \mathbf{R}
+        \begin{bmatrix} 
+            \alpha \\
+            \beta \\
+            \rho 
+        \end{bmatrix} + \rho ^{C_i}\mathbf{p}_{C_{0}}
+     \\
+     \frac{\partial{\mathbf{g}_i}}{\mathbf{\theta}} &= 
+     \begin{bmatrix} 
+     	 \frac{\partial{\mathbf{g}_i}}{\mathbf{\alpha}} & 
+     	 \frac{\partial{\mathbf{g}_i}}{\mathbf{\beta}} & 
+     	 \frac{\partial{\mathbf{g}_i}}{\mathbf{\rho}}
+     \end{bmatrix} 
+     \\
+     &=
+     \begin{bmatrix} 
+     	_{C_0}^{C_i}  \mathbf{R}
+     	\begin{bmatrix}
+     		1 \\
+     		0 \\
+     		0
+     	\end{bmatrix} &
+     	_{C_0}^{C_i}  \mathbf{R}
+     	\begin{bmatrix}
+     		0 \\
+     		1 \\
+     		0
+     	\end{bmatrix} &
+     	^{C_i}  \mathbf{p}_{C_{0}}
+	 \end{bmatrix} 
+\end{aligned}
+$$
+参数更新
+$$
+\mathbf{\theta}_i^{(s+1)} = \mathbf{\theta}_i^{(s)} -
+\left(\mathbf{J}_{\mathbf{f}}^T \mathbf{J}_{\mathbf{f}} \right)^{-1}\mathbf{J}_{\mathbf{f}}^T
+\mathbf{f}( \mathbf{\theta}_i^{(s)})
+$$
+
+
+**Feature Points**
+
+![](./images/msckf/feature_points.png)
+
+
+
+**Feature Matching**
 
 
 
 # 6 MSCKF
 
+## 6.1 Overview
 
+![](./images/msckf/msckf_instrduction.png)
+
+
+
+传统的EKF-SLAM框架中，特征点的信息会加入到特征向量和协方差矩阵里,这种方法的缺点是特征点的信息会给一个初始深度和初始协方差，如果不正确的话，极容易导致后面不收敛，出现inconsistent的情况。MSCKF维护一个pose的FIFO，按照时间顺序排列，可以称为滑动窗口，一个特征点在滑动窗口的几个位姿都被观察到的话，就会在这几个位姿间建立约束，从而进行KF的更新。如下图所示, 左边代表的是传统EKF SLAM, 红色五角星是old feature,这个也是保存在状态向量中的,另外状态向量中只保存最新的相机姿态; 中间这张可以表示的是keyframe-based SLAM, 它会保存稀疏的关键帧和它们之间相关联的地图点; 最右边这张则可以代表MSCKF的一个基本结构, MSCKF中老的地图点和滑窗之外的相机姿态是被丢弃的, 它只存了滑窗内部的相机姿态和它们共享的地图点.
+
+
+
+**前端**
+
+
+
+**跟踪流程**
+
+![tracking_whole_picture](http://www.xinliang-zhong.vip/msckf_notes/imgs/tracking_whole_picture.png)
+
+
+
+##### **Initialization**
+
+![initialization](http://www.xinliang-zhong.vip/msckf_notes/imgs/%E5%89%8D%E7%AB%AF-%E5%88%9D%E5%A7%8B%E5%8C%96%E9%83%A8%E5%88%86.svg)
+
+
+
+**trackFeatures**
+
+![前端-跟踪部分](http://www.xinliang-zhong.vip/msckf_notes/imgs/%E5%89%8D%E7%AB%AF-%E8%B7%9F%E8%B8%AA%E9%83%A8%E5%88%86.svg)
+
+**twoPointRansac**
+
+```c++
+/**
+ * @brief 计算原图像帧关键点对应的矫正位置
+ * @param pts1：上一时刻的关键点位置
+ * @param pts2:当前时刻跟踪匹配到的关键点位置
+ * @param R_p_c:根据imu信息计算得到的两个时刻相机的相对旋转信息
+ * @param distortion_model,intrinsics：相机内参和畸变模型
+ * @param inlier_error：内点可接受的阈值（关键点距离差）
+ * @param success_probability：成功的概率
+ * @return inlier_markers：内点标志位
+ */
+void ImageProcessor::twoPointRansac(
+    const vector<Point2f>& pts1, const vector<Point2f>& pts2,
+    const cv::Matx33f& R_p_c, const cv::Vec4d& intrinsics,
+    const std::string& distortion_model,
+    const cv::Vec4d& distortion_coeffs,
+    const double& inlier_error,
+    const double& success_probability,
+    vector<int>& inlier_markers)
+```
+
+
+
+![twoPointRansac](http://www.xinliang-zhong.vip/msckf_notes/imgs/twoPointRansac.png)
+
+对极几何可约束
+$$
+p_2^T [t]_{\times} R p_1  = 0
+$$
+
+* $p_1 = [x_1, y_1, 1]^T$
+* $p_2 = [x_2, y_2, 1]^T$
+
+$$
+\begin{bmatrix}
+	x_2 & y_2 & 1
+\end{bmatrix}
+\begin{bmatrix}
+	0 & -t_z & t_y \\
+	t_z & 0 & -t_x \\
+	-t_y & t_x & 0
+\end{bmatrix}
+\begin{bmatrix}
+	x_1 \\
+    y_1 \\
+    1
+\end{bmatrix}
+= 0
+$$
+
+展开之后我们可以得到
+$$
+\begin{bmatrix}
+	y_1 - y_2 & -(x_1 - x_2) & x_1y_2 - x_2y_1
+\end{bmatrix}
+\begin{bmatrix}
+	t_x \\
+    t_y \\
+    t_z
+\end{bmatrix}
+= 0
+$$
+
+```c++
+vector<Point2d> pts_diff(pts1_undistorted.size());
+  for (int i = 0; i < pts1_undistorted.size(); ++i)
+    pts_diff[i] = pts1_undistorted[i] - pts2_undistorted[i];
+...  
+...
+MatrixXd coeff_t(pts_diff.size(), 3);
+  for (int i = 0; i < pts_diff.size(); ++i) {
+    coeff_t(i, 0) = pts_diff[i].y;
+    coeff_t(i, 1) = -pts_diff[i].x;
+    coeff_t(i, 2) = pts1_undistorted[i].x*pts2_undistorted[i].y -
+      pts1_undistorted[i].y*pts2_undistorted[i].x;
+}
+```
+
+至于这个模型是怎么选出来的呢? 假设一共有N个inliers点对,那么根据式(2.4)势必会得到一个$N*3 * 3*1 = N(0)$的等式.但事实上由于误差和outliers的存在,最终结果不可能为零,我们取两个点将式子分块,并且只考虑两个点的情况,那么将会有:
+$$
+{\color{Green} \begin{bmatrix}
+y_{1}-y_{2} & -(x_{1}-x_{2}) & x_{1}y_{2}-x_{2}y_{2}\\
+y_{3}-y_{4} & -(x_{3}-x_{4}) & x_{3}y_{4}-x_{4}y_{3}
+\end{bmatrix}}
+\cdot 
+\begin{bmatrix}
+t_{x}\\ 
+t_{y}\\ 
+t_{z}
+\end{bmatrix}=
+{\color{Green} \begin{bmatrix}
+A_{x} \\ A_{y} \\ A_{z}
+\end{bmatrix}^{T}}
+\cdot 
+\begin{bmatrix}
+t_{x}\\ 
+t_{y}\\ 
+t_{z}
+\end{bmatrix}\approx
+{\color{Red} 
+\begin{bmatrix}
+0\\ 
+0
+\end{bmatrix}}
+$$
+那我们可以分别得到以下三个式子:
+$$
+\begin{split}
+\begin{bmatrix}
+A_{x} \\ 
+A_{y}
+\end{bmatrix}^{T}
+\cdot
+\begin{bmatrix}
+t_{x} \\ 
+t_{y}
+\end{bmatrix}
+\approx {\color{Green}A_{z}}\cdot t_{z} \\
+\begin{bmatrix}
+A_{x} \\ 
+A_{z}
+\end{bmatrix}^{T}
+\cdot
+\begin{bmatrix}
+t_{x} \\ 
+t_{z}
+\end{bmatrix}
+\approx {\color{Green}A_{y}}\cdot t_{y} \\
+
+\begin{bmatrix}
+A_{y} \\ 
+A_{z}
+\end{bmatrix}^{T}
+\cdot
+\begin{bmatrix}
+t_{y} \\ 
+t_{z}
+\end{bmatrix}
+\approx {\color{Green}A_{x}}\cdot t_{x} 
+\end{split}
+$$
+我们的目标当然是使得误差最小,所以作者的做法是比较式子绿色部分的大小,取最小的并令模型的平移为1,进而直接求逆然后得到最初的模型假设,之后要做的步骤跟常规RANSAC就十分接近了,找出适应当前模型的所有inliers,然后计算误差并不断迭代找到最好的模型.
+	至此我们已经完成了整个feature的tracking过程!
+
+**addNewFeatures & pruneGridFeatures**
+
+如果一直tracking的话那么随着时间流逝,有些特征会消失,有些可能也会有累计误差,所以我们势必要添加一些新的特征,这个步骤正是在跟踪上一帧特征之后要做的,因为stereoMatching 和twoPointRansac都会剔除一些outliers,那我们需要提取新的特征保证能一直运行下去.
+
+
+
+## 6.2 State Representation
+
+![addNewFeatures&pruneGridFeatures](http://www.xinliang-zhong.vip/msckf_notes/imgs/addNewFeatures&pruneGridFeatures.svg)
+
+**publish**
+
+```msg
+uint64 id
+# Normalized feature coordinates (with identity intrinsic matrix)
+float64 u0 # horizontal coordinate in cam0
+float64 v0 # vertical coordinate in cam0
+float64 u1 # horizontal coordinate in cam0
+float64 v1 # vertical coordinate in cam0
+```
+
+
+
+其实前端基本上可以说是非常简单了,也没有太多的trick,最后我们来看一下前端的跟踪效果的动图:
+
+![](/home/quan/workspace/slam/source/LTSLAM/docs/md_docs/images/msckf/StereoFeatures.gif)
+
+![](./images/msckf/msckf_vio.jpg)
+
+## 6.3 Propagation
+
+
+
+## 6.4 Augmentation
+
+
+
+## 6.5 Update Step
+
+
+
+## 6.5 Post EKF Update
+
+![](./images/msckf/post_ekf_update.png)
 
 
 

@@ -45,6 +45,16 @@ void UndistortedTransform::RunDemo(const std::string& filename)
     cv::imshow("distorted", image);
     cv::imshow("undistorted", image_undistort);
     cv::waitKey();
+
+     while (true) 
+    {
+        if (27 == cv::waitKey()) {
+            break;
+        } 
+
+        sleep(1);
+    }
+    
     cv::destroyAllWindows();
 }
 
