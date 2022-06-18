@@ -41,4 +41,7 @@ C++ Tutorial
    design_patterns/design_patterns
    3rdparty/3rdparty
 
+GDB 调试利器
+==========================
 
+* `gdb 调试利器 <https://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/gdb.html>`_

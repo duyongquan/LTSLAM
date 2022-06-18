@@ -210,6 +210,8 @@ $$
 
 # 4 IMU
 
+
+
 ## 4.1 Accelerometers(加速计)
 
 $$
@@ -249,6 +251,32 @@ $$
 $$
 \sigma_{wa_c} = \frac{\sigma_{wa_d}}{\sqrt{\Delta t}}
 $$
+
+## 4.4 运动模型
+
+$$
+\tilde{\mathbf{X}}_{IMU} = \mathbf{F} \tilde{{X}}_{IMU} + \mathbf{G} \mathbf{n}_{IMU}
+$$
+
+
+
+  矩阵形式
+$$
+\begin{aligned}
+	\begin{bmatrix}
+		\dot{\delta{\theta}}_{I} \\
+		\dot{\tilde{b}}_{g}  \\
+		^{G}\dot{\tilde{b}}_{g} 
+	\end{bmatrix}
+
+\end{aligned}
+$$
+
+
+![[公式]](https://www.zhihu.com/equation?tex=%5Cbegin%7Baligned%7D%5Cunderbrace%7B%5Cleft%5B%5Cbegin%7Bmatrix%7D%5Cdot%7B%5Cdelta+%5Ctheta%7D_I%5C%5C%5Cdot%7B%5Ctilde+b%7D_g%5C%5C%5Csideset%7B%5EG%7D%7B_I%7D%7B%5Cdot%7B%5Ctilde+v%7D%7D%5C%5C%5Cdot%7B%5Ctilde+b%7D_a%5C%5C%5Csideset%7B%5EG%7D%7B_I%7D%7B%5Cdot%7B%5Ctilde+p%7D%7D%5Cend%7Bmatrix%7D%5Cright%5D%7D_%7B%5Cdot%7B%5Ctilde+X%7D_%7BIMU%7D%7D%3D%26%5Cquad%5Cunderbrace%7B%5Cleft%5B%5Cbegin%7Bmatrix%7D-%5Clfloor%5Chat+%5Comega_%7B%5Ctimes%7D%5Crfloor%26-I_3%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5C%5C0_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5C%5C-%7BC%7D%5Cleft%28%5Csideset%7B%5EI_G%7D%7B%7D%7B%5Chat+q%7D%5Cright%29%5ET%5Clfloor+%5Chat+a_%7B%5Ctimes%7D%5Crfloor%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%26-%7BC%7D%5Cleft%28%5Csideset%7B%5EI_G%7D%7B%7D%7B%5Chat+q%7D%5Cright%29%5ET%260_%7B3%5Ctimes3%7D%5C%5C0_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5C%5C0_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%26I_3%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5Cend%7Bmatrix%7D%5Cright%5D%7D_F%5Cunderbrace%7B%5Cleft%5B%5Cbegin%7Bmatrix%7D%5Cdelta+%5Ctheta_I%5C%5C%5Ctilde+b_g%5C%5C%5Csideset%7B%5EG%7D%7B_I%7D%7B%5Ctilde+v%7D%5C%5C%5Ctilde+b_a%5C%5C%5Csideset%7B%5EG%7D%7B_I%7D%7B%5Ctilde+p%7D%5Cend%7Bmatrix%7D%5Cright%5D%7D_%7B%5Ctilde+X_%7BIMU%7D%7D%5C%5C%26%2B%5Cquad%5Cunderbrace%7B%5Cleft%5B%5Cbegin%7Bmatrix%7D-I_3%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5C%5C0_%7B3%5Ctimes3%7D%26I_3%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5C%5C0_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%26-%7BC%7D%5Cleft%28%5Csideset%7B%5EI_G%7D%7B%7D%7B%5Chat+q%7D%5Cright%29%5ET%260_%7B3%5Ctimes3%7D%5C%5C0_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%26I_3%5C%5C0_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5Cend%7Bmatrix%7D%5Cright%5D%7D_G%5Cunderbrace%7B%5Cleft%5B%5Cbegin%7Bmatrix%7Dn_g%5C%5Cn_%7Bwg%7D%5C%5Cn_a%5C%5Cn_%7Bwa%7D%5Cend%7Bmatrix%7D%5Cright%5D%7D_%7Bn_%7BIMU%7D%7D%5Cend%7Baligned%7D%5C%5C)
+
+
+
 
 
 # 5 Computer Vision
