@@ -239,8 +239,6 @@ $$
 
 * $\mathbf{b}_g：$ 随时间变化，建模为随机游走过程噪声$n_{wg} \sim N(0,N_{wg} )$
 
-
-
 ## 4.3 Noise and Bias Characteristics(噪声和零偏特性)
 
 $$
@@ -263,20 +261,73 @@ $$
   矩阵形式
 $$
 \begin{aligned}
+\underbrace{
 	\begin{bmatrix}
 		\dot{\delta{\theta}}_{I} \\
 		\dot{\tilde{b}}_{g}  \\
-		^{G}\dot{\tilde{b}}_{g} 
+		^{G}\dot{\tilde{v}}_{I} \\
+		\dot{\tilde{b}}_{a}  \\
+		^{G}\dot{\tilde{p}}_{I}
+        \end{bmatrix}
+}_{\dot{\tilde{\mathbf{X}}}_{IMU}} = 
+\underbrace {
+	\begin{bmatrix}
+		-\mathbf{[w]}_{\times} & -\mathbf{I}_{3} & \mathbf{0}_{3 \times 3} 
+        & \mathbf{0}_{3 \times 3}  & \mathbf{0}_{3 \times 3} \\
+        \mathbf{0}_{3 \times 3} &  \mathbf{0}_{3 \times 3}  & \mathbf{0}_{3 \times 3}  & \mathbf{0}_{3 \times 3}  & \mathbf{0}_{3 \times 3}  \\
+        -C (^I_G\hat{\mathbf{q}})^{T}\mathbf{[\hat{a}_{\times}]} & \mathbf{0}_{3 \times 3} & \mathbf{0}_{3 \times 3} & -C (^I_G\hat{\mathbf{q}})^{T} & \mathbf{0}_{3 \times 3} \\
+         \mathbf{0}_{3 \times 3} &  \mathbf{0}_{3 \times 3}  & \mathbf{0}_{3 \times 3}  & \mathbf{0}_{3 \times 3}  & \mathbf{0}_{3 \times 3}  \\
+         \mathbf{0}_{3 \times 3} &  \mathbf{0}_{3 \times 3}  & \mathbf{I}_{3}  & \mathbf{0}_{3 \times 3}  & \mathbf{0}_{3 \times 3} 
+    \end{bmatrix}
+}_{F}
+\underbrace{
+	\begin{bmatrix}
+		\delta{\theta}_{I} \\
+		\tilde{b}_{g}  \\
+		^{G}\tilde{v}_{I} \\
+		\tilde{b}_{a}  \\
+		^{G}\tilde{p}_{I}
+        \end{bmatrix}
+}_{\tilde{\mathbf{X}}_{IMU}} \\ 
++ 
+\underbrace{
+	\begin{bmatrix}
+		-\mathbf{I}_{3} & \mathbf{0}_{3 \times 3} & \mathbf{0}_{3 \times 3} & \mathbf{0}_{3 \times 3} \\
+		\mathbf{0}_{3 \times 3} & \mathbf{I}_{3 } & \mathbf{0}_{3 \times 3} & \mathbf{0}_{3 \times 3} \\
+		\mathbf{0}_{3 \times 3} & \mathbf{0}_{3 \times 3} &  -C (^I_G\hat{\mathbf{q}})^{T} &  \mathbf{0}_{3 \times 3}  \\
+		\mathbf{0}_{3 \times 3} & \mathbf{0}_{3 \times 3} & \mathbf{0}_{3 \times 3}  & \mathbf{I}_{3 } \\
+		\mathbf{0}_{3 \times 3} & \mathbf{0}_{3 \times 3} & \mathbf{0}_{3 \times 3} & \mathbf{0}_{3 \times 3}
+        \end{bmatrix}
+}_{G}
+\underbrace{
+	\begin{bmatrix}
+		\mathbf{n}_g \\
+		\mathbf{n}_{wg} \\
+		\mathbf{n}_a \\
+		\mathbf{n}_{wa} 
 	\end{bmatrix}
+}_{\mathbf{n}_{IMU}}
 
 \end{aligned}
 $$
 
+![](./images/msckf/IMU_state.png)
 
-![[公式]](https://www.zhihu.com/equation?tex=%5Cbegin%7Baligned%7D%5Cunderbrace%7B%5Cleft%5B%5Cbegin%7Bmatrix%7D%5Cdot%7B%5Cdelta+%5Ctheta%7D_I%5C%5C%5Cdot%7B%5Ctilde+b%7D_g%5C%5C%5Csideset%7B%5EG%7D%7B_I%7D%7B%5Cdot%7B%5Ctilde+v%7D%7D%5C%5C%5Cdot%7B%5Ctilde+b%7D_a%5C%5C%5Csideset%7B%5EG%7D%7B_I%7D%7B%5Cdot%7B%5Ctilde+p%7D%7D%5Cend%7Bmatrix%7D%5Cright%5D%7D_%7B%5Cdot%7B%5Ctilde+X%7D_%7BIMU%7D%7D%3D%26%5Cquad%5Cunderbrace%7B%5Cleft%5B%5Cbegin%7Bmatrix%7D-%5Clfloor%5Chat+%5Comega_%7B%5Ctimes%7D%5Crfloor%26-I_3%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5C%5C0_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5C%5C-%7BC%7D%5Cleft%28%5Csideset%7B%5EI_G%7D%7B%7D%7B%5Chat+q%7D%5Cright%29%5ET%5Clfloor+%5Chat+a_%7B%5Ctimes%7D%5Crfloor%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%26-%7BC%7D%5Cleft%28%5Csideset%7B%5EI_G%7D%7B%7D%7B%5Chat+q%7D%5Cright%29%5ET%260_%7B3%5Ctimes3%7D%5C%5C0_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5C%5C0_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%26I_3%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5Cend%7Bmatrix%7D%5Cright%5D%7D_F%5Cunderbrace%7B%5Cleft%5B%5Cbegin%7Bmatrix%7D%5Cdelta+%5Ctheta_I%5C%5C%5Ctilde+b_g%5C%5C%5Csideset%7B%5EG%7D%7B_I%7D%7B%5Ctilde+v%7D%5C%5C%5Ctilde+b_a%5C%5C%5Csideset%7B%5EG%7D%7B_I%7D%7B%5Ctilde+p%7D%5Cend%7Bmatrix%7D%5Cright%5D%7D_%7B%5Ctilde+X_%7BIMU%7D%7D%5C%5C%26%2B%5Cquad%5Cunderbrace%7B%5Cleft%5B%5Cbegin%7Bmatrix%7D-I_3%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5C%5C0_%7B3%5Ctimes3%7D%26I_3%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5C%5C0_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%26-%7BC%7D%5Cleft%28%5Csideset%7B%5EI_G%7D%7B%7D%7B%5Chat+q%7D%5Cright%29%5ET%260_%7B3%5Ctimes3%7D%5C%5C0_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%26I_3%5C%5C0_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%260_%7B3%5Ctimes3%7D%5Cend%7Bmatrix%7D%5Cright%5D%7D_G%5Cunderbrace%7B%5Cleft%5B%5Cbegin%7Bmatrix%7Dn_g%5C%5Cn_%7Bwg%7D%5C%5Cn_a%5C%5Cn_%7Bwa%7D%5Cend%7Bmatrix%7D%5Cright%5D%7D_%7Bn_%7BIMU%7D%7D%5Cend%7Baligned%7D%5C%5C)
+## 4.5 状态转移矩阵
 
+$$
+\dot{\mathbf{\Phi}}(t_k + \tau, t_k) = \mathbf{F}\mathbf{\Phi}(t_k + \tau, t_k)
+$$
 
+性质：
 
+* $ \mathbf{\Phi}(t_k, t_k) = \mathbf{I}_{15 \times 15}$
+* $\mathbf{\Phi} \approx I + F \Delta {t}$
+
+因此:
+$$
+\tilde{\mathbf{X}}_{k+1} = \mathbf{\Phi}(t_k + T, t_k) \tilde{\mathbf{X}}_{k}
+$$
 
 
 # 5 Computer Vision
@@ -533,9 +584,7 @@ $$
 
 ![tracking_whole_picture](http://www.xinliang-zhong.vip/msckf_notes/imgs/tracking_whole_picture.png)
 
-
-
-##### **Initialization**
+### Initialization
 
 ![initialization](http://www.xinliang-zhong.vip/msckf_notes/imgs/%E5%89%8D%E7%AB%AF-%E5%88%9D%E5%A7%8B%E5%8C%96%E9%83%A8%E5%88%86.svg)
 
@@ -722,9 +771,118 @@ float64 v1 # vertical coordinate in cam0
 
 ## 6.3 Propagation
 
+### 1 误差状态[协方差](https://so.csdn.net/so/search?q=协方差&spm=1001.2101.3001.7020)更新
 
+IMU误差状态方程离散化：
+$$
+\tilde{\mathbf{X}}_{IMU} = \mathbf{F} \tilde{{X}}_{IMU} + \mathbf{G} \mathbf{n}_{IMU}
+$$
+从$t_{k}$到$t_{k+1}$的状态转移矩阵$\Phi_{k}$和噪声项$Q_{k}$ 为：
+$$
+\begin{aligned}
+	\mathbf{\Phi}_{k} &= \mathbf{\Phi}_{k+1} = exp\left( \int_{t_k}^{t_{k+1}} F(\tau)d\tau\right) \\
+	\mathbf{Q}_{k} &= \int_{t_k}^{t_{k+1}} \mathbf{\Phi}(t_{k+1}, t_k) G QG^T \mathbf{\Phi}(t_{k+1}, t_k)^Td\tau\
+ 
+\end{aligned}
+$$
+其中：
+
+* $Q = \mathbf{n_I n_I^{T}}$
+
+$k$时刻$\mathbf{X}_{IMU}$变化对系统误差状态协方差矩阵$P_{k|k}$, 系统误差状态协方差矩阵为：
+$$
+\mathbf{P}_{k|k} = 
+\begin{bmatrix}
+    P_{II_{k|k}}  & P_{IC_{k|k}} \\
+    P_{IC_{k|k}}^{T} & P_{CC_{k|k}} 
+\end{bmatrix}
+$$
+$k+1$时刻预测的IMU误差状态协方差矩阵为
+$$
+P_{II_{k|k}} = \Phi_{k}P_{II} \Phi_{k}^T + Q_{k}
+$$
+$k+1$时刻预测的系统误差状态协方差矩阵为：
+$$
+\mathbf{P}_{k+1|k} =
+\begin{bmatrix}
+    P_{II_{k+1|k}}  & \Phi_{k} P_{IC_{k|k}} \\
+    P_{IC_{k|k}}^{T} \Phi_{k}^T  & P_{CC_{k|k}} 
+\end{bmatrix}
+$$
 
 ## 6.4 Augmentation
+
+### 1 **MSCKF系统的误差状态向量**
+
+$$
+\mathbf{X}_{k} = 
+\begin{bmatrix}
+	\mathbf{x}_{I_{k}}^{T},
+	\mathbf{\delta \theta}_{C_{1}}^{T}, _G\mathbf{p}_{C_{1}}^{T}
+	\dots,
+	\mathbf{\delta \theta}_{C_{N}}^{T}, _G\mathbf{p}_{C_{N}}^{T}
+
+\end{bmatrix}
+$$
+
+它包括$IMU$误差状态与$N$个相机状态。在没有图像进来时，对$IMU$状态进行预测，并计算系统误差状态协方差矩阵；在有图像进来时，根据相机与$IMU$的相对外参计算当前相机的位姿。然后将最新的相机状态加入到系统状态向量中去，然后扩增误差状态协方差矩阵。
+
+### 2 状态向量扩增
+
+根据预测的IMU位姿和相机与IMU的相对外参计算当前相机位姿：
+$$
+\begin{aligned}
+	_G^{C}\hat{q} &= _I^{C} \hat{q} \otimes _G^{I}\hat{q} \\
+	^{G} \hat{p}_{C} &=  ^{G} \hat{p}_{I} + C(_I^{C} \hat{q})^T (^{I}\hat{p}_C)
+ 
+\end{aligned}
+$$
+然后将当前相机状态$_G^{C}\hat{q}， ^{G} \hat{p}_{C} $ 加入到状态向量。
+
+* $_G^{C}\hat{q}$: 相机的方向
+* $^{G} \hat{p}_{C}$: 相机的位置
+
+### 3 误差状态协方差矩阵扩增
+
+系统新误差状态$X_{new} $ 与系统原误差状态$X_{old}$的关系为：
+$$
+X_{new}  = \frac{\partial{X_{new}}}{\partial{X_{old} }} + C_{0}
+$$
+其中
+$$
+\frac{\partial{X_{new}}}{\partial{X_{old} }} = 
+\begin{bmatrix}
+	\mathbf{I}_{6N+21} \\
+	\mathbf{J}
+\end{bmatrix}
+$$
+$J$是新增相机误差状态对原系统误差状态的Jacobian：
+$$
+\mathbf{J} =
+\begin{bmatrix}
+	\frac{\partial{_G^{C_{new}} \delta\theta}}{\partial{\mathbf{x}_{I}}}_{3 \times 21} & \frac{\partial{_G^{C_{new}} \delta\theta}}{\partial{\mathbf{x}_{C}}}_{3 \times 6N} \\
+	\frac{\partial{^G p_{C_{new}}}}{\partial{\mathbf{x}_{I}}}_{3 \times 21} & \frac{\partial{^G p_{C_{new}}}}{\partial{\mathbf{x}_{C}}}_{3 \times 6N}
+\end{bmatrix}_{6 \times (21 + 6N)}
+$$
+求出$J$后，误差状态协方差矩阵扩增为：
+$$
+P_{k|k} \leftarrow
+\begin{bmatrix}
+	\mathbf{I}_{6N + 21} \\
+	\mathbf{J}
+\end{bmatrix}
+P_{k|k}
+\begin{bmatrix}
+	\mathbf{I}_{6N + 21} \\
+	\mathbf{J}
+\end{bmatrix}^T
+=
+\begin{bmatrix}
+	P_{k|k} & P_{k|k} \mathbf{J}^T \\
+	\mathbf{J} P_{k|k} & \mathbf{J} P_{k|k} \mathbf{J}^T
+\end{bmatrix}_{[6(N+1)+21] \times [6(N+1)+21]}
+$$
+求Jacobian矩阵：
 
 
 

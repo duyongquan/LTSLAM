@@ -193,3 +193,10 @@ where:
 
 .. math:: \mathbf{\dot{q}} = \frac{1}{2} \mathbf{q} \otimes \mathbf{w}
 
+
+**Rotations**
+--------------
+
+`Rotations参考资料 <https://rotations.berkeley.edu/>`_
+
+
