@@ -1,4 +1,4 @@
-#include "xslam/opencv/geometry_transform/camera_calibration.h"
+#include "xslam/opencv/camera_calibration/camera_calibration.h"
 #include "xslam/opencv/utils.h"
 
 #include "gtest/gtest.h"
@@ -6,7 +6,7 @@
 
 namespace xslam {
 namespace opencv {
-namespace geometry_transform {
+namespace camera_calibration {
 
 TEST(CameraCalibration, camera_calibration)
 {
@@ -15,6 +15,6 @@ TEST(CameraCalibration, camera_calibration)
     demo.RunDemo(avi);
 }
 
-} // namespace geometry_transform
+} // namespace camera_calibration
 } // namespace opencv
 } // namespace xslam

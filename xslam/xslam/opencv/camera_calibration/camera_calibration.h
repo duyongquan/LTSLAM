@@ -1,5 +1,5 @@
-#ifndef XSLAM_OPENCV_GEOMETRY_TRANSFORM_CAMERA_CALIBRATION_H
-#define XSLAM_OPENCV_GEOMETRY_TRANSFORM_CAMERA_CALIBRATION_H
+#ifndef XSLAM_OPENCV_CAMERA_CALIBRATION_CAMERA_CALIBRATION_H
+#define XSLAM_OPENCV_CAMERA_CALIBRATION_CAMERA_CALIBRATION_H
 
 #include "opencv2/opencv.hpp"
 #include "glog/logging.h"
@@ -11,7 +11,7 @@
 
 namespace xslam {
 namespace opencv {
-namespace geometry_transform {
+namespace camera_calibration {
 
 class CameraCalibration
 {
@@ -19,9 +19,9 @@ public:
     void RunDemo(const std::string& filename);
 };
 
-} // namespace geometry_transform
+} // namespace camera_calibration
 } // namespace opencv
 } // namespace xslam
 
-#endif // XSLAM_OPENCV_GEOMETRY_TRANSFORM_CAMERA_CALIBRATION_H
+#endif // XSLAM_OPENCV_CAMERA_CALIBRATION_CAMERA_CALIBRATION_H
 

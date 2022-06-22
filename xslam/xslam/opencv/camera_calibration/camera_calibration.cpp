@@ -1,10 +1,10 @@
-#include "xslam/opencv/geometry_transform/camera_calibration.h"
+#include "xslam/opencv/camera_calibration/camera_calibration.h"
 
 #include <fstream>
 
 namespace xslam {
 namespace opencv {
-namespace geometry_transform {
+namespace camera_calibration {
 
 void CameraCalibration::RunDemo(const std::string& filename)
 {
@@ -84,6 +84,6 @@ void CameraCalibration::RunDemo(const std::string& filename)
     LOG(INFO) << "Finished.";
 }
 
-} // namespace geometry_transform
+} // namespace camera_calibration
 } // namespace opencv
 } // namespace xslam
