@@ -10,10 +10,13 @@ Epipolar Geometry
     :align: center
 
 
+Essential Matrix
+================ 
+
+
 Fundamental Matrix
 ==================
 
-
-Essential Matrix
-================ 
+Homography Matrix
+==================
 
