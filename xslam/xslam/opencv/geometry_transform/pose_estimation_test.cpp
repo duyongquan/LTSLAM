@@ -22,7 +22,7 @@ TEST(PoseEstimation, demo02)
     std::string vedio = GetOpenCVDatasetDirectory() + "/blais.mp4";
     std::string image = GetOpenCVDatasetDirectory() + "/blais.jpg";
     PoseEstimation demo;
-    demo.RunDemo1(vedio, image);
+    demo.RunDemo2(vedio, image);
 }
 
 TEST(PoseEstimation, demo03)
@@ -30,7 +30,7 @@ TEST(PoseEstimation, demo03)
     std::string vedio = GetOpenCVDatasetDirectory() + "/blais.mp4";
     std::string image = GetOpenCVDatasetDirectory() + "/blais.jpg";
     PoseEstimation demo;
-    demo.RunDemo1(vedio, image);
+    demo.RunDemo3(vedio, image);
 }
 
 } // namespace geometry_transform

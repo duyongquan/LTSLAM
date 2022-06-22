@@ -97,7 +97,7 @@ void PoseEstimation::RunDemo1(const std::string& vedio, const std::string& image
         // Show the image
         cv::String info = cv::format("Inliers: %d (%d%%), Focal Length: %.0f", inlier_num, 100 * inlier_num / match.size(), K.at<double>(0));
         cv::putText(image_result, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Vec3b(0, 255, 0));
-        cv::imshow("3DV Tutorial: Pose Estimation (Book)", image_result);
+        cv::imshow("X-SLAM Tutorial: Pose Estimation (Book)", image_result);
         int key = cv::waitKey(1);
         if (key == 27) break; // 'ESC' key: Exit
     }
@@ -201,7 +201,7 @@ void PoseEstimation::RunDemo2(const std::string& vedio, const std::string& image
         // Show the image
         cv::String info = cv::format("Inliers: %d (%d%%), Focal Length: %.0f", inlier_num, 100 * inlier_num / match.size(), K.at<double>(0));
         cv::putText(image_result, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Vec3b(0, 255, 0));
-        cv::imshow("3DV Tutorial: Pose Estimation (Book)", image_result);
+        cv::imshow("X-SLAM Tutorial: Pose Estimation (Book)", image_result);
         int key = cv::waitKey(1);
         if (key == 27) break; // 'ESC' key: Exit
     }
@@ -303,7 +303,7 @@ void PoseEstimation::RunDemo3(const std::string& vedio, const std::string& image
         // Show the image
         cv::String info = cv::format("Inliers: %d (%d%%), Focal Length: %.0f", inlier_num, 100 * inlier_num / match.size(), f);
         cv::putText(image_result, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Vec3b(0, 255, 0));
-        cv::imshow("3DV Tutorial: Pose Estimation (Book)", image_result);
+        cv::imshow("X-SLAM Tutorial: Pose Estimation (Book)", image_result);
         int key = cv::waitKey(1);
         if (key == 27) break; // 'ESC' key: Exit
     }
