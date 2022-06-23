@@ -260,7 +260,7 @@ make -j6
 
 运行结果如下：
 
-![](./image/demos_pose.mp4)
+![](./image/demos_pose.gif)
 
 
 
