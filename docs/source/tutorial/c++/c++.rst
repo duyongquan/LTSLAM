@@ -44,8 +44,5 @@ C++ Tutorial
 Linux工具快速教程
 ==========================
 
-.. figure:: ./linux_tools_quick_tutorial.png
-   :align: center
-
 * `Linux工具快速教程 <https://linuxtools-rst.readthedocs.io/zh_CN/latest/index.html>`_
 * `GDB 调试利器 <https://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/gdb.html>`_
