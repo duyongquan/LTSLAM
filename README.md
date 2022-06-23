@@ -22,6 +22,12 @@ X-SLAM is an open source C++ demo for learn vision slam and lidar slam. Through 
 * <font color='red'> **VINS Mono( VINS Project)**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/vins/vins.html)
 * <font color='red'> **MSCKF-VIO( MSCKF Project)**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/msckf/msckf.html)
 
+**开源社区文档**
+
+* <font color='red'> **X-SLAM Tutorial Documents **  </font> [网站链接](https://ltslam-doc.readthedocs.io/en/latest/index.html)
+
+![](./image/x-slam-docs.png)
+
 ## 1.1 <font color='green'>Download LTSLAM source:</font>
 
 ```bash
