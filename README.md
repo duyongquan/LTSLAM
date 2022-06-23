@@ -51,7 +51,7 @@ roslaunch xslam_ros demo_slam2d.launch
 rosbag play b2-2015-05-26-13-15-25.bag
 ```
 
-![xslam_ros_2d](./image/xslam_ros_2d.png)
+![xslam_ros_2d](./image/xslam_ros_2d.png) 
 
 
 
@@ -261,10 +261,6 @@ make -j6
 运行结果如下：
 
 ![](./image/demos_pose.gif)
-
-
-
-
 
 # 5 Contact Me
 

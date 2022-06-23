@@ -41,6 +41,11 @@ C++ Tutorial
    design_patterns/design_patterns
    3rdparty/3rdparty
 
+Linux工具快速教程
+==========================
+
+* `Linux工具快速教程 <https://linuxtools-rst.readthedocs.io/zh_CN/latest/index.html>`_
+
 GDB 调试利器
 ==========================
 
