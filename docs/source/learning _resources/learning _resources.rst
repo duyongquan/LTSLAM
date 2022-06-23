@@ -66,4 +66,11 @@ Course
 * `F1TENTH网站 <https://f1tenth-coursekit.readthedocs.io/en/latest/index.html>`_
 
  
+**3 百度云盘资料分享群**
+
+.. figure:: ./images/baiduyun_1.jpeg
+   :align: center
+
+.. figure:: ./images/baiduyun_2.jpeg
+   :align: center
 
