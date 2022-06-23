@@ -69,8 +69,12 @@ Course
 **3 百度云盘资料分享群**
 
 .. figure:: ./images/baiduyun_1.jpeg
+   :figwidth: 400px
+   :height: 400px
    :align: center
 
 .. figure:: ./images/baiduyun_2.jpeg
+   :figwidth: 600px
+   :height: 400px
    :align: center
 
