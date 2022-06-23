@@ -24,7 +24,7 @@ X-SLAM is an open source C++ demo for learn vision slam and lidar slam. Through 
 
 **开源社区文档**
 
-* <font color='red'> **X-SLAM Tutorial Documents **  </font> [网站链接](https://ltslam-doc.readthedocs.io/en/latest/index.html)
+* <font color='red'> **X-SLAM Tutorial Documents**  </font> [网站链接](https://ltslam-doc.readthedocs.io/en/latest/index.html)
 
 ![](./image/x-slam-docs.png)
 
