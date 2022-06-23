@@ -252,12 +252,15 @@ make -j6
 
 ![](./image/xslam_readme_run.png)
 
-Let ‘s run xslam.opencv.KLT_test shell command 
+如何运行参考如下：
 
+```bash
+[bin] ./xslam.opencv.camera_calibration.perspective_correction_test
 ```
-# KLT 光流跟踪算法
-./xslam.opencv.KLT_test
-```
+
+运行结果如下：
+
+![](./image/demos_pose.gif)
 
 # 5 Contact Me
 
