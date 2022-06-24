@@ -8,25 +8,46 @@ You can learn slam knowledge by [哔哩哔哩 bilibili ](https://space.bilibili.
 X-SLAM is an open source C++ demo for learn vision slam and lidar slam. Through open source engineering, we can learn the following knowledge content:
 
 * <font color='red'> **C++**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/c%2B%2B/c%2B%2B.html)
+
 * <font color='red'> **CMake** </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/cmake/cmake.html)
+
 * <font color='red'> **Eigen**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/eigen/eigen.html)
+
 * <font color='red'> **Math**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/math/math.html)
+
 * <font color='red'> **OpenCV**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/opencv/opencv_tutorial.html)
+
 * <font color='red'> **Quaternions**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/math/math.html)
+
 * <font color='red'> **G2O**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/g2o/g2o_tutorial.html)
+
 * <font color='red'> **Pangolin**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/pangolin/pangolin.html)
+
 * <font color='red'> **libQGLViewer**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/libQGLViewer/libQGLViewer.html)
+
 * <font color='red'> **Ceres Solver**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/tutorial/ceres/ceres_solver_tutorial.html)
+
 * <font color='red'> **Kalman Filter**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/kalman_filter/kalman_filter.html)
+
 * <font color='red'> **VSLAM**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/vslam/vision_slam.html)
+
 * <font color='red'> **VINS Mono( VINS Project)**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/vins/vins.html)
+
 * <font color='red'> **MSCKF-VIO( MSCKF Project)**  </font> [tutorial](https://ltslam-doc.readthedocs.io/en/latest/msckf/msckf.html)
+
+  
 
 **开源社区文档**
 
 * <font color='red'> **X-SLAM Tutorial Documents**  </font> [网站链接](https://ltslam-doc.readthedocs.io/en/latest/index.html)
 
 ![](./image/x-slam-docs.png)
+
+
+
+**哔哩哔哩 bilibili 视频教程**
+
+* <font color='red'> **B站视频教程**  </font> [网站链接](https://space.bilibili.com/478832908)
 
 ## 1.1 <font color='green'>Download LTSLAM source:</font>
 
