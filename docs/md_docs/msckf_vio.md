@@ -252,11 +252,54 @@ $$
 
 ## 4.4 运动模型
 
+**状态向量：**
+$$
+\mathbf{X} = \begin{bmatrix}
+    _G^I\mathbf{q}(t)^T, 
+    \mathbf{b}_g(t)^T, 
+    ^G\mathbf{v}_I(t)^T, 
+    \mathbf{b}_a(t)^T,
+    ^G\mathbf{p}_I(t)^T, 
+    _C^I\mathbf{q}(t)^T, 
+    ^I{\mathbf{p}(t)_C}^T
+\end{bmatrix}
+$$
+
+* $_G^I\mathbf{q}(t)^T$: 代表惯性系到IMU坐标系的旋转
+* $\mathbf{b}_g(t)^T$: 表示在IMU坐标系中测量值线加速度的biases
+*  $^G\mathbf{v}_I(t)^T$: 代表IMU坐标系在惯性系中的速度
+* $\mathbf{b}_a(t)^T$: 表示在IMU坐标系中测量值角速度的biases
+* $^G\mathbf{p}_I(t)^T$: 代表IMU坐标系在惯性系中的位置
+* $C^I\mathbf{q}(t)^T$: 表示相机坐标系和IMU坐标系的相对位置，其中相机坐标系取左相机坐标系。
+* $^I{\mathbf{p}(t)_C}^T$: 表示相机坐标系和IMU坐标系的相对位置，其中相机坐标系取左相机坐标系。
+* $\mathbf{w}(t)^T = [w_x(t), w_y(t), w_z(t)]^T$ 是IMU角速度在IMU系中的坐标
+
+
+$$
+\begin{aligned}
+	_G^I\dot{\mathbf{q}}(t) &= \frac{1}{2} \Omega(w(t))^{T} \mathbf{q}(t) \\
+	\dot{\mathbf{b}}_{g}(t) &= \mathbf{n}_{wg}(t) \\
+	^G\dot{\mathbf{v}}_I(t) &= ^G\mathbf{a}_I(t)   \\
+	\dot{\mathbf{b}}_{a}(t) &= \mathbf{n}_{wa}(t) \\
+	^G\dot{\mathbf{p}}_I(t) &= ^G\mathbf{v}_I(t)   \\
+	_C^I\dot{\mathbf{q}}(t) &= \mathbf{0}_{4 \times 1}  \\
+	 I\dot{\mathbf{p}}(t)_C &= \mathbf{0}_{3 \times 1} 
+\end{aligned}
+$$
+**IMU的观测值为：**
+$$
+\begin{aligned}
+	\mathbf{\omega}_m &=  \mathbf{\omega} + C(_G^I\mathbf{q}) \mathbf{\omega}_G + \mathbf{b}_g +  \mathbf{n}_g  \\
+	\mathbf{a}_m &= C(_G^I\mathbf{q}) (^G\mathbf{a}_I - ^G\mathbf{g} + 2 \mathbf{{\omega}_G}_{\times} ^G\mathbf{v}_I + {{\omega}_G}_{\times}^2(^G\mathbf{p}_I)) + \mathbf{b}_a +  \mathbf{n}_a 
+\end{aligned}
+$$
+
+* 将地球自转的影响忽略不计
+* 其中$w_{G}$为地球的自转速度在G系的坐标
+
 $$
 \tilde{\mathbf{X}}_{IMU} = \mathbf{F} \tilde{{X}}_{IMU} + \mathbf{G} \mathbf{n}_{IMU}
 $$
-
-
 
   矩阵形式
 $$
@@ -311,7 +354,33 @@ $$
 \end{aligned}
 $$
 
-![](./images/msckf/IMU_state.png)
+
+
+**推到过程如下**
+
+误差状态运动模型
+$$
+\mathbf{X} = \begin{bmatrix}
+    _G^I\mathbf{\tilde{\theta}}(t)^T, 
+    \mathbf{\tilde{b}}_g(t)^T, 
+    ^G\mathbf{v}_I(t)^T, 
+    \mathbf{b}_a(t)^T,
+    ^G\mathbf{p}_I(t)^T, 
+    _C^I\mathbf{q}(t)^T, 
+    ^I{\mathbf{p}(t)_C}^T
+\end{bmatrix}
+$$
+
+
+:bow:
+
+
+
+
+
+:rose:
+
+
 
 ## 4.5 状态转移矩阵
 
@@ -329,6 +398,99 @@ $$
 \tilde{\mathbf{X}}_{k+1} = \mathbf{\Phi}(t_k + T, t_k) \tilde{\mathbf{X}}_{k}
 $$
 
+**四阶Runge-Kutta积分**
+
+ODE方程：
+$$
+y\prime = f(x, y), y(x_0) = y_0, x_0 \le x \le x_n
+$$
+so that:
+$$
+\begin{aligned}
+y_{i+1} &= y_i + \frac{1}{6} h (k_1 + 2k_2 + 2k_3 + k_4) \\
+k_1 &= f(x_i, y_i) \\
+k_2 &= f(x_i + \frac{1}{2}h, y_i + \frac{1}{2} k_1 h) \\
+k_3 &= f(x_i + \frac{1}{2}h, y_i + \frac{1}{2} k_2 h) \\
+k_4 &= f(x_i + h, y_i + k_3 h) \\
+
+\end{aligned}
+$$
+例
+$$
+2 y\prime + y = e^{-x}, y(0) = \frac{1}{2}, 0 \le x \le 2
+$$
+
+```matlab
+% 输入参数
+fun = @(x, y) (exp(-x) - y) / 2;
+x = 0 : 0.1 : 2;
+y0 = 1/2;
+
+% 调用RK4函数求解
+y = RK4(fun, x, y0);
+
+% 设置图幅
+fig = gcf;
+fig.Color = 'w';
+fig.Position = [250, 250, 960, 540];
+
+% 绘制数值解
+p = plot(x, y);
+p.LineStyle = 'none';
+p.Marker = 'p';
+p.MarkerEdgeColor = 'r';
+p.MarkerFaceColor = 'b';
+p.MarkerSize = 8;
+
+hold on, grid on
+
+% 求解符号解
+syms y(x)
+equ = 2 * diff(y, x) == exp(-x) - y;
+cond = y(0) == 1/2;
+y = dsolve(equ, cond);
+
+% 绘制符号解
+fplot(y, [0, 2])
+
+% 设置信息
+xlabel('x', 'fontsize', 12);
+ylabel('y', 'fontsize', 12);
+title('RK4求解ODE', 'fontsize', 14);
+legend({'数值解', '符号解'}, 'fontsize', 12);
+```
+
+RK4
+
+```matlab
+function y = RK4(fun, x, y0)
+
+    %RK4 使用经典的RK4方法求解一阶常微分方程。
+    % fun是匿名函数。
+    % x是迭代区间
+    % y0迭代初始值。
+
+    y = 0 * x;
+    y(1) = y0;
+    h = x(2) - x(1);
+    n = length(x);
+
+    for m = 1 : n-1
+        k1 = fun(x(m), y(m));
+        k2 = fun(x(m)+h/2, y(m)+h*k1/2);
+        k3 = fun(x(m)+h/2, y(m)+h*k2/2);
+        k4 = fun(x(m)+h, y(m)+h*k3);
+        y(m+1) = y(m) + h*(k1 + 2*k2 + 2*k3 + k4) / 6;
+    end
+
+end
+```
+
+
+
+求解如下：
+
+![](./images/msckf/rk4.png)
 
 # 5 Computer Vision
 
@@ -896,3 +1058,124 @@ $$
 
 
 
+# 7 **EuRoC数据集**
+
+> 微型飞行器（MAV）上收集的视觉惯性数据集
+
+
+
+## 7.1 **移动平台与传感器**
+
+![](./images/msckf/euroc_datasets.png)
+
+* 使用的机型为：Asctec Firefly六角旋翼直升机
+* 觉惯性测量的传感器包括：视觉（双相机）惯性测量单元（IMU）
+
+## 7.2 **groundtruth采集**
+
+* Leica MS50 激光跟踪扫描仪：毫米精确定位
+
+  ```bash
+   LEICA0：激光追踪器配套的传感器棱镜【prism】
+   Leica Nova MS50: 激光追踪器，测量棱镜prism的位置，毫米精度，帧率20Hz，
+  ```
+
+* Vicon 6D运动捕捉系统
+
+  ```bash
+  VICON0：维肯动作捕捉系统的配套反射标志，叫做marker
+  Vicon motion capture system: 维肯动作捕捉系统，提供在单一坐标系下的6D位姿测量，测量方式是通过在MAV上贴上一组反射标志，帧率100Hz，毫米精度
+  ```
+
+视觉惯性传感器与groundtruth数据之间，通过外部校准使得时间戳同步。
+
+## 7.3 **数据集内包含的数据**
+
+* 视觉惯性传感器：
+
+  > 双相机 (Aptina MT9V034型号 全局快门， 单色， 相机频率20Hz)
+  > MEMS IMU (ADIS16448型号 , 测量角速度与加速度，测量频率200 Hz)
+  > （以视觉图像的时间戳为基准进行对齐）
+
+* groundtruth
+
+  > Vicon运动捕捉系统【marker】（6D姿势）
+  > Leica MS50激光跟踪仪（3D位置）
+  > Leica MS50 3D 结构扫描
+
+* ·传感器校准
+
+  > 相机内参
+  > 相机-IMU外参
+
+* **数据集文件结构**
+
+   文件名**MH_01_easy** [工厂场景]
+
+  ```perl
+  ——mav0
+        — cam0
+          data :图像文件
+          data.csv :图像时间戳
+          sensor.yaml : 相机参数【内参fu,fv,cu,cv、外参T_BS(相机相对于b系的位姿)、畸变系数】
+        — cam1
+          data :图像文件
+          data.csv :图像时间戳
+          sensor.yaml : 相机参数【内参fu,fv,cu,cv、外参T_BS(相机相对于b系的位姿)、畸变系数】
+        — imu0
+          data.csv : imu测量数据【时间戳、角速度xyz、加速度xyz】
+          sensor.yaml : imu参数【外参T_BS、惯性传感器噪声模型以及噪声参数】
+        — leica0
+          data.csv : leica测量数据【时间戳、prism的3D位置】
+          sensor.yaml : imu参数【外参T_BS】
+        — state_groundtruth_estimae0**
+          data.csv :地面真实数据【时间戳、3D位置、姿态四元数、速度、ba、bg】
+          sensor.yaml :
+  ```
+
+  在每个传感器文件夹里配一个senor.yaml文件，记录传感器相对于Body坐标系的坐标变换，以及传感器自身参数信息
+
+* groundtruth输出格式
+
+  ```
+  #timestamp, p_RS_R_x [m]、p_RS_R_y [m]、p_RS_R_z [m] 、q_RS_w [] 、q_RS_x [] 、q_RS_y [] 、q_RS_z [] 、v_RS_R_x [ m/s]、v_RS_R_y [ m/s]、v_RS_R_z [ m/s]、 b_w_RS_S_x [rad /s] 、 b_w_RS_S_x [rad /s]、 b_w_RS_S_z [rad /s]、 b_a_RS_S_x [rad /s]、 b_a_RS_S_y [rad /s]、 b_a_RS_S_z [rad /s]
+  ```
+
+  * timestamp：18位的时间戳
+  * position：MAV的空间3D坐标
+  * p_RS_R_x [m]
+  * p_RS_R_y [m]
+  * p_RS_R_z [m]
+
+* **传感器安装的相对位置**
+
+  传感器的具体安装情况如下所示
+
+  ![](./images/msckf/sensor_setup2.png)
+
+机体上载有4个传感器，其中prism和marker公用一个坐标系
+无人机的body系 以IMU传感器为基准，即，imu系为body系。
+
+
+
+* EuRoC数据集的使用
+
+EuRoC数据集可用于视觉算法、视觉惯性算法的仿真测试
+在VIO算法中涉及到很多坐标系的转换、在精度测量过程中也需要进行统一坐标系
+
+> * 传感器数据的读取
+>   以相机图像与imu测量作为算法输入，首先就是要进行数据读取、将输入输出模块化
+> * 建立统一坐标系
+>   传感器放置于统一平台上，但每个传感器都有其各自的坐标系，索性EuRoC中给出了所有传感器相对于机体body系的相对位移（sensor.yaml文件中的T_BS），因此可以将各传感器的位姿数据统一到统一坐标系下，但实际使用中需要根据代码情况灵活运用。
+> * 坐标系变换:
+>   下标表示形式【 矩阵坐标系之间的变换矩阵的下标采用双字母进行标注】
+>   如：旋转矩阵R_BC，表示从c系旋转到b系的变换阵
+
+# Reference
+
+* https://blog.csdn.net/weixin_43793960/article/details/110072917?spm=1001.2014.3001.5502
+* https://blog.csdn.net/hltt3838/article/details/113664054
+* https://blog.csdn.net/hltt3838/article/details/113647649
+* https://blog.csdn.net/hltt3838/article/details/112525638
+* https://blog.csdn.net/weixin_44580210/article/details/108021350?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-108021350-blog-113664054.pc_relevant_paycolumn_v3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-108021350-blog-113664054.pc_relevant_paycolumn_v3&utm_relevant_index=2
+* http://www.xinliang-zhong.vip/msckf_notes/
