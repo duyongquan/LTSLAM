@@ -51,8 +51,6 @@ $$
 * $\mathbb{E}(x) = \int x p(x) dx$   
 * $Var(x) = \mathbb{E}[x - \mathbb{E}(x)^2] = \sigma^2$
 
-
-
 ## 2.2 高斯分布
 
 一维高斯密度函数
@@ -425,8 +423,6 @@ $$
 \end{aligned}
 $$
 
-
-
 **推到过程如下**
 
 误差状态运动模型
@@ -442,16 +438,179 @@ $$
 \end{bmatrix}
 $$
 
+:bow:**推导$\delta \theta$**
 
-:bow:
+对$_G^Iq = \delta \theta \otimes _I^G \hat{q}$左右两边同时求导得到：
+$$
+\begin{aligned}
+	_G^I \dot{q} &= \dot{(\delta \theta \otimes _I^G \hat{q})} \\
+	_G^I \dot{q} &= \dot{\delta \theta} \otimes _I^G \hat{q} + \delta q \otimes {}_G^I \dot{\hat{q}}  \\
+				 \frac{1}{2} 
+				 \begin{bmatrix} 
+				 	w \\
+				 	0
+				 \end{bmatrix} \otimes {}_G^I q
+                 &= \dot{\delta \theta} \otimes {}_G^I \hat{q} + \delta q \otimes 
+                  \frac{1}{2} 
+				 \begin{bmatrix} 
+				 	w \\
+				 	0
+				 \end{bmatrix} \otimes {}_G^I \hat{q} 
+\end{aligned}
+$$
+两边同时乘以${}_G^I \hat{q}^{-1} $ 得到:
+$$
+\begin{aligned}
+	 \frac{1}{2} 
+         \begin{bmatrix} 
+         w \\
+         0
+         \end{bmatrix} \otimes  \delta q
+         &= \dot{\delta q} + \frac{1}{2} \delta q \otimes 			            \begin{bmatrix} 
+             \hat{w} \\
+             0
+         \end{bmatrix} \\
+  \longrightarrow  
+  \begin{bmatrix} 
+      2 \dot{\delta \theta} \\
+      0
+  \end{bmatrix} 
+  &=
+  \begin{bmatrix} 
+      w \\
+      0
+  \end{bmatrix} 
+  \otimes \delta q - \delta q \otimes 
+  \begin{bmatrix} 
+      \hat{w} \\
+      0
+  \end{bmatrix} 
+\end{aligned}
+$$
+ 由$w_m = w + b_g + n_g$ 和 $\hat{w} = w_m - \hat{b}_g$可以求出$w$：
+$$
+w = \hat{w} + \hat{b}_g - b_g - n_g = \hat{w} - \tilde{b}_g - n_g
+$$
+带入$w$可得：
+$$
+\begin{aligned} 
+    \begin{bmatrix} 
+          \dot{\delta \theta} \\
+          0
+      \end{bmatrix} 
+      &=
+      \begin{bmatrix} 
+          \hat{w} - \tilde{b}_g - n_g \\
+          0
+      \end{bmatrix} 
+      \otimes \delta q - \delta q \otimes 
+      \begin{bmatrix} 
+          \hat{w} \\
+          0
+      \end{bmatrix} \\
+      \begin{bmatrix} 
+          \dot{\delta \theta} \\
+          0
+      \end{bmatrix} 
+      &=
+      \begin{bmatrix} 
+          \hat{w} \\
+          0
+      \end{bmatrix} 
+      \otimes \delta q - \delta q  
+      \begin{bmatrix} 
+          \hat{w} \\
+          0
+      \end{bmatrix} -
+       \begin{bmatrix} 
+         \tilde{b}_g + n_g \\
+          0
+      \end{bmatrix}  \otimes \delta q \\
+     \begin{bmatrix} 
+          \dot{\delta \theta} \\
+          0
+      \end{bmatrix} 
+      &=
+      \begin{bmatrix} 
+          - \left \lfloor \hat{w}_{\times} \right \rfloor & \hat{w} \\
+          -\hat{w}^T & 0
+      \end{bmatrix} \delta q - 
+      \begin{bmatrix} 
+          \left \lfloor \hat{w}_{\times} \right \rfloor & \hat{w} \\
+          -\hat{w}^T & 0
+      \end{bmatrix} \delta q -
+      \begin{bmatrix} 
+          - \left \lfloor (\tilde{b}_g + n_g )_{\times} \right \rfloor & \tilde{b}_g + n_g  \\
+          -(\tilde{b}_g + n_g )^T & 0
+      \end{bmatrix}
+      \begin{bmatrix} 
+          \frac{1}{2} \delta \theta\\
+          1
+      \end{bmatrix} 
+\end{aligned}
+$$
+忽略掉极小量相乘的项得：
+$$
+\begin{bmatrix} 
+    \dot{\delta \theta} \\
+    0
+\end{bmatrix} =
+\begin{bmatrix} 
+    -2\left \lfloor \hat{w}_{\times} \right \rfloor & 0 \\
+    0 & 0
+\end{bmatrix}
+\begin{bmatrix} 
+    \frac{1}{2} \delta \theta\\
+    1
+\end{bmatrix} -
+\begin{bmatrix} 
+   \tilde{b}_g + n_g  \\
+   0
+\end{bmatrix}
+$$
+因此$\delta \theta$:
+$$
+\dot{\delta \theta} = -\left \lfloor \hat{w}_{\times} \right \rfloor \delta \theta - \tilde{b}_g - n_g
+$$
+:rose: 推导$\dot {\tilde{b}}_g$
 
+$$
+\dot {\tilde{b}}_g = \dot {b}_g - \dot {\hat{b}}_g = n_{wg}
+$$
+:two_hearts: 推导$\dot {\tilde{b}}_a$
+$$
+\dot {\tilde{b}}_a = \dot {b}_a - \dot {\hat{b}}_a = n_{wa}
+$$
+:nail_care:推导${}^G\dot {\tilde{p}}_I$
+$$
+\begin{aligned}
+    {}^G\dot {\tilde{p}}_I 
+    	& = {}^G\dot {p}_I - {}^G\dot {\hat{p}}_I \\
+    	& = {}^G v_I - {}^G \hat{v}_I \\
+    	&= {}^G \tilde{v}_I
 
-
-
-
-:rose:
-
-
+\end{aligned}
+$$
+:fire: 推导${}^G\dot {\tilde{v}}_I$
+$$
+\begin{aligned}
+	\hat{a} &=  a_m - \tilde{b}_a \\
+	
+    {}^G\dot {v}_I & = {}^G a_I = C({}_G^Iq)^T(a_m - b_a- n_a) + {}^Gg \\
+ 	{}^G\dot {\hat{v}}_I &=  C({}_G^I \hat{q})^T \hat{a} + {}^Gg \\
+ 	{}^G\dot {\tilde{v}}_I & = {}^G\dot {v}_I - {}^G\dot {\hat{v}}_I \\
+ 	&= C({}_G^Iq)^T(a_m - b_a- n_a) + {}^Gg - C({}_G^I \hat{q})^T \hat{a} - {}^Gg \\
+ 	&= C({}_G^I\hat{q})^T (I + \left \lfloor \delta \theta_{\times} \right \rfloor) (a_m - b_a- n_a) - C({}_G^I\hat{q})^T \hat{a} \\
+ 	&= C({}_G^I\hat{q})^T (I + \left \lfloor \delta \theta_{\times} \right \rfloor) (\hat{a} - \tilde{b}_a - n_a) - C({}_G^I\hat{q})^T \hat{a} 
+\end{aligned}
+$$
+省略掉高次项$\left \lfloor \delta \theta_{\times} \right \rfloor) (- \tilde{b}_a - n_a)$
+$$
+\begin{aligned}
+    {}^G\dot {\tilde{v}}_I & = C({}_G^I\hat{q})^T (\left \lfloor \delta \theta_{\times} \right \rfloor) \hat{a} - \tilde{b}_a - n_a) \\
+    &= - C({}_G^I\hat{q})^T \left \lfloor \hat{a}_{\times} \right \rfloor \delta \theta -  C({}_G^I\hat{q})^T \tilde{b}_a - C({}_G^I\hat{q})^T n_a
+\end{aligned}
+$$
 
 ## 4.5 状态转移矩阵
 
@@ -496,15 +655,12 @@ $$
 fun = @(x, y) (exp(-x) - y) / 2;
 x = 0 : 0.1 : 2;
 y0 = 1/2;
-
 % 调用RK4函数求解
 y = RK4(fun, x, y0);
-
 % 设置图幅
 fig = gcf;
 fig.Color = 'w';
 fig.Position = [250, 250, 960, 540];
-
 % 绘制数值解
 p = plot(x, y);
 p.LineStyle = 'none';
@@ -512,18 +668,14 @@ p.Marker = 'p';
 p.MarkerEdgeColor = 'r';
 p.MarkerFaceColor = 'b';
 p.MarkerSize = 8;
-
 hold on, grid on
-
 % 求解符号解
 syms y(x)
 equ = 2 * diff(y, x) == exp(-x) - y;
 cond = y(0) == 1/2;
 y = dsolve(equ, cond);
-
 % 绘制符号解
 fplot(y, [0, 2])
-
 % 设置信息
 xlabel('x', 'fontsize', 12);
 ylabel('y', 'fontsize', 12);
@@ -754,7 +906,7 @@ $$
             \rho 
         \end{bmatrix} + \rho ^{C_i}\mathbf{p}_{C_{0}}
      \\
-     \frac{\partial{\mathbf{g}_i}}{\mathbf{\theta}} &= 
+     \frac{\partial{\mathbf{g}_i}}{\mathbf{\partial{\theta}}} &= 
      \begin{bmatrix} 
      	 \frac{\partial{\mathbf{g}_i}}{\mathbf{\alpha}} & 
      	 \frac{\partial{\mathbf{g}_i}}{\mathbf{\beta}} & 
@@ -785,7 +937,6 @@ $$
 \left(\mathbf{J}_{\mathbf{f}}^T \mathbf{J}_{\mathbf{f}} \right)^{-1}\mathbf{J}_{\mathbf{f}}^T
 \mathbf{f}( \mathbf{\theta}_i^{(s)})
 $$
-
 
 **Feature Points**
 
@@ -1043,6 +1194,14 @@ $$
 \end{bmatrix}
 $$
 
+整个状态(IMU+Camera)的covariance传播过程如图所示:
+
+![](./images/msckf/imu_propagate.png)
+
+
+
+
+
 ## 6.4 Augmentation
 
 ### 1 **MSCKF系统的误差状态向量**
@@ -1097,7 +1256,7 @@ $$
 	\frac{\partial{^G p_{C_{new}}}}{\partial{\mathbf{x}_{I}}}_{3 \times 21} & \frac{\partial{^G p_{C_{new}}}}{\partial{\mathbf{x}_{C}}}_{3 \times 6N}
 \end{bmatrix}_{6 \times (21 + 6N)}
 $$
-求出$J$后，误差状态协方差矩阵扩增为：
+假设上一时刻共有N个相机姿态在状态向量中,那么当新一帧图像到来时,这个时候整个滤波器的状态变成了$21 + 6(N+1)$的向量, 那么它对应的covariance维度为 $(21 + 6(N+1)) \times (21 + 6(N+1))$。求出$J$后，误差状态协方差矩阵扩增为：
 $$
 P_{k|k} \leftarrow
 \begin{bmatrix}
@@ -1119,15 +1278,88 @@ $$
 
 
 
+这个过程对应如下图过程:
+
+![](./images/msckf/covariance_augmentation.png)
+
+
+
+
+
 ## 6.5 Update Step
+
+　MSCKF的观测模型是以特征点为分组的,我们可以知道一个特征(之前一直处于跟踪成功状态)会拥有多个Camera State.所有这些对于同一个3D点的Camera State都会去约束观测模型. 那这样其实隐式的将特征点位置从状态向量中移除,取而代之的便是Camera State. 我们考虑单个feture $f_j$，假设它所对应到 $M_j$个相机姿态$[{}_G^{C_{i}}\mathbf{q}, {}^G \mathbf{p}_{C_i}]^T, i \in j$。当然双目版本的包含左目和右目两个相机姿态, $[{}_G^{C_{i,1}}\mathbf{q}, {}^G \mathbf{p}_{C_i, 1}]^T$和$[{}_G^{C_{i,2}}\mathbf{q}, {}^G \mathbf{p}_{C_i, 2}]^T$右相机很容易能通过外参得到. 其中双目的观测值可以表示如下:
+$$
+\mathbf{z}_{i}^{j} = 
+\begin{bmatrix}
+    u_{i, 1}^{j}  \\
+    v_{i, 1}^{j}  \\
+    u_{i, 2}^{j}  \\
+	v_{i, 2}^{j}  \\
+\end{bmatrix} =
+\begin{bmatrix}
+	\frac{1}{{}^{C_{i,1}}Z_j} & \mathbf{0}_{2 \times 2} \\
+	\mathbf{0}_{2 \times 2} & \frac{1}{{}^{C_{i,2}}Z_j}
+\end{bmatrix}
+\begin{bmatrix}
+    \frac{1}{{}^{C_{i,1}}X_j}  \\
+    \frac{1}{{}^{C_{i,1}}Y_j}  \\
+    \frac{1}{{}^{C_{i,2}}X_j}  \\
+    \frac{1}{{}^{C_{i,2}}Y_j}  
+\end{bmatrix}
+$$
+而特征点在两个相机坐标系下可以分别表示为:
+$$
+\begin{aligned}
+	{}^{C_{i,1}}\mathbf{p} &= 
+        \begin{bmatrix}
+           {}^{C_{i,1}}\mathbf{X}_j \\
+           {}^{C_{i,1}}\mathbf{Y}_j \\
+           {}^{C_{i,1}}\mathbf{Z}_j 
+        \end{bmatrix} = 
+        C({}_G^{C_{i,1}}\mathbf{q)}({}^{G}\mathbf{p}_j - {}^{G}\mathbf{p}_{C_{i, 1}}) \\
+       
+    {}^{C_{i,2}}\mathbf{p} &= 
+        \begin{bmatrix}
+           {}^{C_{i,2}}\mathbf{X}_j \\
+           {}^{C_{i,2}}\mathbf{Y}_j \\
+           {}^{C_{i,2}}\mathbf{Z}_j 
+        \end{bmatrix} = 
+        C({}_G^{C_{i,2}}\mathbf{q)}({}^{G}\mathbf{p}_j - {}^{G}\mathbf{p}_{C_{i, 2}}) \\
+        &=  C({}_{C_{i,1}}^{C_{i,2}}\mathbf{q)}({}^{C_{i,1}}\mathbf{p}_j - {}^{C_{i,1}}\mathbf{p}_{C_{i, 2}})
+\end{aligned}
+$$
+其中${}^{G}\mathbf{p}_j$ 是特征点在惯性系下的坐标,这个是通过这个特征点的对应的所有camera state三角化得到的结果. 将观测模型在当前状态线性化可以得到如下式子:
+$$
+\begin{aligned}
+	\mathbf{r}^{j}_{i}  &= \mathbf{z}^{j}_{i} - \mathbf{\hat{z}}^{j}_{i}\\
+						&=\mathbf{H}_{C_{i}}^{j} \mathbf{x} + {\color{Red}{\mathbf{H}^{f_j w} \mathbf{p}_{j}}}+ \mathbf{n}^{j}_{i}
+
+\end{aligned}
+$$
+其中 $\mathbf{n}^{j}_{i}$是观测噪声, $\mathbf{H}_{C_{i}}^{j}$和 $\mathbf{H}^{f_j w}$是对应的雅克比矩阵。对应到的是单个特征点对应的其中某一个相机姿态, 但是这个特征点会对应到很多相机姿态。
+$$
+\begin{aligned}
+	\mathbf{r}^{j}_{o} &= \mathbf{V}^{T}( \mathbf{z}^{j}  - \mathbf{\hat{z}}^{j}) \\
+				       &= \mathbf{V}^{T}\mathbf{H}^{j} \mathbf{x} + \mathbf{V}^{T}\mathbf{H}^{f_j w} \mathbf{p}_{j} + \mathbf{V}^{T} \mathbf{n}^{j}  \\
+				       &=  \mathbf{V}^{T}\mathbf{H}^{j} \mathbf{x} + \mathbf{V}^{T} \mathbf{n}^{j} \\
+				       &= \mathbf{H}^{j}_{0} \mathbf{x} + \mathbf{n}^{j}_{o}
+
+\end{aligned}
+$$
+但是这个其实并不是一个标准的EKF观测模型,因为我们知道$\mathbf{\tilde{p}_j}$并不在我们的状态向量里边,所以做法是将式子中红色部分投影到零空间, 假设$\mathbf{H^{f_{j}w}}$的[left null space](https://blog.csdn.net/liuheng0111/article/details/52522845) 为$\mathbf{V}^T$, 即有$\mathbf{V}^T \mathbf{H^{f_{j}w}} = 0$, 所以：
+$$
+\mathbf{r}^{j}_{o} = \mathbf{H}^{j}_{0} \mathbf{x} + \mathbf{n}^{j}_{o}
+$$
+这样就是一个标准的EKF观测模型了,下面简单分析一下维度.分析时针对单个特征点, 我们知道$\mathbf{H^{f_{j}w}}$的维度是${4M_j} \times 3$ , 那么它的left null space的维度即$\mathbf{V}^T$的维度为$(4M_j -3) \times 4M_j$ , 则最终$\mathbf{H}^{j}_{0} \mathbf{x}$的维度变为$(4M_j-3) \times 6$, 残差的维度变为$(4M_j-3) \times 1$ , 假设一共有L个特征的话,那最终残差的维度会是$L (4M_j-3) \times 6$
 
 
 
 ## 6.5 Post EKF Update
 
+大致是有两种更新策略,假设新进来一帧图像,这个时候会丢失一些特征点,这个时候丢失的特征点(且三角化成功)用于滤波器更新,如下图所示:
+
 ![](./images/msckf/post_ekf_update.png)
-
-
 
 # 7 **EuRoC数据集**
 
@@ -1209,7 +1441,23 @@ $$
 * groundtruth输出格式
 
   ```
-  #timestamp, p_RS_R_x [m]、p_RS_R_y [m]、p_RS_R_z [m] 、q_RS_w [] 、q_RS_x [] 、q_RS_y [] 、q_RS_z [] 、v_RS_R_x [ m/s]、v_RS_R_y [ m/s]、v_RS_R_z [ m/s]、 b_w_RS_S_x [rad /s] 、 b_w_RS_S_x [rad /s]、 b_w_RS_S_z [rad /s]、 b_a_RS_S_x [rad /s]、 b_a_RS_S_y [rad /s]、 b_a_RS_S_z [rad /s]
+  timestamp,
+  p_RS_R_x [m]
+  p_RS_R_y [m]
+  p_RS_R_z [m] 
+  q_RS_w [] 
+  q_RS_x [] 
+  q_RS_y [] 
+  q_RS_z [] 
+  v_RS_R_x [ m/s]
+  v_RS_R_y [ m/s]
+  v_RS_R_z [ m/s]
+  b_w_RS_S_x [rad /s] 
+  b_w_RS_S_x [rad /s]
+  b_w_RS_S_z [rad /s]
+  b_a_RS_S_x [rad /s]
+  b_a_RS_S_y [rad /s]
+  b_a_RS_S_z [rad /s]
   ```
 
   * timestamp：18位的时间戳
@@ -1227,8 +1475,6 @@ $$
 机体上载有4个传感器，其中prism和marker公用一个坐标系
 无人机的body系 以IMU传感器为基准，即，imu系为body系。
 
-
-
 * EuRoC数据集的使用
 
 EuRoC数据集可用于视觉算法、视觉惯性算法的仿真测试
@@ -1241,6 +1487,336 @@ EuRoC数据集可用于视觉算法、视觉惯性算法的仿真测试
 > * 坐标系变换:
 >   下标表示形式【 矩阵坐标系之间的变换矩阵的下标采用双字母进行标注】
 >   如：旋转矩阵R_BC，表示从c系旋转到b系的变换阵
+
+# 8 公式对应的代码块
+
+## 8.1  IMU误差状态连续时间系统方程
+
+$$
+\dot{\mathbf{x}}(t) = \mathbf{F}(t) \mathbf{x}(t) + \mathbf{G}(t) \mathbf{w}(t)
+$$
+
+其中，状态变量为$\mathbf{x}$：
+$$
+\mathbf{x} =
+\begin{bmatrix}
+	\mathbf{\delta \theta_{iw}} \\
+	\mathbf{\delta} \mathbf{b}_{g}  \\
+	\mathbf{\delta} \mathbf{v}  \\
+	\mathbf{\delta} \mathbf{b}_{a}  \\
+	\mathbf{\delta} \mathbf{p}  \\ 
+	\mathbf{\delta} \mathbf{\theta}_{ic}  \\
+	\mathbf{\delta} \mathbf{p}_{ic}  
+\end{bmatrix}_{21 \times 1}
+$$
+其中，噪声项为$\mathbf{w}$：
+$$
+\mathbf{w} =
+\begin{bmatrix}
+	\mathbf{\mathbf{w}}_{n}  \\
+	\mathbf{\mathbf{w}}_{w}  \\
+	\mathbf{\mathbf{a}}_{n}  \\
+	\mathbf{\mathbf{a}}_{w}  
+\end{bmatrix}_{12 \times 1}
+$$
+其中，噪声项的均值：
+$$
+\mathbb{E}[\mathbf{n}(t)] = 0
+$$
+其中，噪声项的方差：
+$$
+\mathbb{E}[\mathbf{n}(t)^T \mathbf{n}(t] = \mathbf{q} \delta(t - \tau)
+$$
+矩阵$\mathbf{F}$
+$$
+\mathbf{F} = 
+\begin{bmatrix}
+	- \left \lfloor  w_m - w_b \right \rfloor_{\times} & -\mathbf{I} & \mathbf{0} & \mathbf{0} & \mathbf{0} & \mathbf{0} & \mathbf{0} \\
+	 \mathbf{0} & \mathbf{0} & \mathbf{0} & \mathbf{0} & \mathbf{0} &  \mathbf{0} &  \mathbf{0} \\
+	-\mathbf{R}_{iw} \left \lfloor \mathbf{a}_m - \mathbf{a}_b  \right \rfloor_{\times} & \mathbf{0} & \mathbf{0} & -\mathbf{R}_{iw} & \mathbf{0} & \mathbf{0} & \mathbf{0} \\
+	\mathbf{0} & \mathbf{0} & \mathbf{I} & \mathbf{0} & \mathbf{0} &  \mathbf{0} &  \mathbf{0} \\
+	\mathbf{0} & \mathbf{0} & \mathbf{0} & \mathbf{0} & \mathbf{0} &  \mathbf{0} &  \mathbf{0} \\
+	\mathbf{0} & \mathbf{0} & \mathbf{0} & \mathbf{0} & \mathbf{0} &  \mathbf{0} &  \mathbf{0}
+\end{bmatrix}_{21 \times 21}
+$$
+矩阵$\mathbf{G}$
+$$
+\mathbf{G} = 
+\begin{bmatrix}
+	 -\mathbf{I} & \mathbf{0} & \mathbf{0} & \mathbf{0}  \\
+	 \mathbf{0} & \mathbf{I} & \mathbf{0} & \mathbf{0}   \\
+	 \mathbf{0} & \mathbf{0} & -\mathbf{R}_{iw} & \mathbf{0} \\
+	 \mathbf{0} & \mathbf{0} &  \mathbf{0} &  \mathbf{0} \\
+	 \mathbf{0} & \mathbf{0} &  \mathbf{0} &  \mathbf{0} \\
+	 \mathbf{0} & \mathbf{0} &  \mathbf{0} &  \mathbf{0} 
+\end{bmatrix}_{21 \times 12}
+$$
+部分代码对应为code:
+
+```c++
+// Compute discrete transition and noise covariance matrix
+Matrix<double, 21, 21> F = Matrix<double, 21, 21>::Zero();
+Matrix<double, 21, 12> G = Matrix<double, 21, 12>::Zero();
+
+F.block<3, 3>(0, 0) = -skewSymmetric(gyro);
+F.block<3, 3>(0, 3) = -Matrix3d::Identity();
+F.block<3, 3>(6, 0) = -quaternionToRotation(imu_state.orientation).transpose()*skewSymmetric(acc);
+F.block<3, 3>(6, 9) = -quaternionToRotation(imu_state.orientation).transpose();
+F.block<3, 3>(12, 6) = Matrix3d::Identity();
+
+G.block<3, 3>(0, 0) = -Matrix3d::Identity();
+G.block<3, 3>(3, 3) = Matrix3d::Identity();
+G.block<3, 3>(6, 6) = -quaternionToRotation(imu_state.orientation).transpose();
+G.block<3, 3>(9, 9) = Matrix3d::Identity();
+```
+
+获得误差状态的连续时间系统推导公式后，我们对其进行离散化，根据线性系统理论，连续时间系统离散化形式为：
+$$
+\mathbf{x}(t_{k+1}) = \mathbf{\Phi}(t_{k+1}, t_k) \mathbf{x}(t_k) + \int_{t_k}^{t_{k+1}} 		\mathbf{\Phi}(t_{k+1}, \tau) \mathbf{G}(\tau)\mathbf{w}(\tau) d\tau
+$$
+我们将短间隔时间内的$\mathbf{F}(t)$矩阵作为常阵$\mathbf{F}_{k}$处理并对精确离散化公式进行三次泰勒展开，获得
+$$
+\mathbf{\Phi}(t_{k+1}, t_k) = \mathbf{e}^{\mathbf{F} \Delta t} = \mathbf{I} + \frac{1}{2}(\mathbf{F} \Delta t)^2 + \frac{1}{6}(\mathbf{F} \Delta t)^3 + \mathbf{O}(||\mathbf{F} \Delta t ||^4)
+$$
+同时，我们令
+$$
+\mathbf{W}_k = \int_{t_k}^{t_{k+1}} 		\mathbf{\Phi}(t_{k+1}, \tau) \mathbf{G}(\tau)\mathbf{w}(\tau) d\tau
+$$
+则离散化后即获得运动方程为
+$$
+\mathbf{x}_{k+1}= \mathbf{\Phi_{k+1|k}} \mathbf{x}_{k} + \mathbf{W}_k
+$$
+我们计算噪声项$\mathbf{W}_{k}$的均值和方差分别为$E\left[\mathbf{W}_{k}\right]=0, E\left[\mathbf{W}_{k} \mathbf{W}_{k}^{T}\right]=\mathbf{Q}_{k} \delta(t-\tau)$，其中
+$$
+\mathbf{Q}_k = \int_{t_k}^{t_{k+1}} \mathbf{\Phi}(t_{k+1}, t) \mathbf{G}(t) \mathbf{q} \mathbf{G}(t)^T \mathbf{\Phi}^T(t_{k+1}, t)dt
+$$
+部分代码对应为code:
+
+```c++
+// Approximate matrix exponential to the 3rd order,
+// which can be considered to be accurate enough assuming
+// dtime is within 0.01s.
+Matrix<double, 21, 21> Fdt = F * dtime;
+Matrix<double, 21, 21> Fdt_square = Fdt * Fdt;
+Matrix<double, 21, 21> Fdt_cube = Fdt_square * Fdt;
+Matrix<double, 21, 21> Phi = Matrix<double, 21, 21>::Identity() + Fdt + 0.5*Fdt_square + (1.0/6.0)*Fdt_cube;
+```
+
+我们求得运动方程的的噪声项方差的主要目的是进行[卡尔曼](https://so.csdn.net/so/search?q=卡尔曼&spm=1001.2101.3001.7020)滤波的运动学推导，我们可以不管误差状态的均值，因为误差状态是噪声驱动的，噪声项的均值为零，在运动方程的迭代下均值始终为零，而误差状态的方差则会收到噪声方差影响：
+$$
+\mathbf{P}_{{II}_{k+1|k}} = \mathbf{\Phi}_{k+1|k} \mathbf{P}_{{II}_{k|k}} \mathbf{\Phi}_{k+1|k}^T + \mathbf{Q}_k 
+$$
+同时，如果有相机状态存在时，由于IMU的误差状态发生了改变，那么相机误差状态相对于IMU误差状态的协方差也会发生改变，对应的代码如下：
+
+```c++
+// Modify the transition matrix
+Matrix3d R_kk_1 = quaternionToRotation(imu_state.orientation_null);
+Phi.block<3, 3>(0, 0) = quaternionToRotation(imu_state.orientation) * R_kk_1.transpose();
+
+Vector3d u = R_kk_1 * IMUState::gravity;
+RowVector3d s = (u.transpose()*u).inverse() * u.transpose();
+
+Matrix3d A1 = Phi.block<3, 3>(6, 0);
+Vector3d w1 = skewSymmetric(imu_state.velocity_null-imu_state.velocity) * IMUState::gravity;
+Phi.block<3, 3>(6, 0) = A1 - (A1*u-w1)*s;
+
+Matrix3d A2 = Phi.block<3, 3>(12, 0);
+Vector3d w2 = skewSymmetric(dtime*imu_state.velocity_null+imu_state.position_null - imu_state.position) * IMUState::gravity;
+Phi.block<3, 3>(12, 0) = A2 - (A2*u-w2)*s;
+
+// Propogate the state covariance matrix.
+Matrix<double, 21, 21> Q = Phi*G*state_server.continuous_noise_cov* G.transpose()*Phi.transpose()*dtime;
+state_server.state_cov.block<21, 21>(0, 0) = Phi*state_server.state_cov.block<21, 21>(0, 0)*Phi.transpose() + Q;
+
+if (state_server.cam_states.size() > 0) 
+{
+    state_server.state_cov.block(0, 21, 21, state_server.state_cov.cols()-21) =
+        Phi * state_server.state_cov.block(0, 21, 21, state_server.state_cov.cols()-21);
+    state_server.state_cov.block(21, 0, state_server.state_cov.rows()-21, 21) =
+        state_server.state_cov.block(21, 0, state_server.state_cov.rows()-21, 21) * Phi.transpose();
+}
+```
+
+
+
+## 8.2 状态扩增
+
+注意到后端的流程是，当接收到一个图像帧之后会将当前帧与上一帧之间的所有IMU数据拿出来进行状态预测，在完成所有IMU数据的状态预测后，紧接着就是状态扩增，对于标称状态，直接将当前帧时刻IMU状态的标称状态拿来当做当前帧相机的标称状态，对应代码如下：
+
+```c++
+// Add a new camera state to the state server.
+Matrix3d R_w_i = quaternionToRotation(state_server.imu_state.orientation);
+Matrix3d R_w_c = R_i_c * R_w_i;
+Vector3d t_c_w = state_server.imu_state.position + R_w_i.transpose()*t_c_i;
+
+state_server.cam_states[state_server.imu_state.id] = CAMState(state_server.imu_state.id);
+CAMState& cam_state = state_server.cam_states[state_server.imu_state.id];
+
+cam_state.time = time;
+cam_state.orientation = rotationToQuaternion(R_w_c);
+cam_state.position = t_c_w;
+
+cam_state.orientation_null = cam_state.orientation;
+cam_state.position_null = cam_state.position;
+```
+
+对于误差状态，均值没啥好扩增的，因为在观测发生前，所有误差状态的均值都为零，我们最为关心的应该是误差状态的协方差矩阵扩增，矩阵扩增分为理解为克隆和修正两步，第一步克隆如下：
+$$
+\begin{bmatrix}
+	\mathbf{x_i}
+\end{bmatrix}
+\longrightarrow
+\begin{bmatrix}
+	\mathbf{x_i} \\
+	\mathbf{x_i} 
+\end{bmatrix} 
+\\
+\\
+\begin{bmatrix}
+	\mathbf{P_i}
+\end{bmatrix}
+\longrightarrow
+\begin{bmatrix}
+	\mathbf{P}_{ii}  & \mathbf{P}_{ii}  \\
+	\mathbf{P}_{ii}  & \mathbf{P}_{ii}
+\end{bmatrix}
+$$
+第二步修正如下：
+$$
+\begin{bmatrix}
+	\mathbf{x_i}
+\end{bmatrix}
+\longrightarrow
+\begin{bmatrix}
+	\mathbf{x_i} \\
+	\mathbf{x}_{j} 
+\end{bmatrix} 
+\\
+\mathbf{x}_{j}  = \mathbf{J}_{ji} \mathbf{x}_{i}
+\\
+\begin{bmatrix}
+	\mathbf{P}_{ii}  & \mathbf{P}_{ii}  \\
+	\mathbf{P}_{ii}  & \mathbf{P}_{ii}
+\end{bmatrix}
+\longrightarrow
+\begin{bmatrix}
+	\mathbf{P}_{ii}  & \mathbf{P}_{ji}  \\
+	\mathbf{P}_{ij}  & \mathbf{P}_{jj}
+\end{bmatrix}
+\\
+\mathbf{P}_{ij}  = \mathbf{J}_{ji} \mathbf{P}_{ii} 
+\\
+\mathbf{P}_{jj} = \mathbf{J}_{ji} \mathbf{P}_{ii} \mathbf{J}_{ji}^{T}
+$$
+其中$\mathbf{J}_{ji}$ 为新增状态变量$\mathbf{x}_{j}$相对$\mathbf{x}_{i}$的雅克比矩阵，那么在MSCKF中，新增误差相机状态对当前误差状态的雅克比为
+
+$$
+\mathbf{J}_{(6, 21 + 6N)} =
+\begin{bmatrix}
+	\left ( \frac{\partial{\mathbf{x}_{C}} }{\partial{\mathbf{x}_{I}^{T}}} \right )^{T} \\
+	\left ( \frac{\partial{\mathbf{x}_{C}} }{\partial{\mathbf{x}_{C}^{T}}} \right )^{T} 
+\end{bmatrix}
+$$
+对应代码如下：
+
+```c++
+Matrix<double, 6, 21> J = Matrix<double, 6, 21>::Zero();
+J.block<3, 3>(0, 0) = R_i_c;
+J.block<3, 3>(0, 15) = Matrix3d::Identity();
+J.block<3, 3>(3, 0) = skewSymmetric(R_w_i.transpose()*t_c_i);
+J.block<3, 3>(3, 12) = Matrix3d::Identity();
+J.block<3, 3>(3, 18) = Matrix3d::Identity();
+
+```
+
+获得雅克比之后就可以按照上面状态扩增的步骤就可以求得扩增后的协方差矩阵，对应的代码如下：
+
+```c++
+// Rename some matrix blocks for convenience.
+const Matrix<double, 21, 21>& P11 = state_server.state_cov.block<21, 21>(0, 0);
+const MatrixXd& P12 = state_server.state_cov.block(0, 21, 21, old_cols-21);
+
+// Fill in the augmented state covariance.
+state_server.state_cov.block(old_rows, 0, 6, old_cols) << J*P11, J*P12;
+state_server.state_cov.block(0, old_cols, old_rows, 6) = state_server.state_cov.block(old_rows, 0, 6, old_cols).transpose();
+state_server.state_cov.block<6, 6>(old_rows, old_cols) = J * P11 * J.transpose();
+```
+
+
+
+## 8.3 状态更新
+
+重投影误差构建观测残差：
+$$
+\mathbf{r}^{j} = \mathbf{z}^{j}  - \mathbf{\hat{z}}^{j}
+$$
+其中$j$代表第$j$个特征点，然后将残差对状态变量进行线性化，也就是求残差对状态变量的雅克比，因为观测残差和特征点还有关系，因此我们还要求残差对特征点的雅克比：
+$$
+\mathbf{r}^{j}  = \mathbf{H}^{j} \mathbf{x} + \mathbf{H}^{f_j w} \mathbf{p}_{j} + \mathbf{n}^{j}
+$$
+但是由于我们的状态变量中没有特征点的部分，因此最后我们还需要将残差$\mathbf{r}^{j}$和状态变量雅克比$\mathbf{H}^{j}$投影到特征点雅克比的零空间中去，其实也就是消元掉观测方程中特征点相关的部分：
+$$
+\begin{aligned}
+	\mathbf{r}^{j}_{o} &= \mathbf{V}^{T}( \mathbf{z}^{j}  - \mathbf{\hat{z}}^{j}) \\
+				       &= \mathbf{V}^{T}\mathbf{H}^{j} \mathbf{x} + \mathbf{V}^{T}\mathbf{H}^{f_j w} \mathbf{p}_{j} + \mathbf{V}^{T} \mathbf{n}^{j}  \\
+				       &=  \mathbf{V}^{T}\mathbf{H}^{j} \mathbf{x} + \mathbf{V}^{T} \mathbf{n}^{j} \\
+				       &= \mathbf{H}^{j}_{0} \mathbf{x} + \mathbf{n}^{j}_{o}
+
+\end{aligned}
+$$
+
+
+
+
+```c++
+// 3d feature position in the world frame.
+// And its observation with the stereo cameras.
+const Vector3d& p_w = feature.position;
+const Vector4d& z = feature.observations.find(cam_state_id)->second;
+
+// Convert the feature position from the world frame to
+// the cam0 and cam1 frame.
+Vector3d p_c0 = R_w_c0 * (p_w-t_c0_w);
+Vector3d p_c1 = R_w_c1 * (p_w-t_c1_w);
+
+// Compute the Jacobians.
+Matrix<double, 4, 3> dz_dpc0 = Matrix<double, 4, 3>::Zero();
+dz_dpc0(0, 0) = 1 / p_c0(2);
+dz_dpc0(1, 1) = 1 / p_c0(2);
+dz_dpc0(0, 2) = -p_c0(0) / (p_c0(2)*p_c0(2));
+dz_dpc0(1, 2) = -p_c0(1) / (p_c0(2)*p_c0(2));
+
+Matrix<double, 4, 3> dz_dpc1 = Matrix<double, 4, 3>::Zero();
+dz_dpc1(2, 0) = 1 / p_c1(2);
+dz_dpc1(3, 1) = 1 / p_c1(2);
+dz_dpc1(2, 2) = -p_c1(0) / (p_c1(2)*p_c1(2));
+dz_dpc1(3, 2) = -p_c1(1) / (p_c1(2)*p_c1(2));
+
+Matrix<double, 3, 6> dpc0_dxc = Matrix<double, 3, 6>::Zero();
+dpc0_dxc.leftCols(3) = skewSymmetric(p_c0);
+dpc0_dxc.rightCols(3) = -R_w_c0;
+
+Matrix<double, 3, 6> dpc1_dxc = Matrix<double, 3, 6>::Zero();
+dpc1_dxc.leftCols(3) = R_c0_c1 * skewSymmetric(p_c0);
+dpc1_dxc.rightCols(3) = -R_w_c1;
+
+Matrix3d dpc0_dpg = R_w_c0;
+Matrix3d dpc1_dpg = R_w_c1;
+
+H_x = dz_dpc0*dpc0_dxc + dz_dpc1*dpc1_dxc;
+H_f = dz_dpc0*dpc0_dpg + dz_dpc1*dpc1_dpg;
+```
+
+
+
+残差的计算为：
+
+```c++
+// Compute the residual.
+r = z - Vector4d(p_c0(0)/p_c0(2), p_c0(1)/p_c0(2), p_c1(0)/p_c1(2), p_c1(1)/p_c1(2));
+```
+
+
 
 # Reference
 
