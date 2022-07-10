@@ -4,9 +4,10 @@
 MSCKF
 =====
 
-`代码: MSCKF_VIO <https://github.com/KumarRobotics/msckf_vio>`_ 
+.. NOTE::
 
-`论文: Robust Stereo Visual Inertial Odometry for Fast Autonomous Flight <https://arxiv.org/pdf/1712.00036.pdf>`_
+  * `代码: MSCKF_VIO <https://github.com/KumarRobotics/msckf_vio>`_ 
+  * `论文: Robust Stereo Visual Inertial Odometry for Fast Autonomous Flight <https://arxiv.org/pdf/1712.00036.pdf>`_
 
 1 介绍
 =====================
@@ -555,30 +556,686 @@ RK4函数如下
    :align: center
 
 
-6 Computer Vision
+6 计算机视觉
 =================
 
 6.1 **Pinhole Camera Model(针孔模型)**
 ------------------------------------------
+
+.. figure:: ./images/pinhole_camera_model.png
+   :align: center
+
  
 6.2 **相机投影**
 ------------------------------------------
 
- 
+.. figure:: ./images/camera_projection.png
+   :align: center
+
+投影变换
+
+.. math::
+
+  \begin{aligned}
+    x = f_x \frac{X}{Z} + c_x \\
+    y = f_y \frac{Y}{Z} + c_y
+  \end{aligned}
+
+.. figure:: ./images/camera_and_pixel_coordinate_frames.png
+   :align: center
+
+
+
 6.3 **图像畸变**
 ------------------------------------------
 
- 
+.. math::
+
+  \begin{aligned}
+    \mathbf{h}
+      \begin{pmatrix}
+          X \\
+          Y \\
+          Z
+      \end{pmatrix} &=
+      \begin{bmatrix}
+          f_x &   0 \\
+          0   & f_y 
+      \end{bmatrix}
+      \begin{pmatrix}
+        d_r
+        \begin{bmatrix}
+          u \\
+          v
+        \end{bmatrix}
+        + d_t
+      \end{pmatrix} +
+      \begin{bmatrix}
+          c_x \\
+          c_y 
+      \end{bmatrix}
+      \\
+      d_r &= (1 + k_1r + k_2r^2 + k_3r^3) \\
+      d_t &= 
+      \begin{bmatrix}
+          2uvt_1 + (r+2u^2)t_2 \\
+          2uvt_2 + (r+2v^2)t_1 
+      \end{bmatrix}
+      \\
+      with \quad u &= \frac{X}{Z}, v = \frac{Y}{Z}, r = u^2 + v^2
+  \end{aligned}
+
+
 6.4 **Triangulation（三角化）**
 ------------------------------------------
 
-6.5 **Feature Points Detect**
+.. figure:: ./images/triangulation.png
+   :align: center
+
+:math:`C_0` 帧是第一次观察到该点的相机帧，该点在第 :math:`i` 个相机 :math:`C_i` 帧中的位置如下。
+
+.. math::
+
+  \begin{aligned}
+    ^{C_i}\mathbf{p}_f &= _{C_0}^{C_i}\mathbf{R}(^{C_0}\mathbf{p}_f - ^{C_0}\mathbf{p}_{C_{i}}) \\
+    ^{C_i}\mathbf{p}_f &= _{C_0}^{C_i}\mathbf{R} ^{C_0}\mathbf{p}_f + ^{C_i}\mathbf{p}_{C_{0}}
+  \end{aligned}
+
+这可以用逆深度参数化重写，以提高数值稳定性并帮助避免局部最小值
+
+.. math::
+
+  \begin{aligned}
+    ^{C_i}\mathbf{p}_f &= _{C_0}^{C_i}\mathbf{R} ^{C_0}\mathbf{p}_f + ^{C_i}\mathbf{p}_{C_{0}} \\
+    & = _{C_0}^{C_i}\mathbf{R} ^{C_0}
+    \begin{bmatrix} 
+      c_n X \\
+      c_n Y \\
+      c_n Z
+    \end{bmatrix}
+    + ^{C_i}\mathbf{p}_{C_{0}} \\
+    &= ^{C_0} Z
+    \begin{pmatrix} 
+      _{C_0}^{C_i}\mathbf{R} 
+      \begin{bmatrix}
+        \frac{^{C_0}X}{^{C_0}Z} \\
+        \frac{^{C_0}Y}{^{C_0}Z} \\
+        1
+      \end{bmatrix} +
+      \frac{1}{^{C_0}Z} ^{C_i} \mathbf{p}_{C_{0}}
+    \end{pmatrix} \\
+    &= ^{C_0} Z
+    \begin{pmatrix} 
+      _{C_0}^{C_i}\mathbf{R}
+      \begin{bmatrix}
+        \alpha \\
+        \beta \\
+        1
+      \end{bmatrix} +
+      \rho ^{C_i}\mathbf{p}_{C_{0}}
+    \end{pmatrix} \\
+    &= ^{C_0} Z \mathbf{g}_i
+    \begin{pmatrix} 
+      \alpha \\
+      \beta \\
+      \rho 
+    \end{pmatrix}
+  \end{aligned}
+
+其中：
+
+* :math:`\alpha = \frac{^{C_0}X}{^{C_0}Z}`
+* :math:`\beta = \frac{^{C_0}Y}{^{C_0}Z}$`
+* :math:`\rho = \frac{1}{^{C_0}Z}`
+
+6.5 **高斯牛顿最小化**
+---------------------------------------
+
+.. math::
+
+  \mathbf{f}_i(\mathbf{\theta}) = \mathbf{Z}_i - \mathbf{h}(\mathbf{g}_i(\mathbf{\theta})) \quad with: \quad 
+    \mathbf{\theta} =
+      \begin{pmatrix} 
+        \alpha \\
+        \beta \\
+        \rho 
+      \end{pmatrix}
+
+损失函数cosnt function
+
+.. math::
+
+  S(\mathbf{\theta}) = \sum_{i=1}^{n} \mathbf{f}_i(\mathbf{\theta})^2
+
+雅可比矩阵Jacobian
+
+.. math::
+
+  \mathbf{J}_{\mathbf{f}} = \frac{\partial{\mathbf{f}}}{\partial{\mathbf{\theta}}} = \frac{\partial{\mathbf{\mathbf{h}}}}{\partial{\mathbf{\mathbf{g}}}} 
+  \frac{\partial{\mathbf{\mathbf{g}}}}{\partial{\mathbf{\mathbf{\theta}}}}
+
+其中：
+
+.. math::
+
+  \frac{\partial{\mathbf{\mathbf{h}}}}{\partial{\mathbf{\mathbf{g}}}} =
+  \begin{bmatrix}
+      f_x & 0 \\
+      0 & f_y 
+  \end{bmatrix}
+  \begin{bmatrix}
+      \frac{d_r}{z} + \frac{\partial{d_r}}{\partial{x}}u  + \frac{\partial{d_t}}{\partial{x}} &   \frac{\partial{d_r}}{\partial{y}}u + \frac{\partial{d_t}}{\partial{y}} &  -\frac{d_r}{z}u +  \frac{\partial{d_r}}{\partial{z}}u  + \frac{\partial{d_t}}{\partial{z}} \\
+      \frac{\partial{d_r}}{\partial{x}}v + \frac{\partial{d_t}}{\partial{y}} & \frac{d_r}{z} +  \frac{\partial{d_r}}{\partial{y}}v + \frac{\partial{d_t}}{\partial{y}} &   -\frac{d_r}{z}v +  \frac{\partial{d_r}}{\partial{z}}v  + \frac{\partial{d_t}}{\partial{z}} 
+  \end{bmatrix}
+
+参数更新
+
+.. math::
+
+  \mathbf{\theta}_i^{(s+1)} = \mathbf{\theta}_i^{(s)} -
+  \left(\mathbf{J}_{\mathbf{f}}^T \mathbf{J}_{\mathbf{f}} \right)^{-1}\mathbf{J}_{\mathbf{f}}^T
+  \mathbf{f}( \mathbf{\theta}_i^{(s)})
+
+
+6.6 **Feature Points Detect**
 ------------------------------------------
 
-6.6 **Feature Matching**
+.. figure:: ./images/feature_points.png
+   :align: center
+
+
+6.7 **Feature Matching**
 ------------------------------------------
 
 7 MSCKF-VIO
 ================
 
+**EuRoC数据集**
 
+.. figure:: ./images/euroc_datasets.png
+   :align: center
+
+
+微型飞行器（MAV）上收集的视觉惯性数据集
+
+* 使用的机型为：Asctec Firefly六角旋翼直升机
+* 觉惯性测量的传感器包括：视觉（双相机）惯性测量单元（IMU）
+
+视觉惯性传感器与groundtruth数据之间，通过外部校准使得时间戳同步。
+
+**groundtruth采集**
+
+* Leica MS50 激光跟踪扫描仪：毫米精确定位
+
+.. NOTE::
+
+  * LEICA0：激光追踪器配套的传感器棱镜【prism】
+  * Leica Nova MS50: 激光追踪器，测量棱镜prism的位置，毫米精度，帧率20Hz，
+
+**数据集内包含的数据**
+
+* Vicon 6D运动捕捉系统
+
+.. NOTE::
+
+  * VICON0：维肯动作捕捉系统的配套反射标志，叫做marker
+  * Vicon motion capture system: 维肯动作捕捉系统，提供在单一坐标系下的6D位姿测量，测量方式是通过在MAV上贴上一组反射标志，帧率100Hz，毫米精度
+
+视觉惯性传感器：
+
+.. NOTE::
+
+  * 双相机 (Aptina MT9V034型号 全局快门， 单色， 相机频率20Hz)
+  * MEMS IMU (ADIS16448型号 , 测量角速度与加速度，测量频率200 Hz)（以视觉图像的时间戳为基准进行对齐）
+
+groundtruth
+
+.. NOTE::
+
+  * Vicon运动捕捉系统【marker】（6D姿势）
+  * Leica MS50激光跟踪仪（3D位置）
+  * Leica MS50 3D 结构扫描
+
+传感器校准
+
+.. NOTE::
+
+  * 相机内参
+  * 相机-IMU外参
+
+
+文件名 **MH_01_easy** [工厂场景]
+
+.. NOTE::
+
+  ——mav0
+      — cam0
+        data :图像文件
+        data.csv :图像时间戳
+        sensor.yaml : 相机参数【内参fu,fv,cu,cv、外参T_BS(相机相对于b系的位姿)、畸变系数】
+      — cam1
+        data :图像文件
+        data.csv :图像时间戳
+        sensor.yaml : 相机参数【内参fu,fv,cu,cv、外参T_BS(相机相对于b系的位姿)、畸变系数】
+      — imu0
+        data.csv : imu测量数据【时间戳、角速度xyz、加速度xyz】
+        sensor.yaml : imu参数【外参T_BS、惯性传感器噪声模型以及噪声参数】
+      — leica0
+        data.csv : leica测量数据【时间戳、prism的3D位置】
+        sensor.yaml : imu参数【外参T_BS】
+      — state_groundtruth_estimae0**
+        data.csv :地面真实数据【时间戳、3D位置、姿态四元数、速度、ba、bg】
+        sensor.yaml :
+
+在每个传感器文件夹里配一个senor.yaml文件，记录传感器相对于Body坐标系的坐标变换，以及传感器自身参数信息
+
+**groundtruth输出格式**
+
+.. code-block:: bash
+
+  timestamp,
+  p_RS_R_x [m]
+  p_RS_R_y [m]
+  p_RS_R_z [m] 
+  q_RS_w [] 
+  q_RS_x [] 
+  q_RS_y [] 
+  q_RS_z [] 
+  v_RS_R_x [ m/s]
+  v_RS_R_y [ m/s]
+  v_RS_R_z [ m/s]
+  b_w_RS_S_x [rad /s] 
+  b_w_RS_S_x [rad /s]
+  b_w_RS_S_z [rad /s]
+  b_a_RS_S_x [rad /s]
+  b_a_RS_S_y [rad /s]
+  b_a_RS_S_z [rad /s]
+
+
+* timestamp：18位的时间戳
+* position：MAV的空间3D坐标
+* p_RS_R_x [m]
+* p_RS_R_y [m]
+* p_RS_R_z [m]
+
+**传感器安装的相对位置**
+
+.. figure:: ./images/sensor_setup2.png
+   :align: center
+
+机体上载有4个传感器，其中prism和marker公用一个坐标系
+无人机的body系 以IMU传感器为基准，即，imu系为body系。
+
+EuRoC数据集的使用
+
+* EuRoC数据集可用于视觉算法、视觉惯性算法的仿真测试
+* 在VIO算法中涉及到很多坐标系的转换、在精度测量过程中也需要进行统一坐标系
+
+.. NOTE::
+
+  * 传感器数据的读取
+      以相机图像与imu测量作为算法输入，首先就是要进行数据读取、将输入输出模块化
+  * 建立统一坐标系
+      传感器放置于统一平台上，但每个传感器都有其各自的坐标系，索性EuRoC中给出了所有传感器相对于机体body系的相对位移（sensor.yaml文件中的T_BS），因此可以将各传感器的位姿数据统一到统一坐标系下，但实际使用中需要根据代码情况灵活运用。
+  * 坐标系变换:
+      下标表示形式【 矩阵坐标系之间的变换矩阵的下标采用双字母进行标注】
+      如：旋转矩阵R_BC，表示从c系旋转到b系的变换阵
+
+
+7.1 **Overview**
+------------------------------------------
+
+传统的EKF-SLAM框架中，特征点的信息会加入到特征向量和协方差矩阵里,这种方法的缺点是特征点的信息会给一个初始深度和初始协方差，
+如果不正确的话，极容易导致后面不收敛，出现inconsistent的情况。MSCKF维护一个pose的FIFO，按照时间顺序排列，
+可以称为滑动窗口，一个特征点在滑动窗口的几个位姿都被观察到的话，就会在这几个位姿间建立约束，从而进行KF的更新。
+如下图所示, 左边代表的是传统EKF SLAM, 红色五角星是old feature,这个也是保存在状态向量中的,另外状态向量中只保存最新的相机姿态; 
+中间这张可以表示的是keyframe-based SLAM, 它会保存稀疏的关键帧和它们之间相关联的地图点; 
+最右边这张则可以代表MSCKF的一个基本结构, MSCKF中老的地图点和滑窗之外的相机姿态是被丢弃的, 
+它只存了滑窗内部的相机姿态和它们共享的地图点.
+
+.. figure:: ./images/msckf_instrduction.png
+   :align: center
+
+
+7.2 **前端**
+------------------------------------------
+
+**跟踪流程**
+
+.. figure:: ./images/tracking_whole_picture.png
+   :align: center
+
+**初始化Initialization**
+
+.. figure:: ./images/Initialization.svg
+   :align: center
+
+**trackFeatures**
+
+.. figure:: ./images/trackFeatures.svg
+   :align: center
+
+**twoPointRansac**
+
+.. figure:: ./images/twoPointRansac.png
+   :align: center
+
+对极几何可约束
+
+.. math::
+
+  p_2^T [t]_{\times} R p_1  = 0
+
+* :math:`p_1 = [x_1, y_1, 1]^T`
+* :math:`p_2 = [x_2, y_2, 1]^T`
+
+.. math::
+
+  \begin{bmatrix}
+    x_2 & y_2 & 1
+  \end{bmatrix}
+  \begin{bmatrix}
+    0 & -t_z & t_y \\
+    t_z & 0 & -t_x \\
+    -t_y & t_x & 0
+  \end{bmatrix}
+  \begin{bmatrix}
+    x_1 \\
+      y_1 \\
+      1
+  \end{bmatrix}
+  = 0
+
+展开之后我们可以得到
+
+.. math::
+
+  \begin{bmatrix}
+    y_1 - y_2 & -(x_1 - x_2) & x_1y_2 - x_2y_1
+  \end{bmatrix}
+  \begin{bmatrix}
+    t_x \\
+      t_y \\
+      t_z
+  \end{bmatrix}
+  = 0
+
+7.3 **State Representation**
+------------------------------------------
+
+.. figure:: ./images/addNewFeatures&pruneGridFeatures.svg
+   :align: center
+
+
+**publish**
+
+.. code-block:: bash
+
+  uint64 id
+  # Normalized feature coordinates (with identity intrinsic matrix)
+  float64 u0 # horizontal coordinate in cam0
+  float64 v0 # vertical coordinate in cam0
+  float64 u1 # horizontal coordinate in cam0
+  float64 v1 # vertical coordinate in cam0
+
+
+其实前端基本上可以说是非常简单了,也没有太多的trick,最后我们来看一下前端的跟踪效果的动图:
+
+.. figure:: ./images/StereoFeatures.gif
+   :align: center
+
+7.4 **Propagation**
+------------------------------------------
+
+**误差状态协方差更新**
+
+IMU误差状态方程离散化：
+
+.. math::
+
+  \tilde{\mathbf{X}}_{IMU} = \mathbf{F} \tilde{{X}}_{IMU} + \mathbf{G} \mathbf{n}_{IMU}
+
+从 :math:`t_{k}` 到 :math:`t_{k+1}` 的状态转移矩阵 :math:`\Phi_{k}` 和噪声项 :math:`Q_{k}` 为：
+
+.. math::
+
+  \begin{aligned}
+    \mathbf{\Phi}_{k} &= \mathbf{\Phi}_{k+1} = exp\left( \int_{t_k}^{t_{k+1}} F(\tau)d\tau\right) \\
+    \mathbf{Q}_{k} &= \int_{t_k}^{t_{k+1}} \mathbf{\Phi}(t_{k+1}, t_k) G QG^T \mathbf{\Phi}(t_{k+1}, t_k)^Td\tau\
+  \end{aligned}
+
+其中：
+
+* :math:`Q = \mathbf{n_I n_I^{T}}`
+
+:math:`k` 时刻 :math:`\mathbf{X}_{IMU}` 变化对系统误差状态协方差矩阵 :math:`P_{k|k}` , 系统误差状态协方差矩阵为：
+
+.. math::
+
+  \mathbf{P}_{k|k} = 
+  \begin{bmatrix}
+      P_{II_{k|k}}  & P_{IC_{k|k}} \\
+      P_{IC_{k|k}}^{T} & P_{CC_{k|k}} 
+  \end{bmatrix}
+
+:math:`k+1` 时刻预测的IMU误差状态协方差矩阵为
+
+.. math::
+
+  P_{II_{k|k}} = \Phi_{k}P_{II} \Phi_{k}^T + Q_{k}
+
+:math:`k+1` 时刻预测的系统误差状态协方差矩阵为：
+
+.. math::
+
+  \mathbf{P}_{k+1|k} =
+    \begin{bmatrix}
+        P_{II_{k+1|k}}  & \Phi_{k} P_{IC_{k|k}} \\
+        P_{IC_{k|k}}^{T} \Phi_{k}^T  & P_{CC_{k|k}} 
+    \end{bmatrix}
+
+整个状态(IMU+Camera)的covariance传播过程如图所示:
+
+.. figure:: ./images/imu_propagate.png
+   :align: center
+
+7.5 **Augmentation**
+------------------------------------------
+
+**MSCKF系统的误差状态向量**
+
+.. math::
+
+  \mathbf{X}_{k} = 
+  \begin{bmatrix}
+    \mathbf{x}_{I_{k}}^{T},
+    \mathbf{\delta \theta}_{C_{1}}^{T}, _G\mathbf{p}_{C_{1}}^{T}
+    \dots,
+    \mathbf{\delta \theta}_{C_{N}}^{T}, _G\mathbf{p}_{C_{N}}^{T}
+  \end{bmatrix}
+
+
+它包括 :math:`IMU` 误差状态与 :math:`N` 个相机状态。在没有图像进来时，对 :math:`IMU` 状态进行预测，
+并计算系统误差状态协方差矩阵；在有图像进来时，根据相机与 :math:`IMU` 的相对外参计算当前相机的位姿。
+然后将最新的相机状态加入到系统状态向量中去，然后扩增误差状态协方差矩阵。
+
+**状态向量扩增**
+
+根据预测的IMU位姿和相机与IMU的相对外参计算当前相机位姿：
+
+.. math::
+
+  \begin{aligned}
+    _G^{C}\hat{q} &= _I^{C} \hat{q} \otimes _G^{I}\hat{q} \\
+    ^{G} \hat{p}_{C} &=  ^{G} \hat{p}_{I} + C(_I^{C} \hat{q})^T (^{I}\hat{p}_C)
+  \end{aligned}
+
+然后将当前相机状态 :math:`_G^{C}\hat{q}， ^{G} \hat{p}_{C}` 加入到状态向量。
+
+* :math:`_G^{C}\hat{q}` : 相机的方向
+* :math:`^{G} \hat{p}_{C}`: 相机的位置
+
+**误差状态协方差矩阵扩增**
+
+系统新误差状态 :math:`X_{new}` 与系统原误差状态 :math:`X_{old}` 的关系为：
+
+.. math::
+
+  X_{new}  = \frac{\partial{X_{new}}}{\partial{X_{old} }} + C_{0}
+
+其中
+
+.. math::
+
+  \frac{\partial{X_{new}}}{\partial{X_{old} }} = 
+  \begin{bmatrix}
+    \mathbf{I}_{6N+21} \\
+    \mathbf{J}
+  \end{bmatrix}
+
+:math:`J` 是新增相机误差状态对原系统误差状态的Jacobian：
+
+.. math::
+
+  \mathbf{J} =
+  \begin{bmatrix}
+    \frac{\partial{_G^{C_{new}} \delta\theta}}{\partial{\mathbf{x}_{I}}}_{3 \times 21} & \frac{\partial{_G^{C_{new}} \delta\theta}}{\partial{\mathbf{x}_{C}}}_{3 \times 6N} \\
+    \frac{\partial{^G p_{C_{new}}}}{\partial{\mathbf{x}_{I}}}_{3 \times 21} & \frac{\partial{^G p_{C_{new}}}}{\partial{\mathbf{x}_{C}}}_{3 \times 6N}
+  \end{bmatrix}_{6 \times (21 + 6N)}
+
+假设上一时刻共有N个相机姿态在状态向量中,那么当新一帧图像到来时,这个时候整个滤波器的状态变成了 :math:`21 + 6(N+1)` 的向量, 
+那么它对应的covariance维度为 :math:`(21 + 6(N+1)) \times (21 + 6(N+1))` 。求出 :math:`J` 后，误差状态协方差矩阵扩增为：
+
+.. math::
+
+  P_{k|k} \leftarrow
+  \begin{bmatrix}
+    \mathbf{I}_{6N + 21} \\
+    \mathbf{J}
+  \end{bmatrix}
+  P_{k|k}
+  \begin{bmatrix}
+    \mathbf{I}_{6N + 21} \\
+    \mathbf{J}
+  \end{bmatrix}^T
+  =
+  \begin{bmatrix}
+    P_{k|k} & P_{k|k} \mathbf{J}^T \\
+    \mathbf{J} P_{k|k} & \mathbf{J} P_{k|k} \mathbf{J}^T
+  \end{bmatrix}_{[6(N+1)+21] \times [6(N+1)+21]}
+
+这个过程对应如下图过程:
+
+.. figure:: ./images/covariance_augmentation.png
+   :align: center
+
+
+7.6 **Update Step**
+------------------------------------------
+
+MSCKF的观测模型是以特征点为分组的,我们可以知道一个特征(之前一直处于跟踪成功状态)会拥有多个Camera State.
+所有这些对于同一个3D点的Camera State都会去约束观测模型. 那这样其实隐式的将特征点位置从状态向量中移除,
+取而代之的便是Camera State. 我们考虑单个feture :math:`f_j` ，假设它所对应到 :math:`M_j` 个相机姿态 :math:`[{}_G^{C_{i}}\mathbf{q}, {}^G \mathbf{p}_{C_i}]^T, i \in j` 。
+当然双目版本的包含左目和右目两个相机姿态, :math:`[{}_G^{C_{i,1}}\mathbf{q}, {}^G \mathbf{p}_{C_i, 1}]^T` 和
+:math:`[{}_G^{C_{i,2}}\mathbf{q}, {}^G \mathbf{p}_{C_i, 2}]^T` 右相机很容易能通过外参得到. 其中双目的观测值可以表示如下:
+
+.. math::
+
+  \mathbf{z}_{i}^{j} = 
+  \begin{bmatrix}
+      u_{i, 1}^{j}  \\
+      v_{i, 1}^{j}  \\
+      u_{i, 2}^{j}  \\
+    v_{i, 2}^{j}  \\
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \frac{1}{{}^{C_{i,1}}Z_j} & \mathbf{0}_{2 \times 2} \\
+    \mathbf{0}_{2 \times 2} & \frac{1}{{}^{C_{i,2}}Z_j}
+  \end{bmatrix}
+  \begin{bmatrix}
+      \frac{1}{{}^{C_{i,1}}X_j}  \\
+      \frac{1}{{}^{C_{i,1}}Y_j}  \\
+      \frac{1}{{}^{C_{i,2}}X_j}  \\
+      \frac{1}{{}^{C_{i,2}}Y_j}  
+  \end{bmatrix}
+
+而特征点在两个相机坐标系下可以分别表示为:
+
+.. math::
+
+  \begin{aligned}
+    {}^{C_{i,1}}\mathbf{p} &= 
+          \begin{bmatrix}
+            {}^{C_{i,1}}\mathbf{X}_j \\
+            {}^{C_{i,1}}\mathbf{Y}_j \\
+            {}^{C_{i,1}}\mathbf{Z}_j 
+          \end{bmatrix} = 
+          C({}_G^{C_{i,1}}\mathbf{q)}({}^{G}\mathbf{p}_j - {}^{G}\mathbf{p}_{C_{i, 1}}) \\
+      {}^{C_{i,2}}\mathbf{p} &= 
+          \begin{bmatrix}
+            {}^{C_{i,2}}\mathbf{X}_j \\
+            {}^{C_{i,2}}\mathbf{Y}_j \\
+            {}^{C_{i,2}}\mathbf{Z}_j 
+          \end{bmatrix} = 
+          C({}_G^{C_{i,2}}\mathbf{q)}({}^{G}\mathbf{p}_j - {}^{G}\mathbf{p}_{C_{i, 2}}) \\
+          &=  C({}_{C_{i,1}}^{C_{i,2}}\mathbf{q)}({}^{C_{i,1}}\mathbf{p}_j - {}^{C_{i,1}}\mathbf{p}_{C_{i, 2}})
+  \end{aligned}
+
+其中 :math:`{}^{G}\mathbf{p}_j` 是特征点在惯性系下的坐标,这个是通过这个特征点的对应的所有camera state三角化得到的结果. 将观测模型在当前状态线性化可以得到如下式子:
+
+.. math::
+
+  \begin{aligned}
+    \mathbf{r}^{j}_{i}  &= \mathbf{z}^{j}_{i} - \mathbf{\hat{z}}^{j}_{i}\\
+              &=\mathbf{H}_{C_{i}}^{j} \mathbf{x} + {\color{Red}{\mathbf{H}^{f_j w} \mathbf{p}_{j}}}+ \mathbf{n}^{j}_{i}
+  \end{aligned}
+
+其中 :math:`\mathbf{n}^{j}_{i}` 是观测噪声, :math:`\mathbf{H}_{C_{i}}^{j}` 和 :math:`\mathbf{H}^{f_j w}` 是对应的雅克比矩阵。
+对应到的是单个特征点对应的其中某一个相机姿态, 但是这个特征点会对应到很多相机姿态。
+
+.. math::
+
+  \begin{aligned}
+    \mathbf{r}^{j}_{o} &= \mathbf{V}^{T}( \mathbf{z}^{j}  - \mathbf{\hat{z}}^{j}) \\
+                &= \mathbf{V}^{T}\mathbf{H}^{j} \mathbf{x} + \mathbf{V}^{T}\mathbf{H}^{f_j w} \mathbf{p}_{j} + \mathbf{V}^{T} \mathbf{n}^{j}  \\
+                &=  \mathbf{V}^{T}\mathbf{H}^{j} \mathbf{x} + \mathbf{V}^{T} \mathbf{n}^{j} \\
+                &= \mathbf{H}^{j}_{0} \mathbf{x} + \mathbf{n}^{j}_{o}
+  \end{aligned}
+
+但是这个其实并不是一个标准的EKF观测模型,因为我们知道 :math:`\mathbf{\tilde{p}_j}` 并不在我们的状态向量里边,
+所以做法是将式子中红色部分投影到零空间, 假设 :math:`\mathbf{H^{f_{j}w}}` 的left null space为 :math:`\mathbf{V}^T` , 
+即有 :math:`\mathbf{V}^T \mathbf{H^{f_{j}w}} = 0`, 所以：
+
+.. math::
+
+  \mathbf{r}^{j}_{o} = \mathbf{H}^{j}_{0} \mathbf{x} + \mathbf{n}^{j}_{o}
+
+
+这样就是一个标准的EKF观测模型了,下面简单分析一下维度.分析时针对单个特征点, 
+我们知道 :math:`\mathbf{H^{f_{j}w}}` 的维度是 :math:`{4M_j} \times 3` , 
+那么它的left null space的维度即 :math:`\mathbf{V}^T$的维度为$(4M_j -3) \times 4M_j` , 
+则最终 :math:`\mathbf{H}^{j}_{0} \mathbf{x}` 的维度变为 :math:`(4M_j-3) \times 6` , 
+残差的维度变为 :math:`(4M_j-3) \times 1` , 假设一共有L个特征的话,那最终残差的维度会是 :math:`L (4M_j-3) \times 6`.
+
+7.7 **Post EKF Update**
+------------------------------------------
+
+大致是有两种更新策略,假设新进来一帧图像,这个时候会丢失一些特征点,这个时候丢失的特征点(且三角化成功)用于滤波器更新,如下图所示:
+
+.. figure:: ./images/post_ekf_update.png
+   :align: center
+
+8 参考文献
+================
+
+* `openvins <https://docs.openvins.com/index.html>`_
+* `msckf_notes <http://www.xinliang-zhong.vip/msckf_notes/>`_
+* `S-MSCKF图解 <https://matheecs.tech/study/2019/05/23/MSCKF.html>`_
+* `一步一步推导S-MSCKF系列 <https://blog.csdn.net/liu2015302026/article/details/105342495?spm=1001.2014.3001.5501>`_
+* `学习MSCKF笔记——后端、状态预测、状态扩增、状态更新 <https://blog.csdn.net/weixin_44580210/article/details/108021350?spm=1001.2101.3001.6650.5&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-5-108021350-blog-118578146.pc_relevant_blogantidownloadv1&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-5-108021350-blog-118578146.pc_relevant_blogantidownloadv1&utm_relevant_index=8>`_
+* `MSCKF那些事（一）MSCKF算法简介 <https://zhuanlan.zhihu.com/p/76341809>`_
+* `Indirect Kalman Filter for 3D Attitude Estimation <http://mars.cs.umn.edu/tr/reports/Trawny05b.pdf>`_
+* `Quaternion kinematics for the error-state Kalman filter <https://www.iri.upc.edu/people/jsola/JoanSola/objectes/notes/kinematics.pdf>`_
+* `Improving the Accuracy of EKF-Based Visual-Inertial Odometry <http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=188A46DC6DD79B40220CE2E9CCB42647?doi=10.1.1.261.1422&rep=rep1&type=pdf>`_
+* `Monocular Visual Inertial Odometryon a Mobile Device <https://vision.in.tum.de/_media/spezial/bib/shelley14msc.pdf>`_
+* `A Multi-State Constraint Kalman Filter for Vision-aided Inertial Navigation <https://www-users.cse.umn.edu/~stergios/papers/ICRA07-MSCKF.pdf>`_

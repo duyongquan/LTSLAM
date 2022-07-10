@@ -791,9 +791,7 @@ $$
         2uvt_2 + (r+2v^2)t_1 
     \end{bmatrix}
     \\
-    
     with \quad u &= \frac{X}{Z}, v = \frac{Y}{Z}, r = u^2 + v^2
-    
 \end{aligned}
 $$
 **Frame Transformation**
@@ -1404,7 +1402,7 @@ $$
   > Leica MS50激光跟踪仪（3D位置）
   > Leica MS50 3D 结构扫描
 
-* ·传感器校准
+* 传感器校准
 
   > 相机内参
   > 相机-IMU外参
