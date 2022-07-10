@@ -211,7 +211,7 @@ $$
 **二次函数添加噪点**
 
 ```python
-mport numpy as np
+import numpy as np
 
 class KalmanFilter(object):
     def __init__(self, F = None, B = None, H = None, Q = None, R = None, P = None, x0 = None):
@@ -637,12 +637,11 @@ $$
 so that:
 $$
 \begin{aligned}
-y_{i+1} &= y_i + \frac{1}{6} h (k_1 + 2k_2 + 2k_3 + k_4) \\
-k_1 &= f(x_i, y_i) \\
-k_2 &= f(x_i + \frac{1}{2}h, y_i + \frac{1}{2} k_1 h) \\
-k_3 &= f(x_i + \frac{1}{2}h, y_i + \frac{1}{2} k_2 h) \\
-k_4 &= f(x_i + h, y_i + k_3 h) \\
-
+    y_{i+1} &= y_i + \frac{1}{6} h (k_1 + 2k_2 + 2k_3 + k_4) \\
+    k_1 &= f(x_i, y_i) \\
+    k_2 &= f(x_i + \frac{1}{2}h, y_i + \frac{1}{2} k_1 h) \\
+    k_3 &= f(x_i + \frac{1}{2}h, y_i + \frac{1}{2} k_2 h) \\
+    k_4 &= f(x_i + h, y_i + k_3 h) 
 \end{aligned}
 $$
 例
@@ -705,7 +704,6 @@ function y = RK4(fun, x, y0)
         k4 = fun(x(m)+h, y(m)+h*k3);
         y(m+1) = y(m) + h*(k1 + 2*k2 + 2*k3 + k4) / 6;
     end
-
 end
 ```
 
