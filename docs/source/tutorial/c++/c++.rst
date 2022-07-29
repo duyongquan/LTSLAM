@@ -221,6 +221,8 @@ C++ 入门教程（41课时） - 阿里云大学
 
 * `cpp-cheat-sheets <https://hackingcpp.com/cpp/cheat_sheets.html>`_
 
+* `侯捷 C++ 系列 <https://github.com/ZachL1/Bilibili-plus>`_
+
 
 github开源项目推荐
 ====================

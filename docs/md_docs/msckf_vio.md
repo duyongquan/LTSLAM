@@ -1162,7 +1162,6 @@ $$
 \begin{aligned}
 	\mathbf{\Phi}_{k} &= \mathbf{\Phi}_{k+1} = exp\left( \int_{t_k}^{t_{k+1}} F(\tau)d\tau\right) \\
 	\mathbf{Q}_{k} &= \int_{t_k}^{t_{k+1}} \mathbf{\Phi}(t_{k+1}, t_k) G QG^T \mathbf{\Phi}(t_{k+1}, t_k)^Td\tau\
- 
 \end{aligned}
 $$
 其中：
@@ -1209,7 +1208,6 @@ $$
 	\mathbf{\delta \theta}_{C_{1}}^{T}, _G\mathbf{p}_{C_{1}}^{T}
 	\dots,
 	\mathbf{\delta \theta}_{C_{N}}^{T}, _G\mathbf{p}_{C_{N}}^{T}
-
 \end{bmatrix}
 $$
 
@@ -1222,7 +1220,6 @@ $$
 \begin{aligned}
 	_G^{C}\hat{q} &= _I^{C} \hat{q} \otimes _G^{I}\hat{q} \\
 	^{G} \hat{p}_{C} &=  ^{G} \hat{p}_{I} + C(_I^{C} \hat{q})^T (^{I}\hat{p}_C)
- 
 \end{aligned}
 $$
 然后将当前相机状态$_G^{C}\hat{q}， ^{G} \hat{p}_{C} $ 加入到状态向量。
@@ -1314,7 +1311,6 @@ $$
            {}^{C_{i,1}}\mathbf{Z}_j 
         \end{bmatrix} = 
         C({}_G^{C_{i,1}}\mathbf{q)}({}^{G}\mathbf{p}_j - {}^{G}\mathbf{p}_{C_{i, 1}}) \\
-       
     {}^{C_{i,2}}\mathbf{p} &= 
         \begin{bmatrix}
            {}^{C_{i,2}}\mathbf{X}_j \\
@@ -1330,7 +1326,6 @@ $$
 \begin{aligned}
 	\mathbf{r}^{j}_{i}  &= \mathbf{z}^{j}_{i} - \mathbf{\hat{z}}^{j}_{i}\\
 						&=\mathbf{H}_{C_{i}}^{j} \mathbf{x} + {\color{Red}{\mathbf{H}^{f_j w} \mathbf{p}_{j}}}+ \mathbf{n}^{j}_{i}
-
 \end{aligned}
 $$
 其中 $\mathbf{n}^{j}_{i}$是观测噪声, $\mathbf{H}_{C_{i}}^{j}$和 $\mathbf{H}^{f_j w}$是对应的雅克比矩阵。对应到的是单个特征点对应的其中某一个相机姿态, 但是这个特征点会对应到很多相机姿态。
@@ -1340,7 +1335,6 @@ $$
 				       &= \mathbf{V}^{T}\mathbf{H}^{j} \mathbf{x} + \mathbf{V}^{T}\mathbf{H}^{f_j w} \mathbf{p}_{j} + \mathbf{V}^{T} \mathbf{n}^{j}  \\
 				       &=  \mathbf{V}^{T}\mathbf{H}^{j} \mathbf{x} + \mathbf{V}^{T} \mathbf{n}^{j} \\
 				       &= \mathbf{H}^{j}_{0} \mathbf{x} + \mathbf{n}^{j}_{o}
-
 \end{aligned}
 $$
 但是这个其实并不是一个标准的EKF观测模型,因为我们知道$\mathbf{\tilde{p}_j}$并不在我们的状态向量里边,所以做法是将式子中红色部分投影到零空间, 假设$\mathbf{H^{f_{j}w}}$的[left null space](https://blog.csdn.net/liuheng0111/article/details/52522845) 为$\mathbf{V}^T$, 即有$\mathbf{V}^T \mathbf{H^{f_{j}w}} = 0$, 所以：
