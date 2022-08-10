@@ -37,6 +37,7 @@ find_package(PythonInterp REQUIRED)
 find_package(PythonLibs ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR} EXACT REQUIRED)
 
 file(GLOB_RECURSE ALL_LIBRARY_HDRS "xslam/*.h")
+file(GLOB_RECURSE ALL_LIBRARY_HPPS "xslam/*.hpp")
 file(GLOB_RECURSE ALL_LIBRARY_SRCS "xslam/*.cpp")
 file(GLOB_RECURSE ALL_TESTS "xslam/*_test.cpp")
 file(GLOB_RECURSE ALL_EXAMPLES "xslam/*_example.cpp")
@@ -118,7 +119,7 @@ set_source_files_properties(${ALL_PROTO_SRCS} ${ALL_PROTO_HDRS} PROPERTIES GENER
 list(APPEND ALL_LIBRARY_HDRS ${ALL_PROTO_HDRS})
 list(APPEND ALL_LIBRARY_SRCS ${ALL_PROTO_SRCS})
 
-add_library(${PROJECT_NAME} STATIC ${ALL_LIBRARY_HDRS} ${ALL_LIBRARY_SRCS} ${ALL_LIBRARY_HPPS})
+add_library(${PROJECT_NAME} STATIC ${ALL_LIBRARY_HDRS} ${ALL_LIBRARY_HPPS} ${ALL_LIBRARY_SRCS} ${ALL_LIBRARY_HPPS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${Pangolin_LIBRARIES})
