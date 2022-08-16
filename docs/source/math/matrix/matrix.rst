@@ -98,6 +98,98 @@ matrix operation
     \end{bmatrix}_{3 \times 3}
     \end{align}
 
+Viewing a Matrix 4 ways
+=======================
+
+.. figure:: ./images/matrix_1.png
+   :align: center
+
+Vector times Vector 2 ways
+=============================
+
+.. figure:: ./images/matrix_2.png
+   :align: center
+
+Matrix times Vector 2 ways
+=============================
+
+.. figure:: ./images/matrix_3.png
+   :align: center
+
+.. figure:: ./images/matrix_4.png
+   :align: center
+
+.. figure:: ./images/matrix_5.png
+   :align: center
+
+Matrix times Matrix 4 ways
+=============================
+
+.. figure:: ./images/matrix_6.png
+   :align: center
+
+Practical Pattern
+=============================
+
+.. figure:: ./images/matrix_7.png
+   :align: center
+
+.. figure:: ./images/matrix_8.png
+   :align: center
+
+.. figure:: ./images/matrix_9.png
+   :align: center
+
+.. figure:: ./images/matrix_10.png
+   :align: center
+
+.. figure:: ./images/matrix_11.png
+   :align: center
+
+Matrix Factorization
+=============================
+
+.. figure:: ./images/matrix_12.png
+   :align: center
+
+A = CR
+-----------------------------
+
+.. figure:: ./images/matrix_13.png
+   :align: center
+
+A = LU
+-----------------------------
+
+.. figure:: ./images/matrix_14.png
+   :align: center
+
+A = QR
+-----------------------------
+
+.. figure:: ./images/matrix_15.png
+   :align: center
+
+
+A = :math:`QAQ^T`
+-----------------------------
+
+.. figure:: ./images/matrix_16.png
+   :align: center
+
+
+A = :math:`U \Sigma V^T`
+-----------------------------
+
+.. figure:: ./images/matrix_17.png
+   :align: center
+
+
+Matrix World
+-----------------------------
+
+.. figure:: ./images/matrix_18.png
+   :align: center
 
 Schur Complements
 =================
