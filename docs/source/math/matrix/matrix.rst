@@ -424,4 +424,10 @@ Schur Complements
 
 称为矩阵求逆引理的公式
 
+参考
+=================
+
+* `The-Art-of-Linear-Algebra <https://github.com/kenjihiranabe/The-Art-of-Linear-Algebra>`_
+
+
 
